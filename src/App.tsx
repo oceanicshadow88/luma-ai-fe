@@ -1,11 +1,22 @@
+import { Routes, Route } from 'react-router-dom'
+import Home from './pages/Home'
 import './App.css'
+import About from './pages/About'
+import AuthLayout from './layouts/AuthLayout'
+import Register from './pages/Register'
+
 
 function App() {
 
   return (
-    <div className='w-full h-fll flex justify-center'>
-      <h1>Hello luma ai</h1>
-    </div>
+    <Routes>
+      <Route index element={<Home />}/>
+      <Route path="about" element={<About />} />
+
+      <Route element={<AuthLayout />}>
+        <Route path="signup" element={<Register />}/>
+      </Route>
+    </Routes>
   )
 }
 

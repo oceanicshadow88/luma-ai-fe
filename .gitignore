@@ -1,0 +1,26 @@
+# node dependencies
+node_modules/
+
+# production
+dist/
+build/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# dotenv
+.env
+.env.*.local
+
+# editor directories and files
+.vscode/
+.idea/
+.DS_Store
+
+# test coverage
+coverage/
+
+# macOS metadata
+*.DS_Store

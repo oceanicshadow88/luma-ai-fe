@@ -22,12 +22,20 @@ A modern frontend scaffold for the **Luma AI** platform, built with [Vite](https
 ```
 luma-ai-frontend/
 ├── public/             # Static assets
-├── src/                # Source code (components, pages, etc.)
-├── .env                # Environment variables (VITE_ prefix required)
-├── .eslintrc.js        # ESLint config
-├── .prettierrc         # Prettier config
+├── src/                # Source code
+│   ├── app/           # Next.js / Remix pages or React roots
+│   ├── assets/        # Static assets (images, SVGs, etc.)
+│   ├── components/    # Reusable UI components
+│   ├── features/      # Domain-specific logic (e.g., Redux Toolkit slices)
+│   ├── hooks/         # Custom React hooks
+│   ├── services/      # API clients and business logic
+│   ├── styles/        # Global styles and themes
+│   └── types/         # Shared TypeScript type definitions
+├── .env               # Environment variables (VITE_ prefix required)
+├── .eslintrc.js       # ESLint config
+├── .prettierrc        # Prettier config
 ├── .gitignore
-├── cypress/            # Cypress tests
+├── cypress/           # Cypress tests
 ├── package.json
 └── vite.config.ts
 ```

@@ -12,9 +12,6 @@ function App() {
         Tailwind 已成功配置！
       </h1>
 
-      <h1 className="text-5xl font-bold text-red-600 bg-yellow-200 p-10">
-        Tailwind 颜色测试！
-      </h1>
     </>
   )
 }

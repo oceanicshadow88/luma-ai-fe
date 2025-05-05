@@ -15,6 +15,24 @@ A modern frontend scaffold for the **Luma AI** platform, built with [Vite](https
 - **.env** – Environment variable management
 - _(SonarQube integration planned)_
 
+### 🔢 Core Dependency Versions
+This project uses the following core frontend tools and libraries:
+
+| Package                | Version     |
+|------------------------|-------------|
+| React                  | ^19.1.0     |
+| React DOM              | ^19.1.0     |
+| React Router DOM       | ^6.30.1     |
+| Axios                  | ^1.9.2      |
+| Vite                   | ^6.3.2      |
+| Tailwind CSS           | ^3.4.3      |
+| TypeScript             | ~5.8.3      |
+| ESLint                 | ^9.26.0     |
+| Prettier               | ^3.5.3      |
+| Cypress (e2e testing)  | ^14.3.3     |
+
+> Note: Versions are automatically managed using `npm` with caret (`^`) and tilde (`~`) ranges to ensure compatibility.
+
 ---
 
 ## 📁 Project Structure
@@ -22,12 +40,20 @@ A modern frontend scaffold for the **Luma AI** platform, built with [Vite](https
 ```
 luma-ai-frontend/
 ├── public/             # Static assets
-├── src/                # Source code (components, pages, etc.)
-├── .env                # Environment variables (VITE_ prefix required)
-├── .eslintrc.js        # ESLint config
-├── .prettierrc         # Prettier config
+├── src/                # Source code
+│   ├── app/           # Next.js / Remix pages or React roots
+│   ├── assets/        # Static assets (images, SVGs, etc.)
+│   ├── components/    # Reusable UI components
+│   ├── features/      # Domain-specific logic (e.g., Redux Toolkit slices)
+│   ├── hooks/         # Custom React hooks
+│   ├── services/      # API clients and business logic
+│   ├── styles/        # Global styles and themes
+│   └── types/         # Shared TypeScript type definitions
+├── .env               # Environment variables (VITE_ prefix required)
+├── .eslintrc.js       # ESLint config
+├── .prettierrc        # Prettier config
 ├── .gitignore
-├── cypress/            # Cypress tests
+├── cypress/           # Cypress tests
 ├── package.json
 └── vite.config.ts
 ```

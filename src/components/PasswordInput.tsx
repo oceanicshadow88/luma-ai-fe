@@ -4,6 +4,8 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 interface PasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     error?: string;
+    className?: string;
+    inputClassName?: string; 
 }
 
 export const PasswordInput = forwardRef<

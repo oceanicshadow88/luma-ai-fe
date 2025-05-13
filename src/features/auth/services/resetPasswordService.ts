@@ -1,41 +1,57 @@
 import axios from "axios";
-import { ResetPasswordFormData } from '@features/auth/type';
-import { ApiError } from '@custom-types/ApiError'
+import { ResetPasswordFormData, VerificationCodeResponse } from '@features/auth/type';
+import { ApiError } from '@custom-types/ApiError';
 
-class AuthService {
+class ResetPasswordService {
   private apiUrl = import.meta.env.VITE_API_URL || "http://api.example.com";
 
-  async sendVerificationCode(email: string): Promise<void> {
+  async sendVerificationCode(email: string): Promise<VerificationCodeResponse> {
     try {
-      await axios.post(`${this.apiUrl}/auth/send-verification-code`, { email });
+      const res = await axios.post<VerificationCodeResponse>(`${this.apiUrl}/v1/auth/request-reset-code`, { email });
+      return res.data;
     } catch (error: any) {
       if (error.response) {
+        const { message, code, cooldownSeconds } = error.response.data;
+
+        if (error.response.status === 429 && cooldownSeconds !== undefined) {
+          throw new ApiError(
+            message || "Too many requests. Please try again later.",
+            code || "AUTH_RATE_LIMIT",
+            { cooldownSeconds }
+          );
+        }
+
         throw new ApiError(
-          error.response.data.message || "Failed to send verification code",
-          error.response.data.code || "unknown_error"
+          message || "Failed to send verification code",
+          code || "unknown_error"
         );
       }
+
       throw new ApiError("Network error", "network_error");
     }
   }
 
   async resetPassword(data: ResetPasswordFormData): Promise<void> {
     try {
-      await axios.post(`${this.apiUrl}/auth/reset-password`, {
+      await axios.post(`${this.apiUrl}/v1/auth/verify-reset-code`, {
         email: data.email,
-        verificationCode: data.verificationCode,
-        password: data.password,
+        code: data.verificationCode,
+        newPassword: data.password,
+        confirmPassword: data.confirmPassword
       });
     } catch (error: any) {
       if (error.response) {
+        const { message, code } = error.response.data;
+
         throw new ApiError(
-          error.response.data.message || "Failed to reset password",
-          error.response.data.code || "unknown_error"
+          message || "Failed to reset password",
+          code || "unknown_error"
         );
       }
+
       throw new ApiError("Network error", "network_error");
     }
   }
 }
 
-export const authService = new AuthService();
+export const resetPasswordService = new ResetPasswordService();

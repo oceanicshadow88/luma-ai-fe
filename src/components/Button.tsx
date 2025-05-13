@@ -6,9 +6,10 @@ interface ButtonProps {
     disabled?: boolean;
     onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
     type?: "button" | "submit" | "reset";
+    className?: string;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button = ({
     children,
     variant = "primary",
     fullWidth = false,
@@ -16,7 +17,7 @@ export const Button: React.FC<ButtonProps> = ({
     disabled = false,
     onClick,
     type = "button"
-}) => {
+}: ButtonProps) => {
     const baseClasses = "px-4 py-2 rounded-md text-sm font-medium text-center";
 
     const variantClasses = {

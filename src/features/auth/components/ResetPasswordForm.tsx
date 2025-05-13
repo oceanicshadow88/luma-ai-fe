@@ -9,8 +9,18 @@ import { Button } from "@components/Button";
 import { FormError } from "@components/FormError";
 import { VerificationCodeInput } from "@components/VerificationCodeInput";
 import { ResetPasswordFormData } from "@features/auth/type";
+import { ApiError } from "@custom-types/ApiError";
+import { toast } from "react-hot-toast";
 
-export const ResetPasswordForm: React.FC = () => {
+
+function isRateLimitError(err: unknown): err is ApiError & { meta: { cooldownSeconds: number } } {
+  return (
+    err instanceof ApiError &&
+    typeof err.meta?.cooldownSeconds === "number"
+  );
+}
+
+export function ResetPasswordForm() {
   const navigate = useNavigate();
   const {
     register,
@@ -26,43 +36,66 @@ export const ResetPasswordForm: React.FC = () => {
     reValidateMode: "onBlur",
   });
 
-  const { resetPassword, sendVerificationCode, isCodeSending, countdown } = useResetPassword();
+  const {
+    resetPassword,
+    sendVerificationCode,
+    isCodeSending,
+    countdown,
+  } = useResetPassword();
 
   const onSubmit = async (data: ResetPasswordFormData) => {
     try {
       await resetPassword(data);
-      navigate("/auth/login");
-    } catch (error: any) {
-      if (error.code === "email_not_found") {
-        setError("email", { message: "This email is not registered" });
-      } else if (error.code === "invalid_code") {
-        setError("verificationCode", { message: "Invalid or expired code. Please request a new one." });
-      } else if (error.code === "passwords_mismatch") {
-        setError("confirmPassword", { message: "Passwords do not match" });
+      toast.success("Password reset successfully. Please log in again with new password.");
+
+      setTimeout(() => {
+        navigate("/auth/login");
+      }, 3000);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        const msg = error.message || "Failed to reset password.";
+        if (msg.includes("code")) {
+          setError("verificationCode", { message: msg });
+        } else if (msg.includes("match")) {
+          setError("confirmPassword", { message: msg });
+        } else if (msg.includes("password")) {
+          setError("password", { message: msg });
+        } else if (msg.includes("email")) {
+          setError("email", { message: msg });
+        } else {
+          setError("root", { message: msg });
+        }
       } else {
-        setError("root", { message: "Failed to reset password. Please try again. " });
+        setError("root", { message: "Unexpected error occurred." });
       }
     }
   };
 
   const handleSendCode = async () => {
     clearErrors("email");
-
-    const valid = await trigger("email");
-    if (!valid) {
-      return;
-    }
+    const isValid = await trigger("email");
+    if (!isValid) return;
 
     const email = getValues("email");
 
     try {
       await sendVerificationCode(email);
-      alert("Verification code sent successfully!")
-    } catch (error: any) {
-      if (error.code === "email_not_found") {
-        setError("email", { message: "This email is not registered." });
+      toast.success("Verification code sent successfully!");
+    } catch (error) {
+      if (isRateLimitError(error)) {
+        setError("verificationCode", {
+          message: `Too many requests. Try again in ${error.meta.cooldownSeconds} seconds.`,
+        });
+      } else if (error instanceof ApiError) {
+        if (error.message.includes("email")) {
+          setError("email", { message: error.message });
+        } else {
+          setError("verificationCode", { message: error.message });
+        }
       } else {
-        setError("verificationCode", { message: "Failed to send code. Please try again." });
+        setError("verificationCode", {
+          message: "Unexpected error. Please try again.",
+        });
       }
     }
   };
@@ -70,68 +103,52 @@ export const ResetPasswordForm: React.FC = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
       <div className="space-y-4 rounded-md shadow-sm">
-        <div>
-          <Input
-            id="email"
-            label="Email Address"
-            type="email"
-            placeholder="your@email.com"
-            {...register("email")}
-            error={errors.email?.message}
-          />
-        </div>
+        <Input
+          id="email"
+          label="Email Address"
+          type="email"
+          placeholder="your@email.com"
+          {...register("email")}
+          error={errors.email?.message}
+        />
 
-        <div>
-          <VerificationCodeInput
-            id="verificationCode"
-            label="Verification Code"
-            placeholder="Enter the 6-digit code"
-            buttonText={
-              countdown > 0 ? `Resend in ${countdown}s` : "Send Verification Code"
-            }
-            onButtonClick={handleSendCode}
-            isButtonDisabled={countdown > 0 || isCodeSending}
-            {...register("verificationCode")}
-            error={errors.verificationCode?.message}
-          />
-        </div>
+        <VerificationCodeInput
+          id="verificationCode"
+          label="Verification Code"
+          placeholder="Enter the 6-digit code"
+          buttonText={
+            countdown > 0 ? `Resend in ${countdown}s` : "Send Verification Code"
+          }
+          onButtonClick={handleSendCode}
+          isButtonDisabled={countdown > 0 || isCodeSending}
+          {...register("verificationCode")}
+          error={errors.verificationCode?.message}
+        />
 
-        <div>
-          <PasswordInput
-            id="password"
-            label="New Password"
-            placeholder="************"
-            {...register("password")}
-            error={errors.password?.message}
-          />
-        </div>
+        <PasswordInput
+          id="password"
+          label="New Password"
+          placeholder="************"
+          {...register("password")}
+          error={errors.password?.message}
+        />
 
-        <div>
-          <PasswordInput
-            id="confirmPassword"
-            label="Confirm New Password"
-            placeholder="************"
-            {...register("confirmPassword")}
-            error={errors.confirmPassword?.message}
-          />
-        </div>
+        <PasswordInput
+          id="confirmPassword"
+          label="Confirm New Password"
+          placeholder="************"
+          {...register("confirmPassword")}
+          error={errors.confirmPassword?.message}
+        />
       </div>
-
-
 
       {errors.root && <FormError message={errors.root.message} />}
 
       <div>
-        <Button
-          type="submit"
-          fullWidth
-          disabled={isSubmitting}
-          isLoading={isSubmitting}
-        >
+        <Button type="submit" fullWidth disabled={isSubmitting} isLoading={isSubmitting}>
           Reset Password
         </Button>
       </div>
-
     </form>
   );
-};  
+}

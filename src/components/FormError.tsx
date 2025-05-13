@@ -1,10 +1,9 @@
-import React from "react";
-
 interface FormErrorProps {
     message?: string;
+    className?: string;
 }
 
-export const FormError: React.FC<FormErrorProps> = ({ message }) => {
+export const FormError = ({ message }: FormErrorProps) => {
     if (!message) return null;
 
     return (

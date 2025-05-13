@@ -1,36 +1,46 @@
 import { useState } from "react";
 import { useCountdown } from "@hooks/useCountdown";
-import { authService } from "@features/auth/services/resetPasswordService";
-import { ResetPasswordFormData } from "@features/auth/type";
+import { resetPasswordService } from "@features/auth/services/resetPasswordService";
+import { ResetPasswordFormData} from "@features/auth/type";
+import { ApiError } from "@custom-types/ApiError";
 
 export const useResetPassword = () => {
-    const [isCodeSending, setIsCodeSending] = useState(false);
-    const { countdown, startCountdown } = useCountdown(60);
+  const [isCodeSending, setIsCodeSending] = useState(false);
+  const { countdown, startCountdown } = useCountdown(60);
 
-    const sendVerificationCode = async (email: string) => {
-        setIsCodeSending(true);
-        try {
-            await authService.sendVerificationCode(email);
-            startCountdown();
-        } catch (error) {
-            throw error;
-        } finally {
-            setIsCodeSending(false);
+  const sendVerificationCode = async (email: string): Promise<void> => {
+    setIsCodeSending(true);
+    try {
+        await resetPasswordService.sendVerificationCode(email);
+      startCountdown();
+    } catch (error) {
+      if (error instanceof ApiError) {
+        console.error("Error Code:", error.code);
+        if (error.meta?.cooldownSeconds) {
+          console.warn(`Please wait for ${error.meta.cooldownSeconds} seconds to try again`);
         }
-    };
+      }
+      throw error;
+    } finally {
+      setIsCodeSending(false);
+    }
+  };
 
-    const resetPassword = async (data: ResetPasswordFormData) => {
-        try {
-            await authService.resetPassword(data);
-        } catch (error) {
-            throw error;
-        }
-    };
+  const resetPassword = async (data: ResetPasswordFormData): Promise<void> => {
+    try {
+      await resetPasswordService.resetPassword(data);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        console.error("Reset error code:", error.code);
+      }
+      throw error;
+    }
+  };
 
-    return {
-        resetPassword,
-        sendVerificationCode,
-        isCodeSending,
-        countdown,
-    };
+  return {
+    resetPassword,
+    sendVerificationCode,
+    isCodeSending,
+    countdown,
+  };
 };

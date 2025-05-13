@@ -8,6 +8,8 @@ interface VerificationCodeInputProps
     buttonText: string;
     onButtonClick: () => void;
     isButtonDisabled?: boolean;
+    className?: string; 
+    inputClassName?: string;
 }
 
 export const VerificationCodeInput = forwardRef<

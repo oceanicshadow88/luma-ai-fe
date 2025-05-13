@@ -4,12 +4,26 @@ export interface ResetPasswordFormData {
   password: string;
   confirmPassword: string;
 }
-
 export interface VerificationCodeResponse {
-  success: boolean;
-  expiresAt: number;
+  success: true;
+  message: string;
+  code?: string; 
+  expiresAt: string; 
+}
+
+export interface VerificationCodeRateLimitError {
+  success: false;
+  message: string;
+  cooldownSeconds: number;
 }
 
 export interface ResetPasswordResponse {
-  success: boolean;
+  success: true;
+  message: string;
+}
+
+export interface ApiErrorResponse {
+  success: false;
+  message: string;
+  code?: string; 
 }

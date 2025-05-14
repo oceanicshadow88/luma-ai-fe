@@ -18,6 +18,7 @@
     /* Path mapping */
     "baseUrl": "src",
     "paths": {
+      "@/*": ["*"],
       "@services/*": ["services/*"],
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],

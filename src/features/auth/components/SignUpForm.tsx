@@ -51,17 +51,30 @@ const SignUpForm = () => {
             lastname: data.lastName,
             username: data.username,
             email: data.email,
-            password: data.password
+            password: data.password,
         };
 
         try {
             const result = await signup(adaptedData);
-            toast.success('Registration successful');
-            navigate('/dashboard');
+
+            if (result.orgNotFound) {
+                sessionStorage.setItem('signupEmail', data.email);
+                navigate('/auth/signup/institution');
+            } else {
+                toast.success('Registration successful');
+                navigate('/dashboard');
+            }
         } catch (error: any) {
             if (axios.isAxiosError(error)) {
-                const message = error.response?.data?.message || 'Sign up failed';
-                toast.error(message);
+                const message = error.response?.data?.message?.toLowerCase() || '';
+
+                if (message.includes('email')) {
+                    toast.error('Email already registered. Please log in');
+                } else if (message.includes('username')) {
+                    toast.error('Username already in use. Try a different one');
+                } else {
+                    toast.error(message || 'Sign up failed');
+                }
             } else {
                 toast.error('Unexpected error occurred');
             }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useCountdown } from "@hooks/useCountdown";
-import { resetPasswordService } from "@features/auth/services/resetPasswordService";
+import { resetPasswordService } from "api/auth/resetPassword";
 import { ResetPasswordFormData} from "@features/auth/type";
 import { ApiError } from "@custom-types/ApiError";
 

@@ -9,7 +9,7 @@ import { Button } from "@components/Button";
 import { FormError } from "@components/FormError";
 import { VerificationCodeInput } from "@components/VerificationCodeInput";
 import { ResetPasswordFormData } from "@features/auth/type";
-import { ApiError } from "@custom-types/ApiError";
+import { ApiError, ERROR_CODE_MAP, ResetPasswordField} from "@custom-types/ApiError";
 import { toast } from "react-hot-toast";
 
 
@@ -52,19 +52,9 @@ export function ResetPasswordForm() {
         navigate("/auth/login");
       }, 3000);
     } catch (error) {
-      if (error instanceof ApiError) {
-        const msg = error.message || "Failed to reset password.";
-        if (msg.includes("code")) {
-          setError("verificationCode", { message: msg });
-        } else if (msg.includes("match")) {
-          setError("confirmPassword", { message: msg });
-        } else if (msg.includes("password")) {
-          setError("password", { message: msg });
-        } else if (msg.includes("email")) {
-          setError("email", { message: msg });
-        } else {
-          setError("root", { message: msg });
-        }
+      if (error instanceof ApiError) { //Use error map to decide the error messages
+        const mapped = ERROR_CODE_MAP[error.code] || ERROR_CODE_MAP.UNKNOWN_ERROR;
+        setError(mapped.field as ResetPasswordField, { message: mapped.message });
       } else {
         setError("root", { message: "Unexpected error occurred." });
       }
@@ -80,18 +70,15 @@ export function ResetPasswordForm() {
 
     try {
       await sendVerificationCode(email);
-      toast.success("Verification code sent successfully!");
+      toast.success("If the email is valid, a verification code will be sent.");
     } catch (error) {
       if (isRateLimitError(error)) {
         setError("verificationCode", {
           message: `Too many requests. Try again in ${error.meta.cooldownSeconds} seconds.`,
         });
       } else if (error instanceof ApiError) {
-        if (error.message.includes("email")) {
-          setError("email", { message: error.message });
-        } else {
-          setError("verificationCode", { message: error.message });
-        }
+        const mapped = ERROR_CODE_MAP[error.code] || ERROR_CODE_MAP.UNKNOWN_ERROR;
+        setError(mapped.field as any, { message: mapped.message });
       } else {
         setError("verificationCode", {
           message: "Unexpected error. Please try again.",

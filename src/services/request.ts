@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const request = axios.create({
-  baseURL: '/api', // Adjust according to your actual API base path, e.g., '' or 'http://localhost:3000/api'
+  baseURL: 'http://localhost:8000/v1',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

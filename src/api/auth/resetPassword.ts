@@ -9,23 +9,21 @@ class ResetPasswordService {
       return res.data;
     } catch (error: any) {
       if (error.response) {
-        const { message, code, cooldownSeconds } = error.response.data;
+        const { message, cooldownSeconds } = error.response.data;
 
         if (error.response.status === 429 && cooldownSeconds !== undefined) {
           throw new ApiError(
             message || "Too many requests. Please try again later.",
-            code || "AUTH_RATE_LIMIT",
             { cooldownSeconds }
           );
         }
 
         throw new ApiError(
           message || "Failed to send verification code",
-          code || "UNKNOWN_ERROR"
         );
       }
 
-      throw new ApiError("Network error", "NETWORK_ERROR");
+      throw new ApiError("Network error");
     }
   }
 
@@ -39,14 +37,13 @@ class ResetPasswordService {
       });
     } catch (error: any) {
       if (error.response) {
-        const { message, code } = error.response.data;
+        const { message } = error.response.data;
         throw new ApiError(
           message || "Failed to reset password",
-          code || "UNKNOWN_ERROR"
         );
       }
 
-      throw new ApiError("Network error", "NETWORK_ERROR");
+      throw new ApiError("Network error");
     }
   }
 }

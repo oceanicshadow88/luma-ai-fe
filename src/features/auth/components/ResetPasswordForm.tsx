@@ -9,7 +9,7 @@ import { Button } from "@components/Button";
 import { FormError } from "@components/FormError";
 import { VerificationCodeInput } from "@components/VerificationCodeInput";
 import { ResetPasswordFormData } from "@features/auth/type";
-import { ApiError, ERROR_CODE_MAP, ResetPasswordField} from "@custom-types/ApiError";
+import { ApiError, ERROR_MESSAGE_MAP, UNKNOWN_ERROR, ResetPasswordField} from "@custom-types/ApiError";
 import { toast } from "react-hot-toast";
 
 
@@ -53,7 +53,7 @@ export function ResetPasswordForm() {
       }, 3000);
     } catch (error) {
       if (error instanceof ApiError) { //Use error map to decide the error messages
-        const mapped = ERROR_CODE_MAP[error.code] || ERROR_CODE_MAP.UNKNOWN_ERROR;
+        const mapped = ERROR_MESSAGE_MAP[error.message] || UNKNOWN_ERROR;
         setError(mapped.field as ResetPasswordField, { message: mapped.message });
       } else {
         setError("root", { message: "Unexpected error occurred." });
@@ -77,8 +77,8 @@ export function ResetPasswordForm() {
           message: `Too many requests. Try again in ${error.meta.cooldownSeconds} seconds.`,
         });
       } else if (error instanceof ApiError) {
-        const mapped = ERROR_CODE_MAP[error.code] || ERROR_CODE_MAP.UNKNOWN_ERROR;
-        setError(mapped.field as any, { message: mapped.message });
+        const mapped = ERROR_MESSAGE_MAP[error.message] || UNKNOWN_ERROR;
+        setError(mapped.field as ResetPasswordField, { message: mapped.message });
       } else {
         setError("verificationCode", {
           message: "Unexpected error. Please try again.",

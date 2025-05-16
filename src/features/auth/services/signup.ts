@@ -23,7 +23,7 @@ export const sendVerificationCode = async (email: string): Promise<boolean> => {
 // POST /auth/signup
 export const signup = async (data: SignupPayload): Promise<{ orgNotFound?: boolean }> => {
   try {
-    const response = await request.post('/auth/signup', data);
+    const response = await request.post('/v1/auth/signup', data);
     return response.data;
   } catch (error) {
     console.error('Signup failed', error);

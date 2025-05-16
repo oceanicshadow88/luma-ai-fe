@@ -19,4 +19,13 @@ export default defineConfig({
       '@api': path.resolve(__dirname, 'src/api'),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, '/v1'),
+      },
+    },
+  },
 });

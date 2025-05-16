@@ -52,6 +52,8 @@ const SignUpForm = () => {
             username: data.username,
             email: data.email,
             password: data.password,
+            confirmPassword: data.confirmPassword,
+            verifyCode: data.code
         };
 
         try {

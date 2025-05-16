@@ -68,5 +68,3 @@ export const PasswordInput = forwardRef<
     );
   }
 );
-
-PasswordInput.displayName = 'PasswordInput';

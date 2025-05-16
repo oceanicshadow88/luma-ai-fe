@@ -26,11 +26,11 @@ luma-ai-frontend/
    │  └─ [module]/[page-name]/     # Module-based route folders
    │     └─ page.tsx               # Page-level entry point (route-based)
    │
-   ├─ assets/                      # Static assets 
+   ├─ assets/                      # Static assets
    │
-   ├─ components/                  # Global reusable UI components 
+   ├─ components/                  # Global reusable UI components
    │
-   ├─ features/                    # Domain-specific modules 
+   ├─ features/                    # Domain-specific modules
    │  └─ [module]/                 # A single feature module
    │     ├─ components/            # Module-scoped UI components
    │     ├─ hooks/                 # Module-scoped React hooks
@@ -39,7 +39,7 @@ luma-ai-frontend/
    │
    ├─ api/                         # API layer: HTTP client & endpoint wrappers
    │  └─ [module]/                 # A single feature module
-   │      └─ [resource].ts         # Organized by resource 
+   │      └─ [resource].ts         # Organized by resource
    │
    ├─ hooks/                       # Global reusable hooks (cross-feature)
    │

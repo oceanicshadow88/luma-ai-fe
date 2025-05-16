@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { useCountdown } from "@hooks/useCountdown";
-import { resetPasswordService } from "@api/auth/resetPassword";
-import { ResetPasswordFormData } from "@features/auth/type";
-import { ApiError } from "@custom-types/ApiError";
+import { useState } from 'react';
+import { useCountdown } from '@hooks/useCountdown';
+import { resetPasswordService } from '@api/auth/resetPassword';
+import { ResetPasswordFormData } from '@features/auth/type';
+import { ApiError } from '@custom-types/ApiError';
 
 export const useResetPassword = () => {
   const [isCodeSending, setIsCodeSending] = useState(false);
@@ -15,7 +15,7 @@ export const useResetPassword = () => {
       startCountdown();
     } catch (error) {
       if (error instanceof ApiError) {
-        console.error("Error Message:", error.message);
+        console.error('Error Message:', error.message);
         if (error.meta?.cooldownSeconds) {
           console.warn(`Please wait for ${error.meta.cooldownSeconds} seconds to try again`);
         }
@@ -31,7 +31,7 @@ export const useResetPassword = () => {
       await resetPasswordService.resetPassword(data);
     } catch (error) {
       if (error instanceof ApiError) {
-        console.error("Reset password error:", error.message);
+        console.error('Reset password error:', error.message);
       }
       throw error;
     }

@@ -17,28 +17,29 @@ export const Button = ({
   disabled = false,
   onClick,
   type = 'button',
+  className = '',
 }: ButtonProps) => {
   const baseClasses = 'px-4 py-2 rounded-md text-sm font-medium text-center';
-
+  
   const variantClasses = {
     primary: 'bg-blue-600 text-white hover:bg-blue-700',
     secondary: 'bg-gray-600 text-white hover:bg-gray-700',
     outline: 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50',
   };
-
+  
   const widthClass = fullWidth ? 'w-full' : '';
   const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : '';
-
+  
   return (
     <button
       type={type}
-      className={`${baseClasses} ${variantClasses[variant]} ${widthClass} ${disabledClass}`}
+      className={`${baseClasses} ${variantClasses[variant]} ${widthClass} ${disabledClass} ${className}`}
       onClick={onClick}
       disabled={disabled || isLoading}
     >
       {isLoading && (
         <svg
-          className="animate-spin mr-2 h-4 w-4 text-white"
+          className="animate-spin mr-2 h-4 w-4 text-white inline-block"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"

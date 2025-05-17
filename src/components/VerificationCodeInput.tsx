@@ -67,4 +67,4 @@ export const VerificationCodeInput = forwardRef<
     </div>
   )
 );
-VerificationCodeInput.displayName = 'VerificationCodeInput';
+

@@ -12,3 +12,9 @@ export const resetPasswordSchema = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   });
+
+export const loginSchema = z
+  .object({
+    email: emailSchema,
+    password: z.string().min(8, 'Please lengthen this text to 8 characters or more'),
+  })

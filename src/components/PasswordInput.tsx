@@ -5,7 +5,7 @@ interface PasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   className?: string;
-  inputClassName?: string;
+  fieldClassName?: string;
 }
 
 export const PasswordInput = forwardRef<
@@ -18,7 +18,7 @@ export const PasswordInput = forwardRef<
       error,
       id,
       className,
-      inputClassName,
+      fieldClassName,
       placeholder,
       autoComplete,
       name,
@@ -53,7 +53,7 @@ export const PasswordInput = forwardRef<
             type={show ? 'text' : 'password'}
             className={`w-full px-3 py-2 border rounded-md ${
               error ? 'border-red-500' : 'border-gray-300'
-            } text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 ${inputClassName ?? ''}`}
+            } text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 ${fieldClassName ?? ''}`}
           />
           <button
             type="button"

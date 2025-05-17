@@ -7,8 +7,8 @@ export interface ResetPasswordFormData {
 export interface VerificationCodeResponse {
   success: true;
   message: string;
-  code?: string; 
-  expiresAt: string; 
+  code?: string;
+  expiresAt: string;
 }
 
 export interface VerificationCodeRateLimitError {
@@ -25,5 +25,5 @@ export interface ResetPasswordResponse {
 export interface ApiErrorResponse {
   success: false;
   message: string;
-  code?: string; 
+  code?: string;
 }

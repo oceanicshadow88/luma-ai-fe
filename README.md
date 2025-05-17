@@ -21,23 +21,34 @@ A modern frontend scaffold for the **Luma AI** platform, built with [Vite](https
 
 ```
 luma-ai-frontend/
-src/
-├─ app/                    # Routing
-│  └─ [module]/[page-name] # Domain module routes
-│     └─ page.tsx          # Unified page entry
-├─ assets/                 # Static assets
-├─ components/             # Reusable UI components
-├─ features/               # Domain modules
-│  └─ [module]/            # Module name
-│     ├─ components/       # Business-specific components 
-│     ├─ hooks/            # Module-level hooks 
-│     ├─ services/         # Module services 
-│     ├─ schemas.ts        # Module validation schemas
-│     └─ types.ts          # Module type definitions
-├─ hooks/                  # Global hooks 
-├─ services/               # Shared infrastructure services 
-├─ types/                  # Global shared types 
-└─ styles/                 # Global styles
+└─ src/
+   ├─ app/                         # App routing layer (uses file-based routing)
+   │  └─ [module]/[page-name]/     # Module-based route folders
+   │     └─ page.tsx               # Page-level entry point (route-based)
+   │
+   ├─ assets/                      # Static assets
+   │
+   ├─ components/                  # Global reusable UI components
+   │
+   ├─ features/                    # Domain-specific modules
+   │  └─ [module]/                 # A single feature module
+   │     ├─ components/            # Module-scoped UI components
+   │     ├─ hooks/                 # Module-scoped React hooks
+   │     ├─ schemas.ts             # Zod validation schemas for forms
+   │     └─ types.ts               # Module-specific types and interfaces
+   │
+   ├─ api/                         # API layer: HTTP client & endpoint wrappers
+   │  └─ [module]/                 # A single feature module
+   │      └─ [resource].ts         # Organized by resource
+   │
+   ├─ hooks/                       # Global reusable hooks (cross-feature)
+   │
+   ├─ services/                    # Infrastructure services (e.g., storage, auth client, i18n)
+   │
+   ├─ types/                       # Global shared types and interfaces
+   │
+   └─ styles/                      # Global styles, Tailwind config, variables, etc.
+
 ```
 
 ---

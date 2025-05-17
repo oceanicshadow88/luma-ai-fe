@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Toaster } from "react-hot-toast";
+import { Toaster } from 'react-hot-toast';
 import LoginPage from '@app/auth/login/page';
 import ResetPasswordPage from '@app/auth/reset-password/page';
 import LandingPage from '@app/landing/page';

@@ -1,4 +1,4 @@
 export default {
-  content: ["./src/**/*.{html,js}"],
+  content: ['./src/**/*.{html,js}'],
   plugins: [],
-}
+};

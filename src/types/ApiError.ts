@@ -17,46 +17,15 @@ export class ApiError extends Error {
   }
 }
 
-//Use message from backend response to map frontend error massage
-export const ERROR_MESSAGE_MAP: Record<string, { field: ResetPasswordField; message: string }> = {
-  'Please enter your email address': {
-    field: 'email',
-    message: 'Please enter your email address',
-  },
-  'Sorry, please type a valid email': {
-    field: 'email',
-    message: 'Sorry, please type a valid email',
-  },
-  'Too many requests. Please try again later.': {
-    field: 'verificationCode',
-    message: 'Too many requests. Please try again later.',
-  },
-  'Please enter the verification code': {
-    field: 'verificationCode',
-    message: 'Please enter the verification code',
-  },
-  'Invalid or expired code. Please request a new one.': {
-    field: 'verificationCode',
-    message: 'Invalid or expired code. Please request a new one.',
-  },
-  'Too many incorrect attempts. Please request a new verification code.': {
-    field: 'verificationCode',
-    message: 'Too many incorrect attempts. Please request a new verification code.',
-  },
-  'Please enter a new password': {
-    field: 'password',
-    message: 'Please enter your new password',
-  },
-  'Password must be 8-20 characters and contain at least one uppercase letter, lowercase letter, number and special character':
-    {
-      field: 'password',
-      message:
-        'Password must be 8-20 characters and contain at least one uppercase letter, lowercase letter, number and special character',
-    },
-  'Passwords do not match': {
-    field: 'confirmPassword',
-    message: 'Passwords do not match',
-  },
+export const ERROR_MESSAGE_MAP: Record<string, ResetPasswordField> = {
+  'Please enter your email address': 'email',
+  'Too many requests. Please try again later.': 'verificationCode',
+  'Please enter the verification code': 'verificationCode',
+  'Invalid or expired code. Please request a new one.': 'verificationCode',
+  'Too many incorrect attempts. Please request a new verification code.': 'verificationCode',
+  'Please enter a new password': 'password',
+  'Password must be 8-20 characters and contain at least one uppercase letter, lowercase letter, number and special character': 'password',
+  'Passwords do not match': 'confirmPassword',
 };
 
 export const UNKNOWN_ERROR = {

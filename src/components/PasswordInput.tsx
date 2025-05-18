@@ -1,4 +1,4 @@
-import { forwardRef, InputHTMLAttributes, useState } from 'react';
+import { forwardRef, useState } from 'react';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 interface PasswordInputProps {

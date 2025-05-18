@@ -28,22 +28,23 @@ export function LoginForm() {
     try {
       await login(data);
       toast.success('Login successful!');
-      setTimeout(() => {
         navigate('/dashboard');
-      }, 3000);
     } catch (error) {
       setError('root', { message: 'Invalid email or password.' });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-sm space-y-8 mt-8 mb-8">
       <Input
         id="email"
         label="Email"
         type="email"
         placeholder="your@email.com"
         {...register('email')}
+        fieldClassName="mb-4"
+        labelClassName="text-left block"  
+        inputClassName="text-left bg-gray-100 border-b border-gray-300 rounded-none focus:border-blue-500 focus:ring-0 px-0 py-3 h-12" 
         error={errors.email?.message}
       />
 
@@ -52,13 +53,23 @@ export function LoginForm() {
         label="Password"
         placeholder="********"
         {...register('password')}
+        fieldClassName="mb-4"
+        labelClassName="text-left block"  
+        inputClassName="text-left  bg-gray-100 border-b border-gray-300 rounded-none focus:border-blue-500 focus:ring-0 px-0 py-3 h-12" 
         error={errors.password?.message}
       />
 
       {errors.root && <FormError message={errors.root.message} />}
 
-      <Button type="submit" fullWidth disabled={isSubmitting || isLoggingIn} isLoading={isSubmitting || isLoggingIn}>
-        Log In
+      <Button 
+        type="submit" 
+        variant="primary"
+        className="!bg-black hover:!bg-gray-600 !text-white mt-4 py-3"
+        fullWidth 
+        disabled={isSubmitting || isLoggingIn} 
+        isLoading={isSubmitting || isLoggingIn}
+      >
+        CONTINUE
       </Button>
     </form>
   );

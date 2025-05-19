@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import InstitutionPage from '@/app/auth/signup/institution';
 import { Toaster } from 'react-hot-toast';
 import SignUpPage from '@app/auth/signup/page';
 import LoginPage from '@app/auth/login/page';
@@ -34,6 +35,7 @@ const App = () => {
         <Route path="/auth/login" element={<LoginPage />} />
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/auth/signup/institution" element={<InstitutionPage />} />
       </Routes>
     </BrowserRouter>
   );

@@ -8,3 +8,11 @@ export type SignUpInput = {
   confirmPassword: string;
   agreeTerms: boolean;
 };
+
+// Used in POST /api/companies
+export type InstitutionPayload = {
+  name: string;
+  slug: string;
+  emailDomain: string;
+  logo?: File;
+};

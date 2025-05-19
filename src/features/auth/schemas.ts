@@ -28,3 +28,15 @@ export const signupSchema = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   });
+
+  export const institutionSchema = z.object({
+  name: z
+    .string()
+    .min(2, 'Organisation name must be at least 2 characters')
+    .max(100, 'Organisation name too long'),
+  slug: z
+    .string()
+    .min(1, 'Slug cannot be empty')
+    .max(100, 'Slug too long')
+    .regex(/^[a-z0-9-]+$/, 'Slug must only contain lowercase letters, numbers, and hyphens'),
+});

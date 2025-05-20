@@ -18,12 +18,15 @@
     /* Path mapping */
     "baseUrl": "src",
     "paths": {
+      "@/*": ["*"],
+      "@api/*": ["api/*"], 
       "@services/*": ["services/*"],
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
       "@features/*": ["features/*"],
       "@types/*": ["types/*"],
-      "@assets/*": ["assets/*"],      
+      "@assets/*": ["assets/*"],
+      "@custom-types/*": ["types/*"],      
       "@styles/*": ["styles/*"]
     },
 

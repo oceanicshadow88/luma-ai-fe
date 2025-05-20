@@ -3,24 +3,15 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signupSchema } from '../schemas';
 import { z } from 'zod';
-import { sendVerificationCode, signup } from '../services/signup';
-import useSendCode from '../hooks/useSendCode';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
-import { toast } from 'react-hot-toast';
-import axios from 'axios';
+import toast from 'react-hot-toast';
+import { useSignUp } from '@/features/auth/hooks/useSignUp';
+import { useSendCode } from '@/features/auth/hooks/useSendCode';
+import { SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_SIGNUP_ERROR } from '@/types/ApiError';
 
-const passwordChecks = [
-    { label: 'Use 8 or more characters, less than 20', test: (pw: string) => pw.length >= 8 && pw.length <= 20 },
-    { label: 'One uppercase letter', test: (pw: string) => /[A-Z]/.test(pw) },
-    { label: 'One lowercase letter', test: (pw: string) => /[a-z]/.test(pw) },
-    { label: 'One number', test: (pw: string) => /[0-9]/.test(pw) },
-    { label: 'One special character', test: (pw: string) => /[^A-Za-z0-9]/.test(pw) },
-];
-
-const SignUpForm = () => {
+export default function SignUpForm() {
     const navigate = useNavigate();
-    const [emailSent, setEmailSent] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -28,7 +19,7 @@ const SignUpForm = () => {
         register,
         handleSubmit,
         watch,
-        getValues,
+        setError,
         formState: { errors },
     } = useForm<z.infer<typeof signupSchema>>({
         resolver: zodResolver(signupSchema),
@@ -37,55 +28,55 @@ const SignUpForm = () => {
 
     const email = watch('email');
     const password = watch('password');
-    const { countdown, triggerSendCode, canSend } = useSendCode();
+    const { signup, isSigningUp } = useSignUp();
+    const { sendCode, countdown, canSend } = useSendCode();
+
+    const passwordChecks = [
+        { label: 'Use 8 or more characters, less than 20', test: (pw: string) => pw.length >= 8 && pw.length <= 20 },
+        { label: 'One uppercase letter', test: (pw: string) => /[A-Z]/.test(pw) },
+        { label: 'One lowercase letter', test: (pw: string) => /[a-z]/.test(pw) },
+        { label: 'One number', test: (pw: string) => /[0-9]/.test(pw) },
+        { label: 'One special character', test: (pw: string) => /[^A-Za-z0-9]/.test(pw) },
+    ];
 
     const handleSendCode = async () => {
         if (!email || !canSend) return;
-        const success = await sendVerificationCode(email);
-        if (success) setEmailSent(true);
+        try {
+            await sendCode(email);
+            toast.success('Verification code sent');
+        } catch (error: any) {
+            const field = SIGNUP_ERROR_MESSAGE_MAP[error.message] || UNKNOWN_SIGNUP_ERROR.field;
+            const message = error.message || UNKNOWN_SIGNUP_ERROR.message;
+            setError(field, { message });
+            toast.error(message);
+        }
     };
 
     const onSubmit = async (data: z.infer<typeof signupSchema>) => {
-        const adaptedData = {
+        const payload = {
             firstname: data.firstName,
             lastname: data.lastName,
             username: data.username,
             email: data.email,
             password: data.password,
             confirmPassword: data.confirmPassword,
-            verifyCode: data.code
+            verifyCode: data.code,
         };
 
         try {
-            const result = await signup(adaptedData);
-
-            if (result.orgNotFound) {
-                sessionStorage.setItem('signupEmail', data.email);
-                navigate('/auth/signup/institution');
-            } else {
-                toast.success('Registration successful');
-                navigate('/dashboard');
-            }
+            await signup(payload);
+            toast.success('Signup success!');
+            navigate('/dashboard');
         } catch (error: any) {
-            if (axios.isAxiosError(error)) {
-                const message = error.response?.data?.message?.toLowerCase() || '';
-
-                if (message.includes('email')) {
-                    toast.error('Email already registered. Please log in');
-                } else if (message.includes('username')) {
-                    toast.error('Username already in use. Try a different one');
-                } else {
-                    toast.error(message || 'Sign up failed');
-                }
-            } else {
-                toast.error('Unexpected error occurred');
-            }
+            const field = SIGNUP_ERROR_MESSAGE_MAP[error.message] || UNKNOWN_SIGNUP_ERROR.field;
+            const message = error.message || UNKNOWN_SIGNUP_ERROR.message;
+            setError(field, { message });
+            toast.error(message);
         }
     };
 
-
     return (
-        <form className="w-full max-w-md bg-white p-8 rounded-lg shadow-md space-y-4" onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md bg-white p-8 rounded-lg shadow-md space-y-4">
             <div>
                 <label className="block text-sm font-medium text-gray-700">First Name</label>
                 <input className="mt-1 block w-full border border-gray-300 rounded px-3 py-2" {...register('firstName')} />
@@ -115,7 +106,12 @@ const SignUpForm = () => {
                 <label className="block text-sm font-medium text-gray-700">Verification Code</label>
                 <div className="mt-1 flex gap-2">
                     <input className="flex-1 border border-gray-300 rounded px-3 py-2" {...register('code')} />
-                    <button type="button" className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50" onClick={handleSendCode} disabled={!canSend}>
+                    <button
+                        type="button"
+                        className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+                        onClick={handleSendCode}
+                        disabled={!canSend}
+                    >
                         {countdown > 0 ? `Resend in ${countdown}s` : 'Send Code'}
                     </button>
                 </div>
@@ -161,7 +157,9 @@ const SignUpForm = () => {
                     >
                         {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
-                    {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
+                    {errors.confirmPassword && (
+                        <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
+                    )}
                 </div>
             </div>
 
@@ -171,9 +169,13 @@ const SignUpForm = () => {
             </div>
             {errors.agreeTerms && <p className="text-red-500 text-sm mt-1">{errors.agreeTerms.message}</p>}
 
-            <button type="submit" className="w-full py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">Sign Up</button>
+            <button
+                type="submit"
+                disabled={isSigningUp}
+                className="w-full py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition disabled:opacity-50"
+            >
+                {isSigningUp ? 'Signing up...' : 'Sign Up'}
+            </button>
         </form>
     );
-};
-
-export default SignUpForm;
+}

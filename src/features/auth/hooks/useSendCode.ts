@@ -1,36 +1,46 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { signupService } from '@api/auth/signup';
+import { ApiError } from '@custom-types/ApiError';
 
-const COOLDOWN = 60;
-
-const useSendCode = () => {
+export function useSendCode() {
+  const [isSendingCode, setIsSendingCode] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [canSend, setCanSend] = useState(true);
 
-  const triggerSendCode = () => {
+  const sendCode = async (email: string): Promise<void> => {
     if (!canSend) return;
-    setCountdown(COOLDOWN);
-    setCanSend(false);
+
+    setIsSendingCode(true);
+
+    try {
+      await signupService.sendCode(email);
+      setCanSend(false);
+      setCountdown(60);
+
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            setCanSend(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw new ApiError('Failed to send verification code');
+    } finally {
+      setIsSendingCode(false);
+    }
   };
 
-  useEffect(() => {
-    if (countdown === 0) {
-      setCanSend(true);
-      return;
-    }
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [countdown]);
-
-  return { countdown, canSend, triggerSendCode };
-};
-
-export default useSendCode;
+  return {
+    sendCode,
+    countdown,
+    canSend,
+    isSendingCode,
+  };
+}

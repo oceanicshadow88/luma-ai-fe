@@ -16,3 +16,13 @@ export type InstitutionPayload = {
   emailDomain: string;
   logo?: File;
 };
+
+export type SignupFormData = {
+  firstname: string;
+  lastname: string;
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword?: string; 
+  verifyCode: string;
+};

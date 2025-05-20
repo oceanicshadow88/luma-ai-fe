@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SignUpPage from '@/app/auth/signup/page';
-import InstitutionPage from '@/app/auth/signup/institution';
+import InstitutionPage from '@/app/auth/institution/page';
 import { Toaster } from 'react-hot-toast';
 
 function App() {

@@ -8,6 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      '@api': path.resolve(__dirname, 'src/api'),  
       '@services': path.resolve(__dirname, 'src/services'),
       '@components': path.resolve(__dirname, 'src/components'),
       '@hooks': path.resolve(__dirname, 'src/hooks'),
@@ -15,6 +16,7 @@ export default defineConfig({
       '@types': path.resolve(__dirname, 'src/types'),
       '@assets': path.resolve(__dirname, 'src/assets'),
       '@styles': path.resolve(__dirname, 'src/styles'),
+      '@custom-types': path.resolve(__dirname, 'src/types'),
     },
   },
   server: {

@@ -7,9 +7,10 @@ interface InputProps {
   type?: string;                
   placeholder?: string;         
   name?: string;                
-  onChange?: any;                
-  onBlur?: any;                  
-  ref?: any;                     
+
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+
   fieldClassName?: string;       
   labelClassName?: string;       
   inputClassName?: string;       
@@ -17,20 +18,23 @@ interface InputProps {
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({
-    id,
-    label,
-    error,
-    type = 'text',
-    placeholder,
-    name,
-    onChange,
-    onBlur,
-    fieldClassName = '',
-    labelClassName = '',
-    inputClassName = '',
-    errorClassName = '',
-  }, ref) => (
+  (
+    {
+      id,
+      label,
+      error,
+      type = 'text',
+      placeholder,
+      name,
+      onChange,
+      onBlur,
+      fieldClassName = '',
+      labelClassName = '',
+      inputClassName = '',
+      errorClassName = '',
+    },
+    ref
+  ) => (
     <div className={`w-full ${fieldClassName}`}>
       {label && (
         <label

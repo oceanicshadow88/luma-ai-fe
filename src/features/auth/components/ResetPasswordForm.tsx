@@ -3,11 +3,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { resetPasswordSchema } from '../schema';
 import { useResetPassword } from '../hooks/useResetPassword';
-import { Input } from '@components/Input';
-import { PasswordInput } from '@components/PasswordInput';
-import { Button } from '@components/Button';
-import { FormError } from '@components/FormError';
-import { VerificationCodeInput } from '@components/VerificationCodeInput';
+import { Input } from '@components/forms/Input';
+import { PasswordInput } from '@components/forms/PasswordInput';
+import { Button } from '@components/buttons/Button';
+import { FormError } from '@components/forms/FormError';
+import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { ResetPasswordFormData } from '@features/auth/type';
 import {
   ApiError,

@@ -1,4 +1,4 @@
-import * as z from 'zod';
+import * as z from 'zod'; // TypeScript-first schema validation library with static type inference. Reference: https://github.com/colinhacks/zod
 import { emailSchema, verificationCodeSchema, passwordSchema } from '@schema/validation';
 
 export const resetPasswordSchema = z

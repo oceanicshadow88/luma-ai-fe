@@ -5,12 +5,12 @@ interface PasswordInputProps {
   label?: string;
   error?: string;
   id?: string;
-  fieldClassName?: string;       // Styles for outer container (wraps all elements)
-  labelClassName?: string;       // Styles for label element
-  inputClassName?: string;       // Styles for input element
-  errorClassName?: string;       // Styles for error message
-  toggleButtonClassName?: string; // Styles for toggle visibility button
-  iconClassName?: string;        // Styles for eye icon
+  fieldClassName?: string;       
+  labelClassName?: string;       
+  inputClassName?: string;       
+  errorClassName?: string;      
+  toggleButtonClassName?: string; 
+  iconClassName?: string;      
   placeholder?: string;
   autoComplete?: string;
   name?: string;

@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { Button } from '@components/Button';
+import { Button } from '@components/buttons/Button';
 
 interface VerificationCodeInputProps {
   label?: string;
@@ -8,12 +8,12 @@ interface VerificationCodeInputProps {
   buttonText: string;
   onButtonClick: () => void;
   isButtonDisabled?: boolean;
-  fieldClassName?: string;       // Styles for outer container (wraps all elements)
-  labelClassName?: string;       // Styles for label element
-  inputClassName?: string;       // Styles for input element
-  buttonClassName?: string;      // Styles for button element
-  errorClassName?: string;       // Styles for error message
-  flexContainerClassName?: string; // Styles for the flex container with input and button
+  fieldClassName?: string;       
+  labelClassName?: string;       
+  inputClassName?: string;     
+  buttonClassName?: string;     
+  errorClassName?: string;       
+  containerClassName?: string; 
   placeholder?: string;
   autoComplete?: string;
   name?: string;
@@ -40,7 +40,7 @@ export const VerificationCodeInput = forwardRef<
       inputClassName = '',
       buttonClassName = '',
       errorClassName = '',
-      flexContainerClassName = '',
+      containerClassName = '',
       placeholder,
       autoComplete,
       name,
@@ -60,7 +60,7 @@ export const VerificationCodeInput = forwardRef<
           {label}
         </label>
       )}
-      <div className={`flex gap-2 ${flexContainerClassName}`}>
+      <div className={`flex gap-2 ${containerClassName}`}>
         <input
           id={id}
           ref={ref}

@@ -1,24 +1,35 @@
-import { forwardRef, InputHTMLAttributes } from 'react';
+import { forwardRef } from 'react';
 
-interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'className'> {
-  label?: string;                // Input field label
-  error?: string;                // Error message text
-  fieldClassName?: string;       // Styles for outer container (wraps all elements)
-  labelClassName?: string;       // Styles for label element
-  inputClassName?: string;       // Styles for input element
-  errorClassName?: string;       // Styles for error message
+interface InputProps {
+  id: string;                    
+  label?: string;                
+  error?: string;                
+  type?: string;                
+  placeholder?: string;         
+  name?: string;                
+  onChange?: any;                
+  onBlur?: any;                  
+  ref?: any;                     
+  fieldClassName?: string;       
+  labelClassName?: string;       
+  inputClassName?: string;       
+  errorClassName?: string;       
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({
+    id,
     label,
     error,
-    id,
+    type = 'text',
+    placeholder,
+    name,
+    onChange,
+    onBlur,
     fieldClassName = '',
     labelClassName = '',
     inputClassName = '',
     errorClassName = '',
-    ...props
   }, ref) => (
     <div className={`w-full ${fieldClassName}`}>
       {label && (
@@ -29,16 +40,20 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           {label}
         </label>
       )}
-
+      
       <input
-        {...props}
         id={id}
+        name={name}
         ref={ref}
+        type={type}
+        placeholder={placeholder}
+        onChange={onChange}
+        onBlur={onBlur}
         className={`w-full px-3 py-3 border rounded-md
           ${error ? 'border-red-500' : 'border-gray-300'}
           text-gray-900 placeholder-gray-500
           focus:outline-none focus:border-blue-500
-          ${inputClassName}`}  
+          ${inputClassName}`}
       />
 
       {error && (

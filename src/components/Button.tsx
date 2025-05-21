@@ -19,10 +19,10 @@ export const Button = ({
   type = 'button',
   className = '',
 }: ButtonProps) => {
-  const baseClasses = 'px-4 py-2 rounded-md text-sm font-medium text-center';
+  const baseClasses = 'px-4 py-3  mt-4 text-sm font-medium text-center';
   
   const variantClasses = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700',
+    primary: 'bg-blue-600 text-white hover:bg-blue-800',
     secondary: 'bg-gray-600 text-white hover:bg-gray-700',
     outline: 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50',
   };

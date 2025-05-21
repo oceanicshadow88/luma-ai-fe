@@ -8,12 +8,12 @@ interface VerificationCodeInputProps {
   buttonText: string;
   onButtonClick: () => void;
   isButtonDisabled?: boolean;
-  fieldClassName?: string;       // Styles for outer container (wraps all elements)
-  labelClassName?: string;       // Styles for label element
-  inputClassName?: string;       // Styles for input element
-  buttonClassName?: string;      // Styles for button element
-  errorClassName?: string;       // Styles for error message
-  flexContainerClassName?: string; // Styles for the flex container with input and button
+  fieldClassName?: string;       
+  labelClassName?: string;       
+  inputClassName?: string;       
+  buttonClassName?: string;      
+  errorClassName?: string;       
+  flexContainerClassName?: string; 
   placeholder?: string;
   autoComplete?: string;
   name?: string;
@@ -71,9 +71,9 @@ export const VerificationCodeInput = forwardRef<
           disabled={disabled}
           placeholder={placeholder}
           autoComplete={autoComplete}
-          className={`w-full px-3 py-2 border rounded-md ${
+          className={`w-full px-3 py-2 border ${
             error ? 'border-red-500' : 'border-gray-300'
-          } text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 ${inputClassName}`}
+          } text-gray-900 placeholder-gray-500 focus:placeholder-transparent focus:outline-none focus:border-blue-500 ${inputClassName}`}
         />
         <Button 
           type="button" 

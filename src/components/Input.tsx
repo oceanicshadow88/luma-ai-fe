@@ -1,44 +1,49 @@
 import { forwardRef, InputHTMLAttributes } from 'react';
 
-interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'className'> {
-  label?: string;                // Input field label
-  error?: string;                // Error message text
-  fieldClassName?: string;       // Styles for outer container (wraps all elements)
-  labelClassName?: string;       // Styles for label element
-  inputClassName?: string;       // Styles for input element
-  errorClassName?: string;       // Styles for error message
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+  fieldClassName?: string;
+  labelClassName?: string;
+  inputClassName?: string;
+  errorClassName?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({
-    label,
-    error,
-    id,
-    fieldClassName = '',
-    labelClassName = '',
-    inputClassName = '',
-    errorClassName = '',
-    ...props
-  }, ref) => (
-    <div className={`w-full ${fieldClassName}`}>
+  (
+    {
+      id,
+      type = 'text',
+      placeholder,
+      label,
+      error,
+      fieldClassName = 'mb-6',
+      labelClassName = 'text-left block text-gray-600 mb-1',
+      inputClassName = 'border focus:outline-none focus:placeholder-transparent rounded-3xl text-left border-gray-300 focus:border-blue-700 focus:ring-0 px-4 h-12 leading-normal pl-[20px]',
+      errorClassName = '',
+      ...rest
+    },
+    ref
+  ) => (
+    <div className={`w-full ${fieldClassName} group`}>
       {label && (
         <label
           htmlFor={id}
-          className={`block text-sm text-gray-700 mb-1 ${labelClassName}`}
+          className={`block text-sm group-focus-within:text-blue-700 ${labelClassName} ${
+            error ? 'text-red-600' : ''
+          }`}
         >
           {label}
         </label>
       )}
 
       <input
-        {...props}
         id={id}
+        type={type}
+        placeholder={placeholder}
         ref={ref}
-        className={`w-full px-3 py-3 border rounded-md
-          ${error ? 'border-red-500' : 'border-gray-300'}
-          text-gray-900 placeholder-gray-500
-          focus:outline-none focus:border-blue-500
-          ${inputClassName}`}  
+        className={`w-full ${inputClassName} ${error ? 'border-red-600' : ''}`}
+        {...rest}
       />
 
       {error && (

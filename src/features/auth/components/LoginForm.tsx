@@ -3,10 +3,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '../schema';
 import { LoginFormData } from '../type';
 import { useLogin } from '../hooks/useLogin';
-import { Input } from '@components/Input';
-import { PasswordInput } from '@components/PasswordInput';
-import { Button } from '@components/Button';
-import { FormError } from '@components/FormError';
+import { Input } from '@components/forms/Input';
+import { PasswordInput } from '@components/forms/PasswordInput';
+import { Button } from '@components/buttons/Button';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 
@@ -16,7 +15,6 @@ export function LoginForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setError,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: 'onBlur',
@@ -32,7 +30,7 @@ export function LoginForm() {
         navigate('/dashboard');
       }, 3000);
     } catch (error) {
-      setError('root', { message: 'Invalid email or password.' });
+      toast.error('Invalid email or password.');
     }
   };
 
@@ -40,9 +38,9 @@ export function LoginForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-8">
       <Input
         id="email"
-        label="Email"
+        label="Work Email"
         type="email"
-        placeholder="your@email.com"
+        placeholder="e.g. xxx@college.edu.au"
         {...register('email')}
         error={errors.email?.message}
       />
@@ -50,14 +48,19 @@ export function LoginForm() {
       <PasswordInput
         id="password"
         label="Password"
-        placeholder="********"
-        {...register('password')}
+        placeholder="your password"
+        {...register('password')} 
         error={errors.password?.message}
       />
 
-      {errors.root && <FormError message={errors.root.message} />}
-
-      <Button type="submit" fullWidth disabled={isSubmitting || isLoggingIn} isLoading={isSubmitting || isLoggingIn}>
+      <Button 
+        type="submit" 
+        variant="primary"
+        className="rounded-3xl"
+        fullWidth 
+        disabled={isSubmitting || isLoggingIn} 
+        isLoading={isSubmitting || isLoggingIn}
+      >
         Log In
       </Button>
     </form>

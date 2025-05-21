@@ -1,12 +1,19 @@
-import { forwardRef, InputHTMLAttributes } from 'react';
+import { forwardRef } from 'react';
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface InputProps {
+  id: string;
+  type?: string;
+  placeholder?: string;
   label?: string;
   error?: string;
   fieldClassName?: string;
   labelClassName?: string;
   inputClassName?: string;
   errorClassName?: string;
+  name: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
+  ref: React.Ref<HTMLInputElement>;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -17,11 +24,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       placeholder,
       label,
       error,
+      name,
+      onChange,
+      onBlur,
       fieldClassName = 'mb-6',
       labelClassName = 'text-left block text-gray-600 mb-1',
       inputClassName = 'border focus:outline-none focus:placeholder-transparent rounded-3xl text-left border-gray-300 focus:border-blue-700 focus:ring-0 px-4 h-12 leading-normal pl-[20px]',
       errorClassName = '',
-      ...rest
     },
     ref
   ) => (
@@ -39,11 +48,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
       <input
         id={id}
+        name={name}
         type={type}
         placeholder={placeholder}
         ref={ref}
+        onChange={onChange}
+        onBlur={onBlur}
         className={`w-full ${inputClassName} ${error ? 'border-red-600' : ''}`}
-        {...rest}
       />
 
       {error && (

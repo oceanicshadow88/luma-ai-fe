@@ -12,7 +12,6 @@ class ResetPasswordService {
       email: data.email,
       code: data.verificationCode,
       newPassword: data.password,
-      confirmPassword: data.confirmPassword,
     });
   }
 }

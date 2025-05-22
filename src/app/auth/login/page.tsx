@@ -5,11 +5,8 @@ import { LoginForm } from "@features/auth/components/LoginForm";
 
 const LoginPage = () => {
     return (
-        // Wrapper container
         <div className="flex flex-col lg:flex-row w-full min-h-screen">
-            {/* Left container */}
-            <div className="w-full lg:w-3/5 p-8 flex flex-col justify-center items-start bg-white">
-                {/* Logo and title section */}
+            <div className="w-full lg:w-3/5 pl-30 p-8 flex flex-col justify-center items-start bg-white">
                 <div className="mb-8 flex flex-row items-center gap-2">
                     <img src={title} alt="title" className="h-8" />
                 </div>
@@ -18,10 +15,11 @@ const LoginPage = () => {
                     <h1 className="text-1xl font-semibold text-gray-800">Log in to Luma AI Enterprise Version</h1>
                 </div>
 
-                {/* Login Form */}
-                <LoginForm></LoginForm>
+                <div className="w-full lg:w-5/6 max-w-md" >
+                    <LoginForm />
+                </div>
 
-                <div className="w-full lg:w-3/5 ml-[26px] items-center text-sm">
+                <div className="p-6 ml-7 items-center text-sm">
                     <span className="text-gray-600">Forgot Password?</span>
                     <Link to="/auth/reset-password" className="ml-1 text-blue-600 font-medium hover:text-blue-800 hover:underline">
                         RESET YOUR PASSWORD
@@ -29,7 +27,6 @@ const LoginPage = () => {
                 </div>
             </div>
 
-            {/* Right container with background pattern */}
             <div className="hidden lg:block w-full lg:w-2/5">
                 <img
                     src={background}

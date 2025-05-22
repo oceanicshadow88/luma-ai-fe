@@ -44,7 +44,7 @@ export const INSTITUTION_ERROR_MAP: Record<string, keyof InstitutionPayload | 'r
   'Organisation name must be at least 2 characters': 'name',
 };
 
-export const UNKNOWN_ERROR = {
-  field: 'root' as keyof any,
+export const UNKNOWN_ERROR: { field: string; message: string } = {
+  field: 'root',
   message: 'Unexpected error occurred. Please try again.',
 };

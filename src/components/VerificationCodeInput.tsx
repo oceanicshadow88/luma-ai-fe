@@ -51,11 +51,13 @@ export const VerificationCodeInput = forwardRef<
     },
     ref
   ) => (
-    <div className={`w-full ${fieldClassName}`}>
+    <div className={`w-full ${fieldClassName} group`}>
       {label && (
         <label 
           htmlFor={id} 
-          className={`text-left block text-sm text-gray-700 mb-1 ${labelClassName}`}
+          className={`text-left block text-sm text-gray-700 mb-1 group-focus-within:text-blue-600 ${labelClassName} ${
+            error ? 'text-red-600' : ''
+          }`}
         >
           {label}
         </label>

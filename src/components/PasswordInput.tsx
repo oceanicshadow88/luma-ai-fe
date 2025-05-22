@@ -49,7 +49,9 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         {label && (
           <label
             htmlFor={id}
-            className={`block text-sm ${labelClassName}`}
+            className={`block text-sm group-focus-within:text-blue-600 ${labelClassName} ${
+              error ? 'text-red-600' : ''
+            }`}
           >
             {label}
           </label>

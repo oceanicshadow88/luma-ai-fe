@@ -19,16 +19,16 @@ export const Button = ({
   type = 'button',
   className = '',
 }: ButtonProps) => {
-  const baseClasses = 'px-4 py-3  mt-4 text-sm font-medium text-center';
+  const baseClasses = 'h-11 rounded-3xl px-4 py-3 text-sm font-medium text-center';
   
   const variantClasses = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-800',
-    secondary: 'bg-gray-600 text-white hover:bg-gray-700',
+    primary: 'bg-blue-600 text-white hover:bg-blue-400',
+    secondary: 'bg-gray-900 text-white hover:bg-gray-700',
     outline: 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50',
   };
   
   const widthClass = fullWidth ? 'w-full' : '';
-  const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : '';
+  const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
   
   return (
     <button

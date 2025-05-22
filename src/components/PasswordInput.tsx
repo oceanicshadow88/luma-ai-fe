@@ -28,11 +28,11 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
       id,
       fieldClassName = 'mb-6',
       labelClassName = 'text-left block text-gray-600 mb-1',
-      inputClassName = 'border focus:outline-none rounded-3xl text-left border-gray-300 focus:border-blue-700 focus:ring-0 px-4 h-12 leading-normal pl-[20px] pr-10',
+      inputClassName = 'border focus:outline-none rounded-3xl text-left border-gray-300 focus:border-blue-600 focus:ring-0 px-4 h-11 leading-normal pl-[20px] pr-10',
       errorClassName = '',
       toggleButtonClassName = '',
       iconClassName = '',
-      placeholder,
+      placeholder = 'your password',
       autoComplete,
       name,
       value,
@@ -49,9 +49,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         {label && (
           <label
             htmlFor={id}
-            className={`block text-sm group-focus-within:text-blue-700 ${labelClassName} ${
-              error ? 'text-red-600' : ''
-            }`}
+            className={`block text-sm ${labelClassName}`}
           >
             {label}
           </label>
@@ -85,7 +83,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         </div>
 
         {error && (
-          <p className={`mt-1 text-sm text-red-600 ${errorClassName}`}>
+          <p className={`text-left mt-1 text-sm text-red-600 ${errorClassName}`}>
             {error}
           </p>
         )}

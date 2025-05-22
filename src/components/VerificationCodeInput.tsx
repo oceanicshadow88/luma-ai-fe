@@ -55,7 +55,7 @@ export const VerificationCodeInput = forwardRef<
       {label && (
         <label 
           htmlFor={id} 
-          className={`block text-sm text-gray-700 mb-1 ${labelClassName}`}
+          className={`text-left block text-sm text-gray-700 mb-1 ${labelClassName}`}
         >
           {label}
         </label>
@@ -71,9 +71,9 @@ export const VerificationCodeInput = forwardRef<
           disabled={disabled}
           placeholder={placeholder}
           autoComplete={autoComplete}
-          className={`w-full px-3 py-2 border ${
+          className={`rounded-3xl w-full h-11 px-4 border ${
             error ? 'border-red-500' : 'border-gray-300'
-          } text-gray-900 placeholder-gray-500 focus:placeholder-transparent focus:outline-none focus:border-blue-500 ${inputClassName}`}
+          } text-gray-900 placeholder-gray-500 focus:placeholder-transparent focus:outline-none focus:border-blue-600 ${inputClassName}`}
         />
         <Button 
           type="button" 
@@ -86,7 +86,7 @@ export const VerificationCodeInput = forwardRef<
         </Button>
       </div>
       {error && (
-        <p className={`mt-1 text-sm text-red-600 ${errorClassName}`}>
+        <p className={`text-left mt-1 text-sm text-red-600 ${errorClassName}`}>
           {error}
         </p>
       )}

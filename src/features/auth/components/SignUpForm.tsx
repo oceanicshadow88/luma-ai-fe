@@ -9,6 +9,8 @@ import toast from 'react-hot-toast';
 import { useSignUp } from '@/features/auth/hooks/useSignUp';
 import { useSendCode } from '@/features/auth/hooks/useSendCode';
 import { SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_SIGNUP_ERROR } from '@/types/ApiError';
+import { getErrorField, getErrorMessage } from '@/utils/errorHandler';
+import { Path } from 'react-hook-form';
 
 export default function SignUpForm() {
     const navigate = useNavigate();
@@ -44,12 +46,13 @@ export default function SignUpForm() {
         try {
             await sendCode(email);
             toast.success('Verification code sent');
-        } catch (error: any) {
-            const field = SIGNUP_ERROR_MESSAGE_MAP[error.message] || UNKNOWN_SIGNUP_ERROR.field;
-            const message = error.message || UNKNOWN_SIGNUP_ERROR.message;
-            setError(field, { message });
+        } catch (error: unknown) {
+            const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_SIGNUP_ERROR.field);
+            const message = getErrorMessage(error, UNKNOWN_SIGNUP_ERROR.message);
+            setError(field as unknown as Path<z.infer<typeof signupSchema>>, { message });
             toast.error(message);
         }
+
     };
 
     const onSubmit = async (data: z.infer<typeof signupSchema>) => {
@@ -67,10 +70,10 @@ export default function SignUpForm() {
             await signup(payload);
             toast.success('Signup success!');
             navigate('/dashboard');
-        } catch (error: any) {
-            const field = SIGNUP_ERROR_MESSAGE_MAP[error.message] || UNKNOWN_SIGNUP_ERROR.field;
-            const message = error.message || UNKNOWN_SIGNUP_ERROR.message;
-            setError(field, { message });
+        } catch (error: unknown) {
+            const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_SIGNUP_ERROR.field);
+            const message = getErrorMessage(error, UNKNOWN_SIGNUP_ERROR.message);
+            setError(field as unknown as Path<z.infer<typeof signupSchema>>, { message });
             toast.error(message);
         }
     };

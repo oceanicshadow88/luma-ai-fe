@@ -21,7 +21,7 @@ apiClient.interceptors.response.use(
     const status = error.response?.status;
     const data = error.response?.data as {
       message?: string;
-      meta?: Record<string, any>;
+      meta?: Record<string, unknown>;
       cooldownSeconds?: number;
     } | undefined;
 

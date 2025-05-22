@@ -50,7 +50,12 @@ export const INSTITUTION_ERROR_MAP: Record<string, keyof InstitutionPayload | 'r
   'Organisation name must be at least 2 characters': 'name',
 };
 
+<<<<<<< HEAD
 export const UNKNOWN_ERROR = {
   field: 'root' as ResetPasswordField | SignupField | keyof InstitutionPayload,
+=======
+export const UNKNOWN_ERROR: { field: string; message: string } = {
+  field: 'root',
+>>>>>>> 2dc2ea56 (refactor: address all the review comments)
   message: 'Unexpected error occurred. Please try again.',
 };

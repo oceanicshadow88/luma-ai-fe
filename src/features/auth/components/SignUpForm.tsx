@@ -67,7 +67,15 @@ export default function SignUpForm() {
         };
 
         try {
-            await signup(payload);
+            const result = await signup(payload);
+
+            if (result?.redirect) {
+                console.log('Redirecting to:', result.redirect);
+                toast('Company not found, redirecting...');
+                navigate('/auth/signup/institution', { state: { email: data.email } });
+                return;
+            }
+
             toast.success('Signup success!');
             navigate('/dashboard');
         } catch (error: unknown) {

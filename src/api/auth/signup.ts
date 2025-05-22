@@ -2,13 +2,19 @@ import { apiClient } from '@services/api/apiClient';
 import { SignupFormData } from '@features/auth/types';
 
 class SignupService {
-  async signup(data: SignupFormData): Promise<{ orgNotFound?: boolean }> {
-    const response = await apiClient.post('/auth/signup', data);
-    return response.data;
+  async signup(data: SignupFormData): Promise<{ refreshToken: string }> {
+    const response = await apiClient.post('/auth/register/admin', data);
+    return response.data.data; 
   }
 
   async sendCode(email: string): Promise<void> {
-    await apiClient.post('/auth/send-code', { email });
+    await apiClient.post('/auth/request-reset-code', { email });
+  }
+
+  async signupRaw(data: SignupFormData) {
+    return apiClient.post('/auth/register/admin', data, {
+      validateStatus: () => true,
+    });
   }
 }
 

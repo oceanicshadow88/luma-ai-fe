@@ -1,24 +1,28 @@
 import { Link } from 'react-router-dom';
 import { ResetPasswordForm } from '@features/auth/components/ResetPasswordForm';
+import logo from '@assets/logo.svg';
 
 const ResetPasswordFormPage = () => {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Reset Password</h1>
-        </div>
+    <div className="relative flex min-h-screen flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <img src={logo} alt="Luma AI Logo" className="absolute left-[3.47vw] top-[4.44vh] w-24 sm:w-32" />
 
-        <div className="mt-8 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <ResetPasswordForm />
-        </div>
+      <header>
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+          Reset Password
+        </h1>
+      </header>
 
-        <div className="text-center text-sm">
-          <Link to="/auth/login" className="text-blue-600 hover:text-blue-800">
-            Back to Login
-          </Link>
-        </div>
-      </div>
+      <main className="w-full max-w-md mt-6">
+        <ResetPasswordForm />
+        <Link
+          to="/auth/login"
+          className="block pt-6 text-center text-blue-600 hover:text-blue-900 hover:underline"
+          aria-label="Back to login page"
+        >
+          Back to Login
+        </Link>
+      </main>
     </div>
   );
 };

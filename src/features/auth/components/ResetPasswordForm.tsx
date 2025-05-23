@@ -94,7 +94,7 @@ export function ResetPasswordForm() {
           id="verificationCode"
           label="Verification Code"
           placeholder="Enter the 6-digit code"
-          buttonText={countdown > 0 ? `Resend in ${countdown}s` : 'Send Verification Code'}
+          buttonText={countdown > 0 ? `Resend in ${countdown}s` : 'Send'}
           onButtonClick={handleSendCode}
           isButtonDisabled={countdown > 0 || isCodeSending}
           {...register('verificationCode')}

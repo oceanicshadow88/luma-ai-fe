@@ -1,4 +1,5 @@
-import * as z from 'zod';
+import * as z from 'zod'; // TypeScript-first schema validation library with static type inference. Reference: https://github.com/colinhacks/zod
+                          // Zod is designed to centralize validation logic in schema files. Referenc: https://zod.dev/?id=writing-schemas; https://react-hook-form.com/get-started#SchemaValidation
 import { emailSchema, verificationCodeSchema, passwordSchema } from '@schema/validation';
 
 export const resetPasswordSchema = z
@@ -12,9 +13,3 @@ export const resetPasswordSchema = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   });
-
-export const loginSchema = z
-  .object({
-    email: emailSchema,
-    password: z.string().min(8, 'Please lengthen this text to 8 characters or more'),
-  })

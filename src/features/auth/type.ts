@@ -1,11 +1,9 @@
-
 export interface ResetPasswordFormData {
   email: string;
   verificationCode: string;
   password: string;
   confirmPassword: string;
 }
-
 export interface VerificationCodeResponse {
   success: true;
   message: string;
@@ -29,8 +27,3 @@ export interface ApiErrorResponse {
   message: string;
   code?: string;
 }
-
-export interface LoginFormData  {
-  email: string;
-  password: string;
-};

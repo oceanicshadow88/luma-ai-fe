@@ -1,79 +1,34 @@
 import { forwardRef, useState } from 'react';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { Input } from './Input';
 
-interface PasswordInputProps {
-  label?: string;
-  error?: string;
-  id?: string;
-  fieldClassName?: string;
-  labelClassName?: string;
-  inputClassName?: string;
-  errorClassName?: string;
+interface PasswordInputProps extends Omit<React.ComponentProps<typeof Input>, 'type'> {
   toggleButtonClassName?: string;
   iconClassName?: string;
-  placeholder?: string;
-  autoComplete?: string;
-  name?: string;
-  value?: string;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  onBlur?: React.FocusEventHandler<HTMLInputElement>;
-  disabled?: boolean;
 }
 
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   (
     {
-      label,
-      error,
-      id,
-      fieldClassName = 'mb-6',
-      labelClassName = 'text-left block text-gray-600 mb-1',
       inputClassName = 'border focus:outline-none rounded-3xl text-left border-gray-300 focus:border-blue-600 focus:ring-0 px-4 h-11 leading-normal pl-[20px] pr-10',
-      errorClassName = '',
       toggleButtonClassName = '',
       iconClassName = '',
-      placeholder = 'your password',
-      autoComplete,
-      name,
-      value,
-      onChange,
-      onBlur,
-      disabled
+      ...props
     },
     ref
   ) => {
     const [show, setShow] = useState(false);
 
     return (
-      <div className={`w-full ${fieldClassName} group`}>
-        {label && (
-          <label
-            htmlFor={id}
-            className={`block text-sm group-focus-within:text-blue-600 ${labelClassName} ${
-              error ? 'text-red-600' : ''
-            }`}
-          >
-            {label}
-          </label>
-        )}
-
-        <div className="relative">
-          <input
-            id={id}
-            ref={ref}
-            name={name}
-            value={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            disabled={disabled}
-            placeholder={placeholder}
-            autoComplete={autoComplete}
-            type={show ? 'text' : 'password'}
-            className={`focus:placeholder-transparent w-full ${error ? 'border-red-600' : ''} ${inputClassName}`}
-          />
+      <Input
+        {...props}
+        ref={ref}
+        type={show ? 'text' : 'password'}
+        inputClassName={inputClassName}
+        renderRightElement={() => (
           <button
             type="button"
-            className={`absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 ${toggleButtonClassName}`}
+            className={`absolute top-1/2 -translate-y-1/2 right-3 flex items-center text-gray-500 cursor-pointer ${toggleButtonClassName}`}
             onClick={() => setShow((s) => !s)}
           >
             {show ? (
@@ -82,14 +37,8 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
               <EyeOffIcon className={`h-5 w-5 ${iconClassName}`} />
             )}
           </button>
-        </div>
-
-        {error && (
-          <p className={`text-left mt-1 text-sm text-red-600 ${errorClassName}`}>
-            {error}
-          </p>
         )}
-      </div>
+      />
     );
   }
 );

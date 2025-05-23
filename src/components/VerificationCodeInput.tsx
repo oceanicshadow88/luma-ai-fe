@@ -1,96 +1,43 @@
 import { forwardRef } from 'react';
 import { Button } from '@components/Button';
+import { Input } from './Input';
 
-interface VerificationCodeInputProps {
-  label?: string;
-  error?: string;
-  id?: string;
+interface VerificationCodeInputProps extends Omit<React.ComponentProps<typeof Input>, 'renderRightElement'> {
   buttonText: string;
   onButtonClick: () => void;
   isButtonDisabled?: boolean;
-  fieldClassName?: string;       
-  labelClassName?: string;       
-  inputClassName?: string;       
-  buttonClassName?: string;      
-  errorClassName?: string;       
-  flexContainerClassName?: string; 
-  placeholder?: string;
-  autoComplete?: string;
-  name?: string;
-  value?: string;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  onBlur?: React.FocusEventHandler<HTMLInputElement>;
-  disabled?: boolean;
+  buttonClassName?: string;
 }
 
-export const VerificationCodeInput = forwardRef<
-  HTMLInputElement,
-  VerificationCodeInputProps
->(
+export const VerificationCodeInput = forwardRef<HTMLInputElement, VerificationCodeInputProps>(
   (
     {
-      label,
-      error,
-      id,
+      inputClassName = 'border focus:outline-none rounded-3xl text-left border-gray-300 focus:border-blue-600 focus:ring-0 px-4 h-11 leading-normal pl-[20px] pr-24',
+      buttonClassName = '',
       buttonText,
       onButtonClick,
       isButtonDisabled = false,
-      fieldClassName = '',
-      labelClassName = '',
-      inputClassName = '',
-      buttonClassName = '',
-      errorClassName = '',
-      placeholder,
-      autoComplete,
-      name,
-      value,
-      onChange,
-      onBlur,
-      disabled,
+      ...props
     },
     ref
-  ) => (
-    <div className={`w-full ${fieldClassName} group`}>
-      {label && (
-        <label 
-          htmlFor={id} 
-          className={`text-left block text-sm text-gray-700 mb-1 group-focus-within:text-blue-600 ${labelClassName} ${
-            error ? 'text-red-600' : ''
-          }`}
-        >
-          {label}
-        </label>
-      )}
-      <div className="relative">
-        <input
-          id={id}
-          ref={ref}
-          name={name}
-          value={value}
-          onChange={onChange}
-          onBlur={onBlur}
-          disabled={disabled}
-          placeholder={placeholder}
-          autoComplete={autoComplete}
-          className={`rounded-3xl w-full h-11 pl-5 pr-24 border ${
-            error ? 'border-red-500' : 'border-gray-300'
-          } text-gray-900 placeholder-gray-500 focus:placeholder-transparent focus:outline-none focus:border-blue-600 ${inputClassName}`}
-        />
-        <Button 
-          type="button" 
-          variant="outline" 
-          onClick={onButtonClick} 
-          disabled={isButtonDisabled}
-          className={`absolute right-1 top-1/2 -translate-y-1/2 h-9 ${buttonClassName}`}
-        >
-          {buttonText}
-        </Button>
-      </div>
-      {error && (
-        <p className={`text-left mt-1 text-sm text-red-600 ${errorClassName}`}>
-          {error}
-        </p>
-      )}
-    </div>
-  )
+  ) => {
+    return (
+      <Input
+        {...props}
+        ref={ref}
+        inputClassName={inputClassName}
+        renderRightElement={() => (
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onButtonClick} 
+            disabled={isButtonDisabled}
+            className={`absolute right-1 top-1/2 -translate-y-1/2 h-9 ${buttonClassName}`}
+          >
+            {buttonText}
+          </Button>
+        )}
+      />
+    );
+  }
 );

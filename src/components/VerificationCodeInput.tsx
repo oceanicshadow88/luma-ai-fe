@@ -40,7 +40,6 @@ export const VerificationCodeInput = forwardRef<
       inputClassName = '',
       buttonClassName = '',
       errorClassName = '',
-      flexContainerClassName = '',
       placeholder,
       autoComplete,
       name,
@@ -62,7 +61,7 @@ export const VerificationCodeInput = forwardRef<
           {label}
         </label>
       )}
-      <div className={`flex gap-2 ${flexContainerClassName}`}>
+      <div className="relative">
         <input
           id={id}
           ref={ref}
@@ -73,7 +72,7 @@ export const VerificationCodeInput = forwardRef<
           disabled={disabled}
           placeholder={placeholder}
           autoComplete={autoComplete}
-          className={`rounded-3xl w-full h-11 px-4 border ${
+          className={`rounded-3xl w-full h-11 pl-5 pr-24 border ${
             error ? 'border-red-500' : 'border-gray-300'
           } text-gray-900 placeholder-gray-500 focus:placeholder-transparent focus:outline-none focus:border-blue-600 ${inputClassName}`}
         />
@@ -82,7 +81,7 @@ export const VerificationCodeInput = forwardRef<
           variant="outline" 
           onClick={onButtonClick} 
           disabled={isButtonDisabled}
-          className={buttonClassName}
+          className={`absolute right-1 top-1/2 -translate-y-1/2 h-9 ${buttonClassName}`}
         >
           {buttonText}
         </Button>

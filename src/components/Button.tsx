@@ -24,7 +24,7 @@ export const Button = ({
   const variantClasses = {
     primary: 'bg-blue-600 text-white hover:bg-blue-400',
     secondary: 'bg-gray-900 text-white hover:bg-gray-700',
-    outline: 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50',
+    outline: 'text-blue-600 hover:text-blue-400',
   };
   
   const widthClass = fullWidth ? 'w-full' : '';

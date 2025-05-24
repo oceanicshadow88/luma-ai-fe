@@ -9,24 +9,20 @@ export const apiClient = axios.create({
   timeout: 10000,
 });
 
+//Use interceptors to haddle api error
 apiClient.interceptors.response.use(
-  (response) => {
-    if (response.data?.success === false) {
-      const { error, payload } = response.data;
-      throw new ApiError(error, payload);
-    }
-    return response;
-  },
+  response => response,
   (error: AxiosError) => {
     const data = error.response?.data as { message?: string; cooldownSeconds?: number } | undefined;
     const status = error.response?.status;
 
     if (status === 429 && data?.cooldownSeconds !== undefined) {
-      throw new ApiError(data.message || 'Too many requests', { 
-        cooldownSeconds: data.cooldownSeconds 
-      });
+      return Promise.reject(
+        new ApiError(data.message || 'Too many requests', { cooldownSeconds: data.cooldownSeconds })
+      );
     }
 
-    throw new ApiError(data?.message || 'Request failed');
+    const message = data?.message || 'Request failed';
+    return Promise.reject(new ApiError(message));
   }
 );

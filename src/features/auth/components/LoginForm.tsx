@@ -8,6 +8,7 @@ import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { ApiError } from '@custom-types/ApiError'; 
 
 export function LoginForm() {
   const navigate = useNavigate();
@@ -30,7 +31,11 @@ export function LoginForm() {
         navigate('/dashboard');
       }, 3000);
     } catch (error) {
-      toast.error('Invalid email or password.');
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error('An unexpected error occurred. Please try again.');
+      }
     }
   };
 

@@ -103,14 +103,14 @@ export function ResetPasswordForm() {
         <PasswordInput
           id="password"
           label="New Password"
-          placeholder="create a new password"
+          placeholder="Create a new password"
           {...register('password')}
           error={errors.password?.message}
         />
         <PasswordInput
           id="confirmPassword"
           label="Confirm New Password"
-          placeholder="confirm your new password"
+          placeholder="Confirm your new password"
           {...register('confirmPassword')}
           error={errors.confirmPassword?.message}
         />

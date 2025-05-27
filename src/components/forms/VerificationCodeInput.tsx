@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { Button } from '@components/Button';
+import { Button } from '@components/buttons/Button';
 import { Input } from './Input';
 
 interface VerificationCodeInputProps extends Omit<React.ComponentProps<typeof Input>, 'addonElement'> {

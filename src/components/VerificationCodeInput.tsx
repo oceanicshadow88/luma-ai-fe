@@ -12,20 +12,38 @@ interface VerificationCodeInputProps extends Omit<React.ComponentProps<typeof In
 export const VerificationCodeInput = forwardRef<HTMLInputElement, VerificationCodeInputProps>(
   (
     {
+      id,
+      name,
+      label,
+      error,
+      placeholder,
+      onChange,
+      onBlur,
+      fieldClassName,
+      labelClassName,
       inputClassName = 'border focus:outline-none rounded-3xl text-left border-gray-300 focus:border-blue-600 focus:ring-0 px-4 h-11 leading-normal pl-[20px] pr-24',
+      errorClassName,
       buttonClassName = '',
       buttonText,
       onButtonClick,
       isButtonDisabled = false,
-      ...props
     },
     ref
   ) => {
     return (
       <Input
-        {...props}
-        ref={ref}
+        id={id}
+        name={name}
+        label={label}
+        error={error}
+        placeholder={placeholder}
+        onChange={onChange}
+        onBlur={onBlur}
+        fieldClassName={fieldClassName}
+        labelClassName={labelClassName}
         inputClassName={inputClassName}
+        errorClassName={errorClassName}
+        ref={ref}
         addonElement={() => (
           <Button 
             type="button" 

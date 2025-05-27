@@ -81,12 +81,12 @@ export function ResetPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
-      <div className="space-y-4 rounded-md shadow-sm">
+      <div className="space-y-4 max-w-md ">
         <Input
           id="email"
           label="Email Address"
           type="email"
-          placeholder="your@email.com"
+          placeholder="e.g. xxx@college.edu"
           {...register('email')}
           error={errors.email?.message}
         />
@@ -94,7 +94,7 @@ export function ResetPasswordForm() {
           id="verificationCode"
           label="Verification Code"
           placeholder="Enter the 6-digit code"
-          buttonText={countdown > 0 ? `Resend in ${countdown}s` : 'Send Verification Code'}
+          buttonText={countdown > 0 ? `Resend in ${countdown}s` : 'Send'}
           onButtonClick={handleSendCode}
           isButtonDisabled={countdown > 0 || isCodeSending}
           {...register('verificationCode')}
@@ -103,14 +103,14 @@ export function ResetPasswordForm() {
         <PasswordInput
           id="password"
           label="New Password"
-          placeholder="************"
+          placeholder="Create a new password"
           {...register('password')}
           error={errors.password?.message}
         />
         <PasswordInput
           id="confirmPassword"
           label="Confirm New Password"
-          placeholder="************"
+          placeholder="Confirm your new password"
           {...register('confirmPassword')}
           error={errors.confirmPassword?.message}
         />

@@ -15,7 +15,6 @@ export function useSignUp() {
       const status = response.status;
       const resData = response.data;
 
-      // 🎯 处理需要跳转去注册机构的情况
       if (status === 302 && resData?.redirect) {
         return { redirect: resData.redirect };
       }
@@ -24,7 +23,6 @@ export function useSignUp() {
         throw new ApiError(resData?.message || 'Unexpected error occurred');
       }
 
-      // ✅ 正常注册成功，保存 refreshToken 并换取 accessToken
       const refreshToken = resData?.data?.refreshToken;
       if (refreshToken) {
         localStorage.setItem('refreshToken', refreshToken);

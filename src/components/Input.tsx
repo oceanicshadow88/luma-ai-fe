@@ -14,7 +14,7 @@ interface InputProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
   ref: React.Ref<HTMLInputElement>;
-  renderRightElement?: () => React.ReactNode;
+  addonElement?: () => React.ReactNode;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -32,7 +32,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       labelClassName = 'text-left block text-gray-600 mb-1',
       inputClassName = 'border focus:outline-none focus:placeholder-transparent text-left border-gray-300 focus:border-blue-600 focus:ring-0 px-4 h-11 leading-normal pl-[20px]',
       errorClassName = '',
-      renderRightElement,
+      addonElement,
     },
     ref
   ) => (
@@ -58,7 +58,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           onBlur={onBlur}
           className={`w-full rounded-3xl ${inputClassName} ${error ? 'border-red-600' : ''}`}
         />
-        {renderRightElement?.()}
+        {addonElement?.()}
       </div>
       {error && (
         <p className={`text-left mt-1 text-sm text-red-600 ${errorClassName}`}>

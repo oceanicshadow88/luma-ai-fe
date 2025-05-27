@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import { Button } from '@components/Button';
 import { Input } from './Input';
 
-interface VerificationCodeInputProps extends Omit<React.ComponentProps<typeof Input>, 'renderRightElement'> {
+interface VerificationCodeInputProps extends Omit<React.ComponentProps<typeof Input>, 'addonElement'> {
   buttonText: string;
   onButtonClick: () => void;
   isButtonDisabled?: boolean;
@@ -26,7 +26,7 @@ export const VerificationCodeInput = forwardRef<HTMLInputElement, VerificationCo
         {...props}
         ref={ref}
         inputClassName={inputClassName}
-        renderRightElement={() => (
+        addonElement={() => (
           <Button 
             type="button" 
             variant="outline" 

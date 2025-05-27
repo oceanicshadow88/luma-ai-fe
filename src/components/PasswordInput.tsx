@@ -25,7 +25,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         ref={ref}
         type={show ? 'text' : 'password'}
         inputClassName={inputClassName}
-        renderRightElement={() => (
+        addonElement={() => (
           <button
             type="button"
             className={`absolute top-1/2 -translate-y-1/2 right-3 flex items-center text-gray-500 cursor-pointer ${toggleButtonClassName}`}

@@ -15,6 +15,7 @@ interface InputProps {
   labelClassName?: string;       
   inputClassName?: string;       
   errorClassName?: string;       
+  addonElement?: () => React.ReactElement;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -32,6 +33,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       labelClassName = '',
       inputClassName = '',
       errorClassName = '',
+      addonElement,
     },
     ref
   ) => (
@@ -45,20 +47,23 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         </label>
       )}
       
-      <input
-        id={id}
-        name={name}
-        ref={ref}
-        type={type}
-        placeholder={placeholder}
-        onChange={onChange}
-        onBlur={onBlur}
-        className={`w-full px-3 py-3 border rounded-md
-          ${error ? 'border-red-500' : 'border-gray-300'}
-          text-gray-900 placeholder-gray-500
-          focus:outline-none focus:border-blue-500
-          ${inputClassName}`}
-      />
+      <div className="relative">
+        <input
+          id={id}
+          name={name}
+          ref={ref}
+          type={type}
+          placeholder={placeholder}
+          onChange={onChange}
+          onBlur={onBlur}
+          className={`w-full px-3 py-3 border rounded-md
+            ${error ? 'border-red-500' : 'border-gray-300'}
+            text-gray-900 placeholder-gray-500
+            focus:outline-none focus:border-blue-500
+            ${inputClassName}`}
+        />
+        {addonElement?.()}
+      </div>
 
       {error && (
         <p className={`mt-1 text-sm text-red-600 ${errorClassName}`}>

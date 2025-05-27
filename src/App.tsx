@@ -1,14 +1,31 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import LoginPage from '@app/auth/login/page';
 import ResetPasswordPage from '@app/auth/reset-password/page';
 import LandingPage from '@app/landing/page';
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <BrowserRouter>
-      <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
+    <Toaster
+        position="top-center"
+        // Using style object instead of Tailwind classes because the Toaster component
+        // doesn't process Tailwind utility classes and expects standard React style objects
+        toastOptions={{
+          duration: 3000,
+          style: {
+            zIndex: 9999,
+            marginTop: '300px', 
+            width: '300px', 
+            padding: '1rem', 
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            color: '#fff', 
+            textAlign: 'center',
+            borderRadius: '1rem', 
+            fontWeight: 'bold',
+          },
+        }}
+      />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth/login" element={<LoginPage />} />

@@ -1,95 +1,61 @@
 import { forwardRef } from 'react';
 import { Button } from '@components/buttons/Button';
+import { Input } from './Input';
 
-interface VerificationCodeInputProps {
-  label?: string;
-  error?: string;
-  id?: string;
+interface VerificationCodeInputProps extends Omit<React.ComponentProps<typeof Input>, 'addonElement'> {
   buttonText: string;
   onButtonClick: () => void;
   isButtonDisabled?: boolean;
-  fieldClassName?: string;       
-  labelClassName?: string;       
-  inputClassName?: string;     
-  buttonClassName?: string;     
-  errorClassName?: string;       
-  containerClassName?: string; 
-  placeholder?: string;
-  autoComplete?: string;
-  name?: string;
-  value?: string;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  onBlur?: React.FocusEventHandler<HTMLInputElement>;
-  disabled?: boolean;
+  buttonClassName?: string;
 }
 
-export const VerificationCodeInput = forwardRef<
-  HTMLInputElement,
-  VerificationCodeInputProps
->(
+export const VerificationCodeInput = forwardRef<HTMLInputElement, VerificationCodeInputProps>(
   (
     {
+      id,
+      name,
       label,
       error,
-      id,
+      placeholder,
+      onChange,
+      onBlur,
+      fieldClassName,
+      labelClassName,
+      inputClassName = 'border focus:outline-none rounded-3xl text-left border-gray-300 focus:border-blue-600 focus:ring-0 px-4 h-11 leading-normal pl-[20px] pr-24',
+      errorClassName,
+      buttonClassName = '',
       buttonText,
       onButtonClick,
       isButtonDisabled = false,
-      fieldClassName = '',
-      labelClassName = '',
-      inputClassName = '',
-      buttonClassName = '',
-      errorClassName = '',
-      containerClassName = '',
-      placeholder,
-      autoComplete,
-      name,
-      value,
-      onChange,
-      onBlur,
-      disabled,
     },
     ref
-  ) => (
-    <div className={`w-full ${fieldClassName}`}>
-      {label && (
-        <label 
-          htmlFor={id} 
-          className={`block text-sm text-gray-700 mb-1 ${labelClassName}`}
-        >
-          {label}
-        </label>
-      )}
-      <div className={`flex gap-2 ${containerClassName}`}>
-        <input
-          id={id}
-          ref={ref}
-          name={name}
-          value={value}
-          onChange={onChange}
-          onBlur={onBlur}
-          disabled={disabled}
-          placeholder={placeholder}
-          autoComplete={autoComplete}
-          className={`w-full px-3 py-2 border rounded-md ${
-            error ? 'border-red-500' : 'border-gray-300'
-          } text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 ${inputClassName}`}
-        />
-        <Button 
-          type="button" 
-          variant="outline" 
-          onClick={onButtonClick} 
-          disabled={isButtonDisabled}
-          className={buttonClassName}
-        >
-          {buttonText}
-        </Button>
-      </div>
-      {error && (
-        <p className={`mt-1 text-sm text-red-600 ${errorClassName}`}>
-          {error}
-        </p>
-      )}
-    </div>
-  )
+  ) => {
+    return (
+      <Input
+        id={id}
+        name={name}
+        label={label}
+        error={error}
+        placeholder={placeholder}
+        onChange={onChange}
+        onBlur={onBlur}
+        fieldClassName={fieldClassName}
+        labelClassName={labelClassName}
+        inputClassName={inputClassName}
+        errorClassName={errorClassName}
+        ref={ref}
+        addonElement={() => (
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onButtonClick} 
+            disabled={isButtonDisabled}
+            className={`absolute right-1 top-1/2 -translate-y-1/2 h-9 ${buttonClassName}`}
+          >
+            {buttonText}
+          </Button>
+        )}
+      />
+    );
+  }
 );

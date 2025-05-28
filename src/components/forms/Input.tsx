@@ -1,72 +1,67 @@
 import { forwardRef } from 'react';
 
 interface InputProps {
-  id: string;                    
-  label?: string;                
-  error?: string;                
-  type?: string;                
-  placeholder?: string;         
-  name?: string;                
-
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
-
-  fieldClassName?: string;       
-  labelClassName?: string;       
-  inputClassName?: string;       
-  errorClassName?: string;       
-  addonElement?: () => React.ReactElement;
+  id: string;
+  type?: string;
+  placeholder?: string;
+  label?: string;
+  error?: string;
+  fieldClassName?: string;
+  labelClassName?: string;
+  inputClassName?: string;
+  errorClassName?: string;
+  name: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
+  ref: React.Ref<HTMLInputElement>;
+  addonElement?: () => React.ReactNode;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       id,
-      label,
-      error,
       type = 'text',
       placeholder,
+      label,
+      error,
       name,
       onChange,
       onBlur,
-      fieldClassName = '',
-      labelClassName = '',
-      inputClassName = '',
+      fieldClassName = 'mb-6',
+      labelClassName = 'text-left block text-gray-600 mb-1',
+      inputClassName = 'border focus:outline-none focus:placeholder-transparent text-left border-gray-300 focus:border-blue-600 focus:ring-0 px-4 h-11 leading-normal pl-[20px]',
       errorClassName = '',
       addonElement,
     },
     ref
   ) => (
-    <div className={`w-full ${fieldClassName}`}>
+    <div className={`w-full ${fieldClassName} group`}>
       {label && (
         <label
           htmlFor={id}
-          className={`block text-sm text-gray-700 mb-1 ${labelClassName}`}
+          className={`block text-sm group-focus-within:text-blue-600 ${labelClassName} ${
+            error ? 'text-red-600' : ''
+          }`}
         >
           {label}
         </label>
       )}
-      
       <div className="relative">
         <input
           id={id}
           name={name}
-          ref={ref}
           type={type}
           placeholder={placeholder}
+          ref={ref}
           onChange={onChange}
           onBlur={onBlur}
-          className={`w-full px-3 py-3 border rounded-md
-            ${error ? 'border-red-500' : 'border-gray-300'}
-            text-gray-900 placeholder-gray-500
-            focus:outline-none focus:border-blue-500
-            ${inputClassName}`}
+          className={`w-full rounded-3xl ${inputClassName} ${error ? 'border-red-600' : ''}`}
         />
         {addonElement?.()}
       </div>
-
       {error && (
-        <p className={`mt-1 text-sm text-red-600 ${errorClassName}`}>
+        <p className={`text-left mt-1 text-sm text-red-600 ${errorClassName}`}>
           {error}
         </p>
       )}

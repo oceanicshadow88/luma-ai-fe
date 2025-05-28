@@ -72,6 +72,11 @@ export default function SignUpForm() {
         } catch (error: unknown) {
             const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_SIGNUP_ERROR.field);
             const message = getErrorMessage(error, UNKNOWN_SIGNUP_ERROR.message);
+            if (message.toLowerCase().includes('user already exist')) {
+                toast('Email already registered. Please log in.');
+                navigate('/auth/login');
+                return;
+            }
             setError(field as Path<z.infer<typeof signupSchema>>, { message });
             toast.error(message);
         }

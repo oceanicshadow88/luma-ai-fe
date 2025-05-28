@@ -30,6 +30,7 @@ const InstitutionForm = () => {
         watch,
     } = useForm<InstitutionPayload>({
         resolver: zodResolver(institutionSchema),
+        mode: 'onTouched',
         defaultValues: {
             name: '',
             slug: '',

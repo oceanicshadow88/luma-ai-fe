@@ -1,5 +1,6 @@
-import axios, { AxiosError } from 'axios';
+
 import { ApiError } from '@custom-types/ApiError';
+import axios, { AxiosError, AxiosHeaders, type InternalAxiosRequestConfig } from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://api.example.com';
 const API_VERSION = '/v1';
@@ -9,20 +10,40 @@ export const apiClient = axios.create({
   timeout: 10000,
 });
 
-//Use interceptors to haddle api error
+apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  const token = localStorage.getItem('accessToken');
+
+  if (token) {
+    const headers = config.headers as AxiosHeaders;
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  return config;
+});
 apiClient.interceptors.response.use(
-  response => response,
+  (response) => {
+    if (response.data?.success === false) {
+      const { message, meta } = response.data;
+      throw new ApiError(message || 'Request failed', meta);
+    }
+    return response;
+  },
   (error: AxiosError) => {
-    const data = error.response?.data as { message?: string; cooldownSeconds?: number } | undefined;
     const status = error.response?.status;
+    const data = error.response?.data as {
+      message?: string;
+      meta?: Record<string, unknown>;
+      cooldownSeconds?: number;
+    } | undefined;
 
     if (status === 429 && data?.cooldownSeconds !== undefined) {
-      return Promise.reject(
-        new ApiError(data.message || 'Too many requests', { cooldownSeconds: data.cooldownSeconds })
-      );
+      throw new ApiError(data.message || 'Too many requests', {
+        cooldownSeconds: data.cooldownSeconds,
+      });
     }
 
-    const message = data?.message || 'Request failed';
-    return Promise.reject(new ApiError(message));
+    const message = data?.message || 'Unexpected error occurred';
+    const meta = data?.meta;
+    return Promise.reject(new ApiError(message, meta));
   }
 );

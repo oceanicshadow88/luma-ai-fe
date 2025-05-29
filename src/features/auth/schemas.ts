@@ -5,8 +5,10 @@ export const signupSchema = z
     firstName: z.string().min(1, 'Please enter your first name'),
     lastName: z.string().min(1, 'Please enter your last name'),
     username: z
-      .string()
-      .min(1, 'Please enter your username'),
+    .string()
+    .min(2, 'Username must be at least 2 characters')
+    .max(20, 'Username must be at most 20 characters')
+    .regex(/^[a-zA-Z0-9]+$/, 'Username can only contain letters and numbers'),
     email: z
       .string()
       .min(1, 'Please enter your email address')

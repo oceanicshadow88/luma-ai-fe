@@ -14,6 +14,13 @@ import arrowIcon from '@/assets/arrow.svg';
 import rightLogo from '@/assets/right-logo.png';
 import logo from '@/assets/logo.svg';
 
+function getSlugFromEmail(email: string): string {
+    const domain = email.split('@')[1]?.toLowerCase() || '';
+    if (!domain) return '';
+    const parts = domain.split('.');
+    return parts.length > 0 ? parts[0] : '';
+}
+
 const InstitutionForm = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -39,14 +46,12 @@ const InstitutionForm = () => {
         },
     });
 
-    const watchedName = watch('name');
-
     useEffect(() => {
-        if (watchedName.trim()) {
-            const base = watchedName.trim().toLowerCase().replace(/\s+/g, '-');
-            setValue('slug', base);
+        if (email) {
+            const slugFromEmail = getSlugFromEmail(email);
+            setValue('slug', slugFromEmail);
         }
-    }, [watchedName, setValue]);
+    }, [email, setValue]);
 
     const onLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -101,7 +106,9 @@ const InstitutionForm = () => {
 
                     {/* Upload Logo */}
                     <div className="flex flex-col space-y-2">
-                        <label className="text-sm text-gray-600">Upload Logo <span className="text-gray-400">(Optional; Supports JPG/PNG/SVG, max 5MB.)</span></label>
+                        <label className="text-sm text-gray-600">
+                            Upload Logo <span className="text-gray-400">(Optional; Supports JPG/PNG/SVG, max 5MB.)</span>
+                        </label>
                         <div className="relative w-20 h-20 border border-gray-300 rounded-lg flex items-center justify-center cursor-pointer bg-transparent">
                             <input
                                 type="file"
@@ -120,14 +127,15 @@ const InstitutionForm = () => {
                     {/* Slug */}
                     <div className="flex flex-col">
                         <label className="text-sm text-gray-600">
-                            Organisation Slug <span className="text-gray-400">(Optional)</span>
+                            Organisation Slug <span className="text-gray-400">(Auto-generated from email, not editable)</span>
                         </label>
                         <div className="flex items-center mt-1">
                             <input
                                 {...register('slug')}
                                 type="text"
-                                placeholder="Auto-generated from name (editable)"
-                                className="rounded-3xl border border-gray-300 h-11 px-4 w-full focus:outline-none focus:border-blue-600"
+                                placeholder="Auto-generated from email (not editable)"
+                                className="rounded-3xl border border-gray-300 h-11 px-4 w-full bg-gray-100 cursor-not-allowed"
+                                disabled
                             />
                             <span className="ml-2 text-gray-500">.lumaai.com</span>
                         </div>

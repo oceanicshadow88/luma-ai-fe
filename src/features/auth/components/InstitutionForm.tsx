@@ -11,7 +11,7 @@ import { Input } from '@components/forms/Input';
 import { Button } from '@components/buttons/Button';
 import { FormError } from '@components/forms/FormError';
 import arrowIcon from '@assets/arrow.svg';
-import rightLogo from '@assets/right-logo.png';
+import rightLogo from '@assets/decorative_graphic.png';
 import logo from '@assets/logo.svg';
 
 function getSlugFromEmail(email: string): string {

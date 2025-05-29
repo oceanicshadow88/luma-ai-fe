@@ -14,7 +14,7 @@ import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { FormError } from '@components/forms/FormError';
-import rightLogo from '@assets/right-logo.png';
+import rightLogo from '@assets/decorative_graphic.png';
 import logo from '@assets/logo.svg';
 
 export default function SignUpForm() {

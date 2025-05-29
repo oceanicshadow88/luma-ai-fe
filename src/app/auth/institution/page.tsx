@@ -1,5 +1,5 @@
 import React from 'react';
-import InstitutionForm from '@/features/auth/components/InstitutionForm';
+import InstitutionForm from '@features/auth/components/InstitutionForm';
 
 const InstitutionPage = () => {
     return (

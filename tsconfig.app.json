@@ -31,7 +31,8 @@
       "@assets/*": ["assets/*"],
       "@styles/*": ["styles/*"],
       "@schema/*": ["schema/*"],
-      "@api/*": ["api/*"]
+      "@api/*": ["api/*"],
+      "@utils/*": ["utils/*"]
     },
     /* Linting */
     "strict": true,

@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import InstitutionPage from '@/app/auth/institution/page';
+import InstitutionPage from '@app/auth/institution/page';
 import { Toaster } from 'react-hot-toast';
 import SignUpPage from '@app/auth/signup/page';
 import LoginPage from '@app/auth/login/page';

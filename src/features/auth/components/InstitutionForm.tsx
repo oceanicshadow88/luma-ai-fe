@@ -5,14 +5,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { InstitutionPayload } from '@features/auth/types';
 import { institutionSchema } from '@features/auth/schemas';
 import { institutionService } from '@api/auth/institution';
-import { ApiError, INSTITUTION_ERROR_MAP, UNKNOWN_ERROR } from '@/types/ApiError';
-import { getErrorField } from '@/utils/errorHandler';
-import { Input } from '@/components/Input';
-import { Button } from '@/components/Button';
-import { FormError } from '@/components/FormError';
-import arrowIcon from '@/assets/arrow.svg';
-import rightLogo from '@/assets/right-logo.png';
-import logo from '@/assets/logo.svg';
+import { ApiError, INSTITUTION_ERROR_MAP, UNKNOWN_ERROR } from '@custom-types/ApiError';
+import { getErrorField } from '@utils/errorHandler';
+import { Input } from '@components/forms/Input';
+import { Button } from '@components/buttons/Button';
+import { FormError } from '@components/forms/FormError';
+import arrowIcon from '@assets/arrow.svg';
+import rightLogo from '@assets/right-logo.png';
+import logo from '@assets/logo.svg';
 
 function getSlugFromEmail(email: string): string {
     const domain = email.split('@')[1]?.toLowerCase() || '';

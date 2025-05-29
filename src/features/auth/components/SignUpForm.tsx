@@ -1,22 +1,21 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signupSchema } from '../schemas';
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useSignUp } from '@/features/auth/hooks/useSignUp';
-import { useSendCode } from '@/features/auth/hooks/useSendCode';
-import { SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_SIGNUP_ERROR } from '@/types/ApiError';
-import { getErrorField, getErrorMessage } from '@/utils/errorHandler';
+import { useSignUp } from '@features/auth/hooks/useSignUp';
+import { useSendCode } from '@features/auth/hooks/useSendCode';
+import { SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR } from '@custom-types/ApiError';
+import { getErrorField, getErrorMessage } from '@utils/errorHandler';
 import { Path } from 'react-hook-form';
-import { Input } from '@/components/Input';
-import { PasswordInput } from '@/components/PasswordInput';
-import { Button } from '@/components/Button';
-import { VerificationCodeInput } from '@/components/VerificationCodeInput';
-import { FormError } from '@/components/FormError';
-import rightLogo from '@/assets/right-logo.png';
-import logo from '@/assets/logo.svg';
+import { Input } from '@components/forms/Input';
+import { PasswordInput } from '@components/forms/PasswordInput';
+import { Button } from '@components/buttons/Button';
+import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
+import { FormError } from '@components/forms/FormError';
+import rightLogo from '@assets/right-logo.png';
+import logo from '@assets/logo.svg';
 
 export default function SignUpForm() {
     const navigate = useNavigate();
@@ -42,8 +41,8 @@ export default function SignUpForm() {
             await sendCode(email);
             toast.success('Verification code sent');
         } catch (error: unknown) {
-            const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_SIGNUP_ERROR.field);
-            const message = getErrorMessage(error, UNKNOWN_SIGNUP_ERROR.message);
+            const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR.field);
+            const message = getErrorMessage(error, UNKNOWN_ERROR.message);
             setError(field as Path<z.infer<typeof signupSchema>>, { message });
             toast.error(message);
         }
@@ -70,8 +69,8 @@ export default function SignUpForm() {
             toast.success('Signup success!');
             navigate('/dashboard');
         } catch (error: unknown) {
-            const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_SIGNUP_ERROR.field);
-            const message = getErrorMessage(error, UNKNOWN_SIGNUP_ERROR.message);
+            const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR.field);
+            const message = getErrorMessage(error, UNKNOWN_ERROR.message);
             if (message.toLowerCase().includes('user already exist')) {
                 toast('Email already registered. Please log in.');
                 navigate('/auth/login');
@@ -139,7 +138,6 @@ export default function SignUpForm() {
                         id="password"
                         label="Password"
                         placeholder="create a password"
-                        autoComplete="new-password"
                         {...register('password')}
                         error={errors.password?.message}
                     />
@@ -148,7 +146,6 @@ export default function SignUpForm() {
                         id="confirmPassword"
                         label="Confirm Password"
                         placeholder="confirm your password"
-                        autoComplete="new-password"
                         {...register('confirmPassword')}
                         error={errors.confirmPassword?.message}
                     />

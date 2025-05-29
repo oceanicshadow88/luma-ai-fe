@@ -17,6 +17,7 @@ export default defineConfig({
       '@styles': path.resolve(__dirname, 'src/styles'),
       '@schema': path.resolve(__dirname, 'src/schema'),
       '@api': path.resolve(__dirname, 'src/api'),
+      '@utils': path.resolve(__dirname, 'src/utils'),
     },
   },
   server: {

@@ -13,7 +13,10 @@ export const signupSchema = z
       .string()
       .min(1, 'Please enter your email address')
       .email('Sorry, please type a valid email'),
-    code: z.string().min(1, 'Please enter the 6-digit verification code'),
+    code: z
+      .string()
+      .min(1, 'Please enter the 6-digit verification code')
+      .regex(/^\d+$/, 'Verification code must contain only digits'),
     password: z
       .string()
       .min(1, 'Please enter your password')

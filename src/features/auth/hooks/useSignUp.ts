@@ -16,7 +16,7 @@ export function useSignUp() {
       const resData = response.data;
 
       if (status === 302 && resData?.redirect) {
-        return { redirect: resData.redirect };
+        return { redirect: '/auth/login' };
       }
 
       if (status >= 400) {

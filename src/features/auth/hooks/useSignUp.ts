@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { signupService } from '@api/auth/signup';
-import { SignupFormData } from '@features/auth/types';
+import { SignupFormData } from '@features/auth/type';
 import { ApiError } from '@custom-types/ApiError';
 import { apiClient } from '@services/api/apiClient';
 

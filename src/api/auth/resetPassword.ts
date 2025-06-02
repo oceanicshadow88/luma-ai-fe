@@ -1,5 +1,5 @@
 import { apiClient } from '@services/api/apiClient';
-import { ResetPasswordFormData, VerificationCodeResponse } from '@features/auth/type';
+import { ResetPasswordFormData, VerificationCodeResponse } from '@features/auth/types';
 
 class ResetPasswordService {
   async sendVerificationCode(email: string): Promise<VerificationCodeResponse> {

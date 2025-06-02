@@ -23,6 +23,6 @@ export const passwordSchema = z
       /[^A-Za-z0-9]/.test(pwd),
     {
       message:
-        'Password must be 8-20 characters and contain at least one uppercase letter, lowercase letter, number and special character',
+        'Password must be 8-20 characters and contain at least one uppercase letter, lowercase letter, number and special character from the following ! @ # $ % ^ & *',
     }
   );

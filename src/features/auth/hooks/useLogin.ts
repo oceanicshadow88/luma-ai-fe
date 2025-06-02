@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { loginService } from '@api/auth/login';
-import { LoginFormData } from '../type';
+import { LoginFormData } from '../types';
 import { ApiError } from '@custom-types/ApiError';
 
 export function useLogin() {

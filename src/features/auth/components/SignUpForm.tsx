@@ -1,12 +1,12 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signupSchema } from '../schema';
+import { signupSchema } from '../schemas';
 import { z } from 'zod';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useSignUp } from '@features/auth/hooks/useSignUp';
 import { useSendCode } from '@features/auth/hooks/useSendCode';
-import { SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR } from '@custom-types/ApiError';
+import { SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR, ApiError } from '@custom-types/ApiError';
 import { getErrorField, getErrorMessage } from '@utils/errorHandler';
 import { Path } from 'react-hook-form';
 import { Input } from '@components/forms/Input';
@@ -16,9 +16,13 @@ import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { FormError } from '@components/forms/FormError';
 import rightLogo from '@assets/decorative_graphic.png';
 import logo from '@assets/logo.svg';
+import { filterSignupForm } from '@utils/filterSignupForm';
 
 export default function SignUpForm() {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const defaultFormValues = location.state?.signupForm || {};
     const {
         register,
         handleSubmit,
@@ -28,6 +32,7 @@ export default function SignUpForm() {
     } = useForm<z.infer<typeof signupSchema>>({
         resolver: zodResolver(signupSchema),
         mode: 'onTouched',
+        defaultValues: defaultFormValues,
     });
 
     const email = watch('email');
@@ -63,30 +68,39 @@ export default function SignUpForm() {
             const result = await signup(payload);
             if (result?.redirect) {
                 toast('Company not found, redirecting...');
-                navigate('/auth/signup/institution', { state: { email: data.email } });
+                navigate('/auth/signup/institution', { state: { signupForm: filterSignupForm(data) } });
                 return;
             }
             toast.success('Signup success!');
             navigate('/dashboard');
         } catch (error: unknown) {
-            const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR.field);
-            const message = getErrorMessage(error, UNKNOWN_ERROR.message);
-            if (message.toLowerCase().includes('user already exist')) {
-                toast('Email already registered. Please log in.');
-                navigate('/auth/login');
-                return;
+            // 队友风格: 如果是 ApiError，则用后端字段，否则兜底 root
+            if (error instanceof ApiError) {
+                const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR.field);
+                const message = getErrorMessage(error, UNKNOWN_ERROR.message);
+
+                if (message.toLowerCase().includes('user already exist')) {
+                    toast('Email already registered. Please log in.');
+                    navigate('/auth/login');
+                    return;
+                }
+                setError(field as Path<z.infer<typeof signupSchema>>, { message });
+                toast.error(message);
+            } else {
+                setError('root', { message: 'Unexpected error occurred.' });
+                toast.error('Unexpected error occurred.');
             }
-            setError(field as Path<z.infer<typeof signupSchema>>, { message });
-            toast.error(message);
         }
     };
 
     return (
-        <div className="w-[1440px] h-[900px] flex bg-white items-center mx-auto">
-            <div className="h-[800px] my-[50px] px-[170px] pt-[20px] flex flex-col justify-start">
-                <img src={logo} alt="Luma AI Logo" className="w-[140px] h-auto mb-3" />
+        <div className="min-h-screen flex flex-col md:flex-row bg-white items-center justify-center">
+            <div className="w-full max-w-md md:max-w-lg px-6 py-10 md:px-16 md:py-12 flex flex-col justify-start">
+                <img src={logo} alt="Luma AI Logo" className="w-36 h-auto mb-6 mx-auto md:mx-0" />
 
-                <h2 className="text-xl font-semibold mb-10 text-left">Sign up for Luma AI Enterprise Version</h2>
+                <h2 className="text-2xl font-semibold mb-8 text-center md:text-left">
+                    Sign up for Luma AI Enterprise Version
+                </h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
                     <Input
@@ -109,7 +123,7 @@ export default function SignUpForm() {
                         error={errors.code?.message}
                     />
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Input
                             id="firstName"
                             label="First Name"
@@ -162,8 +176,12 @@ export default function SignUpForm() {
                 </form>
             </div>
 
-            <div className="h-[800px] my-[50px] pr-[100px] flex items-center justify-center">
-                <img src={rightLogo} alt="Luma AI Logo" className="w-[600px] h-[800px] object-contain" />
+            <div className="hidden md:flex flex-1 h-full items-center justify-center">
+                <img
+                    src={rightLogo}
+                    alt="Luma AI Illustration"
+                    className="max-w-xs md:max-w-lg lg:max-w-xl h-auto object-contain"
+                />
             </div>
         </div>
     );

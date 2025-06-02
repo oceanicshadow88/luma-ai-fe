@@ -18,6 +18,7 @@ import rightLogo from '@assets/decorative_graphic.png';
 import logo from '@assets/logo.svg';
 import { filterSignupForm } from '@utils/filterSignupForm';
 
+
 export default function SignUpForm() {
     const navigate = useNavigate();
     const location = useLocation();

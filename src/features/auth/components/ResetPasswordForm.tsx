@@ -6,19 +6,14 @@ import { useResetPassword } from '../hooks/useResetPassword';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
-import { FormError } from '@components/forms/FormError';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { ResetPasswordFormData } from '@features/auth/type';
 import {
-  ApiError,
-  ERROR_MESSAGE_MAP,
+  RESET_PASSWORD_ERROR_MESSAGE_MAP,
   UNKNOWN_ERROR,
-  ResetPasswordField,
 } from '@custom-types/ApiError';
+import { handleAdvancedFormError } from '@utils/errorHandler';  
 import { toast } from 'react-hot-toast';
-
-// Extend ResetPasswordFormData to include 'root' for form errors
-type ExtendedResetPasswordFormData = ResetPasswordFormData & { root?: string };
 
 export function ResetPasswordForm() {
   const navigate = useNavigate();
@@ -30,7 +25,7 @@ export function ResetPasswordForm() {
     getValues,
     formState: { errors, isSubmitting },
     setError,
-  } = useForm<ExtendedResetPasswordFormData>({
+  } = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
     mode: 'onBlur',
     reValidateMode: 'onBlur',
@@ -38,19 +33,19 @@ export function ResetPasswordForm() {
 
   const { resetPassword, sendVerificationCode, isCodeSending, countdown } = useResetPassword();
 
-  const onSubmit = async (data: ExtendedResetPasswordFormData) => {
+  const onSubmit = async (data: ResetPasswordFormData) => {
     try {
       await resetPassword(data);
       toast.success('Password reset successfully. Please log in again with new password.');
       setTimeout(() => navigate('/auth/login'), 3000);
     } catch (error) {
-      if (error instanceof ApiError) {
-        const field: ResetPasswordField = ERROR_MESSAGE_MAP[error.message] || UNKNOWN_ERROR.field;
-        const message = error.message in ERROR_MESSAGE_MAP ? error.message : UNKNOWN_ERROR.message;
-        setError(field, { message });
-      } else {
-        setError('root', { message: 'Unexpected error occurred.' });
-      }
+      handleAdvancedFormError(
+        error,
+        setError,
+        RESET_PASSWORD_ERROR_MESSAGE_MAP,
+        'toast',
+        UNKNOWN_ERROR.message
+      );
     }
   };
 
@@ -64,18 +59,13 @@ export function ResetPasswordForm() {
       await sendVerificationCode(email);
       toast.success('If the email is valid, a verification code will be sent.');
     } catch (error) {
-      if (error instanceof ApiError) {
-        const field: ResetPasswordField = ERROR_MESSAGE_MAP[error.message] || UNKNOWN_ERROR.field;
-        let message = error.message in ERROR_MESSAGE_MAP ? error.message : UNKNOWN_ERROR.message;
-        if (field === 'verificationCode' && error.meta?.cooldownSeconds) {
-          message = `Too many requests. Try again in ${error.meta.cooldownSeconds} seconds.`;
-        }
-        setError(field, { message });
-      } else {
-        setError('verificationCode', {
-          message: 'Unexpected error. Please try again.',
-        });
-      }
+      handleAdvancedFormError(
+        error,
+        setError,
+        RESET_PASSWORD_ERROR_MESSAGE_MAP,
+        'toast',
+        UNKNOWN_ERROR.message
+      );
     }
   };
 
@@ -86,7 +76,7 @@ export function ResetPasswordForm() {
           id="email"
           label="Email Address"
           type="email"
-          placeholder="e.g. xxx@college.edu"
+          placeholder="e.g. your@email.com"
           {...register('email')}
           error={errors.email?.message}
         />
@@ -115,7 +105,6 @@ export function ResetPasswordForm() {
           error={errors.confirmPassword?.message}
         />
       </div>
-      {errors.root && <FormError message={errors.root.message} />}
       <div>
         <Button type="submit" fullWidth disabled={isSubmitting} isLoading={isSubmitting}>
           Reset Password

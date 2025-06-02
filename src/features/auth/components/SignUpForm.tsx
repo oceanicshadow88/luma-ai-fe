@@ -74,7 +74,6 @@ export default function SignUpForm() {
             toast.success('Signup success!');
             navigate('/dashboard');
         } catch (error: unknown) {
-            // 队友风格: 如果是 ApiError，则用后端字段，否则兜底 root
             if (error instanceof ApiError) {
                 const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR.field);
                 const message = getErrorMessage(error, UNKNOWN_ERROR.message);

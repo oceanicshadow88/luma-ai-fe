@@ -7,14 +7,16 @@ import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { useNavigate } from 'react-router-dom';
+import { handleAdvancedFormError } from '@utils/errorHandler';
+import { LOGIN_ERROR_MESSAGE_MAP } from '@custom-types/ApiError';
 import { toast } from 'react-hot-toast';
-import { ApiError } from '@custom-types/ApiError'; 
 
 export function LoginForm() {
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -31,11 +33,13 @@ export function LoginForm() {
         navigate('/dashboard');
       }, 3000);
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error('An unexpected error occurred. Please try again.');
-      }
+      handleAdvancedFormError(
+        error,
+        setError,
+        LOGIN_ERROR_MESSAGE_MAP,
+        'toast',
+        'Login failed. Please check your email and password.'
+      );
     }
   };
 
@@ -43,9 +47,9 @@ export function LoginForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-8">
       <Input
         id="email"
-        label="Work Email"
+        label="Email Address"
         type="email"
-        placeholder="e.g. xxx@college.edu.au"
+        placeholder="e.g. your@email.com"
         {...register('email')}
         error={errors.email?.message}
       />
@@ -53,8 +57,8 @@ export function LoginForm() {
       <PasswordInput
         id="password"
         label="Password"
-        placeholder="your password"
-        {...register('password')} 
+        placeholder="Your password"
+        {...register('password')}
         error={errors.password?.message}
       />
 

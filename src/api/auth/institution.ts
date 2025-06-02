@@ -11,7 +11,7 @@ export class InstitutionService {
       formData.append('logo', data.logo);
     }
 
-    await apiClient.post('company/register', formData);
+    await apiClient.post('/company/register', formData);
   }
 }
 

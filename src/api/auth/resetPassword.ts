@@ -8,7 +8,7 @@ class ResetPasswordService {
   }
 
   async resetPassword(data: ResetPasswordFormData): Promise<void> {
-    await apiClient.post('/auth/verify-reset-code', {
+    await apiClient.post('/auth/reset-password', {
       email: data.email,
       code: data.verificationCode,
       newPassword: data.password,

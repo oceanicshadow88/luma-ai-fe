@@ -25,7 +25,7 @@ function getSlugFromEmail(email: string): string {
 const InstitutionForm = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const email: string = location.state?.email || '';
+    const email: string = location.state?.signupForm?.email || '';
     const emailDomain = email.split('@')[1];
     const [logoPreview, setLogoPreview] = useState<string | null>(null);
 

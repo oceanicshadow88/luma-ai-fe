@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { resetPasswordSchema } from '../schema';
+import { resetPasswordSchema } from '../schemas';
 import { useResetPassword } from '../hooks/useResetPassword';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
-import { ResetPasswordFormData } from '@features/auth/type';
+import { ResetPasswordFormData } from '@features/auth/types';
 import {
   RESET_PASSWORD_ERROR_MESSAGE_MAP,
   UNKNOWN_ERROR,

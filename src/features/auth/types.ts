@@ -18,11 +18,11 @@ export type InstitutionPayload = {
 };
 
 export type SignupFormData = {
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   username: string;
   email: string;
   password: string;
-  confirmPassword?: string; 
-  verifyCode: string;
+  confirmPassword?: string;
+  verifyValue: string;
 };

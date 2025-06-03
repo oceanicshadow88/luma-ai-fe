@@ -151,7 +151,7 @@ export default function SignUpForm() {
           <PasswordInput
             id="password"
             label="Password"
-            placeholder="create a password"
+            placeholder="Create a password"
             {...register('password')}
             error={errors.password?.message}
           />
@@ -159,7 +159,7 @@ export default function SignUpForm() {
           <PasswordInput
             id="confirmPassword"
             label="Confirm Password"
-            placeholder="confirm your password"
+            placeholder="Confirm your password"
             {...register('confirmPassword')}
             error={errors.confirmPassword?.message}
           />

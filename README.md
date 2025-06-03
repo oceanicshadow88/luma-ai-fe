@@ -94,18 +94,9 @@ App will be served at [http://localhost:5173](http://localhost:5173)
 
 ## 🌐 Environment Variables
 
-Create a `.env` file in the project root.  
-**All variable names must be prefixed with `VITE_`.**
+cp .env.example .env
 
-```env
-VITE_API_URL=https://api.example.com
-```
-
-Access in code via:
-
-```ts
-import.meta.env.VITE_API_URL;
-```
+NOTE: UPDATE THE ENV ACCORDING TO YOUR ENVIRONMENT
 
 ---
 

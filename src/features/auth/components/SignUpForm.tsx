@@ -79,13 +79,15 @@ export default function SignUpForm() {
                 const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR.field);
                 const message = getErrorMessage(error, UNKNOWN_ERROR.message);
 
+
+                setError(field as Path<z.infer<typeof signupSchema>>, { message });
+                toast.error(message);
+
                 if (message.toLowerCase().includes('user already exist')) {
                     toast('Email already registered. Please log in.');
                     navigate('/auth/login');
                     return;
                 }
-                setError(field as Path<z.infer<typeof signupSchema>>, { message });
-                toast.error(message);
             } else {
                 setError('root', { message: 'Unexpected error occurred.' });
                 toast.error('Unexpected error occurred.');

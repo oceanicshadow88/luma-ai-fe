@@ -1,7 +1,7 @@
-import { ResetPasswordFormData } from '@features/auth/type';
+import { ResetPasswordFormData } from '@features/auth/types';
 import { SignUpInput } from '@features/auth/types';
 import { InstitutionPayload } from '@features/auth/types';
-import { LoginFormData } from '@features/auth/type';
+import { LoginFormData } from '@features/auth/types';
 
 export type ResetPasswordField = keyof ResetPasswordFormData | 'toast';
 export type SignupField = keyof SignUpInput | 'toast';

@@ -1,5 +1,5 @@
 import { apiClient } from "@services/api/apiClient";
-import { LoginFormData } from "@features/auth/type";
+import { LoginFormData } from "@features/auth/types";
 import { ApiError } from "@custom-types/ApiError";
 
 interface LoginResult {

@@ -5,6 +5,7 @@ import SignUpPage from '@app/auth/signup/page';
 import LoginPage from '@app/auth/login/page';
 import ResetPasswordPage from '@app/auth/reset-password/page';
 import LandingPage from '@app/landing/page';
+import DashboardPage from '@app/dashboard/page';
 
 
 const App = () => {
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
         <Route path="/auth/signup/institution" element={<InstitutionPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
       </Routes>
     </BrowserRouter>
   );

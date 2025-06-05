@@ -15,13 +15,20 @@ export function useSignUp() {
       const status = response.status;
       const resData = response.data;
 
-      if (status === 302 && resData?.redirect) {
+
+      if (resData?.message === 'The company does not exist') {
+        return { redirect: '/auth/signup/institution' };
+      }
+
+      if (resData?.message?.toLowerCase().includes('user already exist')) {
         return { redirect: '/auth/login' };
       }
 
-      if (status >= 400) {
+
+      if (status >= 400 || status === 302) {
         throw new ApiError(resData?.message || 'Unexpected error occurred');
       }
+
 
       const refreshToken = resData?.data?.refreshToken;
       if (refreshToken) {

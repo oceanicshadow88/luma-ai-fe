@@ -4,20 +4,34 @@ import { LoginFormData } from '../types';
 import { ApiError } from '@custom-types/ApiError';
 
 export function useLogin() {
-    const [isLoggingIn, setIsLogginIn] = useState(false);
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-    const login = async (data: LoginFormData): Promise<void> => {
-        setIsLogginIn(true);
-        try{
-            await loginService.login(data);
+    const login = async (data: LoginFormData, loginType: 'learner' | 'enterprise' = 'learner'): Promise<void> => {
+        setIsLoggingIn(true);
+        try {
+            await loginService.login(data, loginType);
         } catch (error) {
             if (error instanceof ApiError) {
                 console.error('Login error:', error.message);
             }
             throw error;
         } finally {
-            setIsLogginIn(false);
+            setIsLoggingIn(false);
         }
     };
-    return{ login, isLoggingIn };
+
+    const loginAsLearner = async (data: LoginFormData): Promise<void> => {
+        return login(data, 'learner');
+    };
+
+    const loginAsEnterprise = async (data: LoginFormData): Promise<void> => {
+        return login(data, 'enterprise');
+    };
+
+    return { 
+        login, 
+        loginAsLearner, 
+        loginAsEnterprise, 
+        isLoggingIn 
+    };
 }

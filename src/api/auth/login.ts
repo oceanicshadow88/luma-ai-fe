@@ -11,9 +11,16 @@ interface LoginResult {
   }[];
 }
 
-class LoginService {
-  async login(data: LoginFormData): Promise<LoginResult> {
-    const response = await apiClient.post('/auth/login', data);
+interface LoginService {
+  login(data: LoginFormData, type?: 'learner' | 'enterprise'): Promise<LoginResult>;
+  loginAsLearner(data: LoginFormData): Promise<LoginResult>;
+  loginAsEnterprise(data: LoginFormData): Promise<LoginResult>;
+}
+
+class LoginServiceImpl implements LoginService {
+  async login(data: LoginFormData, type: 'learner' | 'enterprise' = 'learner'): Promise<LoginResult> {
+    const endpoint = `/auth/login/${type}`;
+    const response = await apiClient.post(endpoint, data);
 
     if (!response.data.success) {
       const { message } = response.data;
@@ -22,6 +29,14 @@ class LoginService {
 
     return response.data.data;
   }
+
+  async loginAsLearner(data: LoginFormData): Promise<LoginResult> {
+    return this.login(data, 'learner');
+  }
+
+  async loginAsEnterprise(data: LoginFormData): Promise<LoginResult> {
+    return this.login(data, 'enterprise');
+  }
 }
 
-export const loginService = new LoginService();
+export const loginService = new LoginServiceImpl();

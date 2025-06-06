@@ -9,10 +9,14 @@ import { Button } from '@components/buttons/Button';
 import { useNavigate } from 'react-router-dom';
 import { handleAdvancedFormError } from '@utils/errorHandler';
 import { LOGIN_ERROR_MESSAGE_MAP } from '@custom-types/ApiError';
-import { toast } from 'react-hot-toast';
-import { ApiError } from '@custom-types/ApiError';
+import { showToastWithAction } from '@components/toast/ToastWithAction';
 
-export function LoginForm() {
+interface LoginFormProps {
+  loginType?: 'learner' | 'enterprise';
+  onSuccess?: () => void;
+}
+
+export function LoginForm({ loginType = 'learner', onSuccess }: LoginFormProps) {
   const navigate = useNavigate();
   const {
     register,
@@ -28,18 +32,29 @@ export function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(data);
-      toast.success('Login successful!');
-      setTimeout(() => {
+      await login(data, loginType);
+
+      const timeoutId = setTimeout(() => {
         navigate('/dashboard');
       }, 3000);
+
+      showToastWithAction('Successfully logged in! Redirecting...', {
+        actionText: 'Go Now',
+        onAction: () => {
+          clearTimeout(timeoutId);
+          navigate('/dashboard');
+        },
+        duration: 2000,
+      });
+
+      onSuccess?.();
     } catch (error) {
       handleAdvancedFormError(
         error,
         setError,
         LOGIN_ERROR_MESSAGE_MAP,
         'toast',
-        'Login failed. Please check your email and password.'
+        'Something went wrong. Please try again later.'
       );
     }
   };

@@ -34,6 +34,7 @@ export const RESET_PASSWORD_ERROR_MESSAGE_MAP: Record<string, [ResetPasswordFiel
 
 export const LOGIN_ERROR_MESSAGE_MAP: Record<string, [keyof LoginFormData | 'toast', string]> = {
   'credentials': ['toast', 'Login failed. Please check your email and password.'],
+  'attempts': ['toast', 'Too many failed login attempts. Please try again later.'],
 };
 
 export const SIGNUP_ERROR_MESSAGE_MAP: Record<string, SignupField> = {

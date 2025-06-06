@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '../schemas';
 import { LoginFormData } from '../types';
 import { useLogin } from '../hooks/useLogin';
+import { LoginType } from '@api/auth/login';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
@@ -12,11 +13,11 @@ import { LOGIN_ERROR_MESSAGE_MAP } from '@custom-types/ApiError';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 
 interface LoginFormProps {
-  loginType?: 'learner' | 'enterprise';
+  loginType?: LoginType;
   onSuccess?: () => void;
 }
 
-export function LoginForm({ loginType = 'learner', onSuccess }: LoginFormProps) {
+export function LoginForm({ loginType = LoginType.LEARNER, onSuccess }: LoginFormProps) {
   const navigate = useNavigate();
   const {
     register,

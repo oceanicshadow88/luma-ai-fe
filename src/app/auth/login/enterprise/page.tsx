@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import logo from '@assets/logo.svg';
 import background from '@assets/decorative_graphic.png';
 import { LoginForm } from "@features/auth/components/LoginForm";
+import { LoginType } from "@api/auth/login";
 
 const EnterpriseLoginPage = () => {
     return (
@@ -19,12 +20,12 @@ const EnterpriseLoginPage = () => {
 
                 <section className="w-full max-w-sm sm:max-w-md lg:max-w-md">
                     <div className="w-full">
-                        <LoginForm loginType="enterprise" />
+                        <LoginForm loginType={LoginType.ENTERPRISE} />
                     </div>
 
                     <div className="mt-4 sm:mt-6 text-sm text-center">
                         <p className="text-gray-600 inline">Forgot Password?</p>
-                        <Link 
+                        <Link
                             to="/auth/reset-password"
                             className="ml-1 text-blue-600 font-medium hover:text-blue-900 hover:underline active:text-blue-700 transition-colors"
                         >

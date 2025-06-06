@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { loginService } from '@api/auth/login';
-import { LoginFormData } from '../types';
+import { loginService, LoginType } from '@api/auth/login';
+import { LoginFormData } from '@features/auth/types';
 import { ApiError } from '@custom-types/ApiError';
 
 export function useLogin() {
     const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-    const login = async (data: LoginFormData, loginType: 'learner' | 'enterprise' = 'learner'): Promise<void> => {
+    const login = async (data: LoginFormData, loginType: LoginType = LoginType.LEARNER): Promise<void> => {
         setIsLoggingIn(true);
         try {
             await loginService.login(data, loginType);
@@ -21,17 +21,17 @@ export function useLogin() {
     };
 
     const loginAsLearner = async (data: LoginFormData): Promise<void> => {
-        return login(data, 'learner');
+        return login(data, LoginType.LEARNER);
     };
 
     const loginAsEnterprise = async (data: LoginFormData): Promise<void> => {
-        return login(data, 'enterprise');
+        return login(data, LoginType.ENTERPRISE);
     };
 
-    return { 
-        login, 
-        loginAsLearner, 
-        loginAsEnterprise, 
-        isLoggingIn 
+    return {
+        login,
+        loginAsLearner,
+        loginAsEnterprise,
+        isLoggingIn
     };
 }

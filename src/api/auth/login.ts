@@ -1,11 +1,6 @@
-import { apiClient } from "@services/api/apiClient";
-import { LoginFormData } from "@features/auth/types";
+import { apiClient } from "@services/api/apiClient"; 
+import { LoginFormData, UserType } from "@features/auth/types"; 
 import { ApiError } from "@custom-types/ApiError";
-
-enum LoginType {
-  LEARNER = 'learner',
-  ENTERPRISE = 'enterprise'
-}
 
 interface LoginResult {
   refreshToken?: string;
@@ -13,36 +8,35 @@ interface LoginResult {
   membership?: {
     company: string; 
     role: string;
-  }[];
+  }[]; 
 }
 
 interface LoginService {
-  login(data: LoginFormData, type?: LoginType): Promise<LoginResult>;
+  login(data: LoginFormData, userType?: UserType): Promise<LoginResult>;
   loginAsLearner(data: LoginFormData): Promise<LoginResult>;
   loginAsEnterprise(data: LoginFormData): Promise<LoginResult>;
 }
 
 class LoginServiceImpl implements LoginService {
-  async login(data: LoginFormData, type: LoginType = LoginType.LEARNER): Promise<LoginResult> {
-    const endpoint = `/auth/login/${type}`;
+  async login(data: LoginFormData, userType: UserType = UserType.LEARNER): Promise<LoginResult> {
+    const endpoint = `/auth/login/${userType}`;
     const response = await apiClient.post(endpoint, data);
-
+    
     if (!response.data.success) {
       const { message } = response.data;
       throw new ApiError(message);
     }
-
+    
     return response.data.data;
   }
-
+  
   async loginAsLearner(data: LoginFormData): Promise<LoginResult> {
-    return this.login(data, LoginType.LEARNER);
+    return this.login(data, UserType.LEARNER);
   }
-
+  
   async loginAsEnterprise(data: LoginFormData): Promise<LoginResult> {
-    return this.login(data, LoginType.ENTERPRISE);
+    return this.login(data, UserType.ENTERPRISE);
   }
 }
 
 export const loginService = new LoginServiceImpl();
-export { LoginType };

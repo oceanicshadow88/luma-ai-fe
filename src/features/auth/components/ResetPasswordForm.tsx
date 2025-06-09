@@ -1,21 +1,29 @@
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { resetPasswordSchema } from '../schemas';
-import { useResetPassword } from '../hooks/useResetPassword';
+import { resetPasswordSchema } from '@features/auth/schemas';
+import { useResetPassword } from '@features/auth/hooks/useResetPassword';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
-import { ResetPasswordFormData } from '@features/auth/types';
+import { ResetPasswordFormData, UserType } from '@features/auth/types';
 import {
   RESET_PASSWORD_ERROR_MESSAGE_MAP,
   UNKNOWN_ERROR,
 } from '@custom-types/ApiError';
-import { handleAdvancedFormError } from '@utils/errorHandler';  
+import { handleAdvancedFormError } from '@utils/errorHandler';
 import { toast } from 'react-hot-toast';
 
-export function ResetPasswordForm() {
+interface ResetPasswordFormProps {
+  userType?: UserType;
+  onSuccess?: () => void;
+}
+
+export function ResetPasswordForm({ 
+  userType = UserType.LEARNER, 
+  onSuccess 
+}: ResetPasswordFormProps) {
   const navigate = useNavigate();
   const {
     register,
@@ -33,11 +41,16 @@ export function ResetPasswordForm() {
 
   const { resetPassword, sendVerificationCode, isCodeSending, countdown } = useResetPassword();
 
+  const getLoginPath = () => {
+    return userType === UserType.ENTERPRISE ? '/auth/login/enterprise' : '/auth/login/learner';
+  };
+
   const onSubmit = async (data: ResetPasswordFormData) => {
     try {
       await resetPassword(data);
       toast.success('Password reset successfully. Please log in again with new password.');
-      setTimeout(() => navigate('/auth/login'), 3000);
+      setTimeout(() => navigate(getLoginPath()), 3000);
+      onSuccess?.();
     } catch (error) {
       handleAdvancedFormError(
         error,

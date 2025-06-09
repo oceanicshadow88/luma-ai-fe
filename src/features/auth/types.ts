@@ -62,3 +62,8 @@ export type SignupFormData = {
   confirmPassword?: string;
   verifyCode: string;
 };
+
+export enum UserType {
+  LEARNER = 'learner',
+  ENTERPRISE = 'enterprise'
+}

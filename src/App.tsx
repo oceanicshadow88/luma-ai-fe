@@ -5,7 +5,8 @@ import { Toaster } from 'react-hot-toast';
 import SignUpPage from '@app/auth/signup/page';
 import EnterpriseLoginPage from '@app/auth/login/enterprise/page';
 import LearnerLoginPage from '@app/auth/login/learner/page';
-import ResetPasswordPage from '@app/auth/reset-password/page';
+import EnterpriseResetPasswordPage from '@app/auth/reset-password/enterprise/page';
+import LearnerResetPasswordPage from '@app/auth/reset-password/learner/page';
 import LandingPage from '@app/landing/page';
 import DashboardPage from '@app/dashboard/page';
 
@@ -22,12 +23,19 @@ const App = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth/signup" element={<SignUpPage />} />
-        <Route path="/auth/login/enterprise" element={<EnterpriseLoginPage />} />
-        <Route path="/auth/login/learner" element={<LearnerLoginPage />} />
-        <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
         <Route path="/auth/signup/institution" element={<InstitutionPage />} />
+        
+        <Route path="/auth/login" element={<LearnerLoginPage />} />
+        <Route path="/auth/login/learner" element={<LearnerLoginPage />} />
+        <Route path="/auth/login/enterprise" element={<EnterpriseLoginPage />} />
+        
+        <Route path="/auth/reset-password" element={<LearnerResetPasswordPage />} />
+        <Route path="/auth/reset-password/learner" element={<LearnerResetPasswordPage />} />
+        <Route path="/auth/reset-password/enterprise" element={<EnterpriseResetPasswordPage />} />
+        
         <Route path="/dashboard" element={<DashboardPage />} />
+        
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

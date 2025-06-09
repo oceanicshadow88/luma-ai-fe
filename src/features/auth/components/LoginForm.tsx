@@ -1,9 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema } from '../schemas';
-import { LoginFormData } from '../types';
-import { useLogin } from '../hooks/useLogin';
-import { LoginType } from '@api/auth/login';
+import { loginSchema } from '@features/auth/schemas';
+import { LoginFormData, UserType } from '@features/auth/types'; 
+import { useLogin } from '@features/auth/hooks/useLogin';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
@@ -13,11 +12,11 @@ import { LOGIN_ERROR_MESSAGE_MAP } from '@custom-types/ApiError';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 
 interface LoginFormProps {
-  loginType?: LoginType;
+  userType?: UserType; 
   onSuccess?: () => void;
 }
 
-export function LoginForm({ loginType = LoginType.LEARNER, onSuccess }: LoginFormProps) {
+export function LoginForm({ userType = UserType.LEARNER, onSuccess }: LoginFormProps) {
   const navigate = useNavigate();
   const {
     register,
@@ -33,7 +32,7 @@ export function LoginForm({ loginType = LoginType.LEARNER, onSuccess }: LoginFor
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(data, loginType);
+      await login(data, userType); 
 
       const timeoutId = setTimeout(() => {
         navigate('/dashboard');

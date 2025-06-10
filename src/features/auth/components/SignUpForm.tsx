@@ -16,6 +16,8 @@ import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { FormError } from '@components/forms/FormError';
 import rightLogo from '@assets/decorative_graphic.png';
 import logo from '@assets/logo.svg';
+import { useEffect } from 'react';
+import { authService } from '@api/auth/auth';
 
 export default function SignUpForm() {
   const [searchParams] = useSearchParams();
@@ -56,6 +58,10 @@ export default function SignUpForm() {
       toast.error(message);
     }
   };
+
+  useEffect(() => {
+    authService.authToken(token ?? '').catch((e) => console.log('error'));
+  }, [token]);
 
   const onSubmit = async (data: z.infer<typeof signupSchema>) => {
     const payload = {

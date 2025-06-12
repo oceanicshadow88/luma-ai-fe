@@ -30,7 +30,6 @@ export function ResetPasswordForm({
 }: ResetPasswordFormProps) {
   const navigate = useNavigate();
 
-  // 根据主题定义样式
   const themeStyles = {
     default: {
       inputClassName: 'border focus:outline-none focus:placeholder-transparent text-left border-gray-300 focus:border-blue-600 focus:ring-0 px-4 h-11 leading-normal pl-[20px]',

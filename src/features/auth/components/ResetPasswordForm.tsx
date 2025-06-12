@@ -15,16 +15,41 @@ import {
 import { handleAdvancedFormError } from '@utils/errorHandler';
 import { toast } from 'react-hot-toast';
 
+type Theme = 'default' | 'student';
+
 interface ResetPasswordFormProps {
   userType?: UserType;
   onSuccess?: () => void;
+  theme?: Theme;
 }
 
-export function ResetPasswordForm({ 
-  userType = UserType.LEARNER, 
-  onSuccess 
+export function ResetPasswordForm({
+  userType = UserType.LEARNER,
+  onSuccess,
+  theme = 'default'
 }: ResetPasswordFormProps) {
   const navigate = useNavigate();
+
+  // 根据主题定义样式
+  const themeStyles = {
+    default: {
+      inputClassName: 'border focus:outline-none focus:placeholder-transparent text-left border-gray-300 focus:border-blue-600 focus:ring-0 px-4 h-11 leading-normal pl-[20px]',
+      passwordInputClassName: 'border focus:outline-none rounded-3xl text-left border-gray-300 focus:border-blue-600 focus:ring-0 px-4 h-11 leading-normal pl-[20px] pr-10',
+      labelClassName: 'text-left block text-gray-600 mb-1 group-focus-within:text-blue-600',
+      buttonClass: '',
+      verificationButtonClass: '',
+    },
+    student: {
+      inputClassName: 'border focus:outline-none focus:placeholder-transparent text-left border-gray-300 focus:border-yellow-500 focus:ring-0 px-4 h-11 leading-normal pl-[20px]',
+      passwordInputClassName: 'border focus:outline-none rounded-3xl text-left border-gray-300 focus:border-yellow-500 focus:ring-0 px-4 h-11 leading-normal pl-[20px] pr-10',
+      labelClassName: 'text-left block text-gray-600 mb-1 group-focus-within:text-yellow-500',
+      buttonClass: '!bg-yellow-500 hover:!bg-yellow-600',
+      verificationButtonClass: '!bg-transparent !text-yellow-500 hover:!bg-transparent hover:!text-yellow-600 !border-yellow-500',
+    },
+  };
+
+  const currentTheme = themeStyles[theme];
+
   const {
     register,
     handleSubmit,
@@ -92,6 +117,8 @@ export function ResetPasswordForm({
           placeholder="e.g. your@email.com"
           {...register('email')}
           error={errors.email?.message}
+          inputClassName={currentTheme.inputClassName}
+          labelClassName={currentTheme.labelClassName}
         />
         <VerificationCodeInput
           id="verificationCode"
@@ -102,6 +129,9 @@ export function ResetPasswordForm({
           isButtonDisabled={countdown > 0 || isCodeSending}
           {...register('verificationCode')}
           error={errors.verificationCode?.message}
+          inputClassName={currentTheme.inputClassName}
+          labelClassName={currentTheme.labelClassName}
+          buttonClassName={currentTheme.verificationButtonClass}
         />
         <PasswordInput
           id="password"
@@ -109,6 +139,8 @@ export function ResetPasswordForm({
           placeholder="Create a new password"
           {...register('password')}
           error={errors.password?.message}
+          inputClassName={currentTheme.passwordInputClassName}
+          labelClassName={currentTheme.labelClassName}
         />
         <PasswordInput
           id="confirmPassword"
@@ -116,10 +148,18 @@ export function ResetPasswordForm({
           placeholder="Confirm your new password"
           {...register('confirmPassword')}
           error={errors.confirmPassword?.message}
+          inputClassName={currentTheme.passwordInputClassName}
+          labelClassName={currentTheme.labelClassName}
         />
       </div>
       <div>
-        <Button type="submit" fullWidth disabled={isSubmitting} isLoading={isSubmitting}>
+        <Button 
+          type="submit" 
+          fullWidth 
+          disabled={isSubmitting} 
+          isLoading={isSubmitting}
+          className={currentTheme.buttonClass}
+        >
           Reset Password
         </Button>
       </div>

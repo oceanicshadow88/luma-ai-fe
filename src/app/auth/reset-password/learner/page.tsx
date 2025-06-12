@@ -15,10 +15,10 @@ const LearnerResetPasswordPage = () => {
       </header>
 
       <main className="w-full max-w-md mt-6">
-        <ResetPasswordForm userType={UserType.LEARNER} />
+        <ResetPasswordForm userType={UserType.LEARNER} theme="student"/>
         <Link
           to="/auth/login/learner"
-          className="block pt-6 text-center text-blue-600 hover:text-blue-900 hover:underline"
+          className="block pt-6 text-center text-yellow-500 hover:text-yellow-600 hover:underline"
           aria-label="Back to login page"
         >
           Back to Login

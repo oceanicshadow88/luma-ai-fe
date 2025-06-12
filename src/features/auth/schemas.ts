@@ -1,5 +1,5 @@
-import * as z from 'zod'; // TypeScript-first schema validation library with static type inference. Reference: https://github.com/colinhacks/zod
-                          // Zod is designed to centralize validation logic in schema files. Referenc: https://zod.dev/?id=writing-schemas; https://react-hook-form.com/get-started#SchemaValidation
+import * as z from 'zod'; // TypeScript-first schema validation library with static type inference. Reference: https://github.com/colinhacks/zod                           
+// Zod is designed to centralize validation logic in schema files. Referenc: https://zod.dev/?id=writing-schemas; https://react-hook-form.com/get-started#SchemaValidation
 import { emailSchema, verificationCodeSchema, newPasswordSchema, passwordSchema } from '@schema/validation';
 
 export const signupSchema = z
@@ -13,11 +13,11 @@ export const signupSchema = z
       .regex(/^[a-zA-Z0-9]+$/, 'Username can only contain letters and numbers'),
     email: emailSchema,
     code: verificationCodeSchema,
-    password: passwordSchema,
+    password: newPasswordSchema,
     confirmPassword: z.string().min(1, 'Please confirm your password'),
-    agreeTerms: z.literal(true, {
-      errorMap: () => ({ message: 'You must agree to the terms to continue.' }),
-    }),
+    termsAccepted: z
+      .boolean()
+      .refine((val) => val === true, 'You must agree to the terms to continue.'),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
@@ -25,7 +25,7 @@ export const signupSchema = z
   });
 
 export const institutionSchema = z.object({
-  name: z
+  companyName: z
     .string()
     .min(2, 'Organisation name must be at least 2 characters')
     .max(100, 'Organisation name too long'),
@@ -37,7 +37,7 @@ export const institutionSchema = z.object({
   logo: z.any().optional(),
   emailDomain: z.string(),
 });
- 
+
 export const resetPasswordSchema = z
   .object({
     email: emailSchema,
@@ -50,7 +50,7 @@ export const resetPasswordSchema = z
     path: ['confirmPassword'],
   });
 
-  export const loginSchema = z.object({
-    email: emailSchema,
-    password: passwordSchema
-  });
+export const loginSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema
+});

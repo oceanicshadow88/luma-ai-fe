@@ -13,30 +13,6 @@ function isApiError(error: unknown): error is {
   );
 }
 
-export function getErrorField<TField extends string>(
-  error: unknown,
-  errorMap: Record<string, TField>,
-  fallbackField: TField
-): TField {
-  if (isApiError(error)) {
-    const errorKey = Object.keys(errorMap).find(key => 
-      error.message.toLowerCase().includes(key.toLowerCase())
-    );
-    return errorKey ? errorMap[errorKey] : fallbackField;
-  }
-  return fallbackField;
-}
-
-export function getErrorMessage(
-  error: unknown,
-  fallbackMessage: string
-): string {
-  if (isApiError(error)) {
-    return error.message;
-  }
-  return fallbackMessage;
-}
-
 export function getErrorFieldAndMessage<TField extends string>(
   error: unknown,
   errorMap: Record<string, [TField, string]>,
@@ -60,20 +36,6 @@ export function getErrorFieldAndMessage<TField extends string>(
     }
   }
   return [fallbackField, fallbackMessage];
-}
-
-export function handleFormError<TField extends string, TValues extends FieldValues>(
-  error: unknown,
-  setError: UseFormSetError<TValues>,
-  errorMap: Record<string, TField>,
-  fallbackField: TField,
-  fallbackMessage: string
-): string {
-  const field = getErrorField(error, errorMap, fallbackField);
-  const message = getErrorMessage(error, fallbackMessage);
-
-  setError(field as unknown as Path<TValues>, { message });
-  return message;
 }
 
 export function handleAdvancedFormError<TField extends string, TValues extends FieldValues>(
@@ -101,28 +63,22 @@ export function handleAdvancedFormError<TField extends string, TValues extends F
 
 export function handleToastError(
   error: unknown,
-  errorMap?: Record<string, string>,
+  errorMap: Record<string, [string, string]>,
   fallbackMessage: string = 'Something went wrong. Please try again.'
 ): void {
-  if (isApiError(error)) {
-    if (errorMap) {
-      const errorKey = Object.keys(errorMap).find(key => 
-        error.message.toLowerCase().includes(key.toLowerCase())
-      );
-      
-      if (errorKey) {
-        toast.error(errorMap[errorKey]);
-        return;
-      }
-    }
-    
-    if (error.meta?.cooldownSeconds) {
-      toast.error(`Too many requests. Try again in ${error.meta.cooldownSeconds} seconds.`);
-      return;
-    }
+  const [, message] = getErrorFieldAndMessage(
+    error,
+    errorMap,
+    'toast',
+    fallbackMessage
+  );
+  
+  if (isApiError(error) && error.meta?.cooldownSeconds) {
+    toast.error(`Too many requests. Try again in ${error.meta.cooldownSeconds} seconds.`);
+    return;
   }
-
-  toast.error(fallbackMessage);
+  
+  toast.error(message);
 }
 
 export function handleSilentError(error: unknown): { 

@@ -1,6 +1,6 @@
 import { ResetPasswordFormData } from '@features/auth/types';
 import { SignUpInput } from '@features/auth/types';
-import { InstitutionPayload } from '@features/auth/types';
+import { InstitutionFormData } from '@features/auth/types';
 import { LoginFormData } from '@features/auth/types';
 
 export type ResetPasswordField = keyof ResetPasswordFormData | 'toast';
@@ -38,26 +38,29 @@ export const LOGIN_ERROR_MESSAGE_MAP: Record<string, [keyof LoginFormData | 'toa
   'include': ['toast', 'Login failed. Please check your email and password.'],
 };
 
-export const SIGNUP_ERROR_MESSAGE_MAP: Record<string, SignupField> = {
-  'Please enter your first name': 'firstName',
-  'Please enter your last name': 'lastName',
-  'Please enter your username': 'username',
-  'Please enter your email address': 'email',
-  'Sorry, please type a valid email': 'email',
-  'Please enter the 6-digit verification code': 'code',
-  'Please enter your password': 'password',
-  'Passwords do not match': 'confirmPassword',
-  'You must agree to the terms to continue.': 'agreeTerms',
-  'Email already registered. Please log in': 'email',
-  'Username already in use. Try a different one': 'username',
-  'Invalid or expired code': 'code',
+export const SIGNUP_ERROR_MESSAGE_MAP: Record<string, [SignupField, string]> = {
+  'firs tname': ['firstName', 'Please enter your first name'],
+  'last name': ['lastName', 'Please enter your last name'],
+  'enter your username': ['username', 'Please enter your username'],
+  'email address': ['email', 'Please enter your email address'],
+  'valid email': ['email', 'Sorry, please type a valid email'],
+  '6-digit': ['code', 'Please enter the 6-digit verification code'],
+  'password': ['password', 'Please enter your password'],
+  'match': ['confirmPassword', 'Passwords do not match'],
+  'terms': ['termsAccepted', 'You must agree to the terms to continue.'],
+  'registered': ['toast', 'Email already registered. Please log in'],
+  'email already exist': ['toast', 'Email already registered. Please log in'],
+  'exist with username': ['toast', 'Username already in use. Try a different one'],
+  'username already exist': ['toast', 'Username already in use. Try a different one'],
+  'invalid': ['code', 'Invalid or expired code. Please request a new one.'],
+  'public': ['email', 'Public email providers are not allowed'],
 };
 
-export const INSTITUTION_ERROR_MAP: Record<string, keyof InstitutionPayload | 'root'> = {
-  'Organisation name must be at least 2 characters': 'name',
+export const INSTITUTION_ERROR_MAP: Record<string, [keyof InstitutionFormData | 'root', string]> = {
+  'characters': ['companyName', 'Organisation name must be at least 2 characters'],
 };
 
 export const UNKNOWN_ERROR = {
-  field: 'toast' as ResetPasswordField | SignupField | keyof InstitutionPayload,
+  field: 'toast' as ResetPasswordField | SignupField | keyof InstitutionFormData,
   message: 'Unexpected error occurred. Please try again.',
 };

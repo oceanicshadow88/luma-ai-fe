@@ -16,7 +16,7 @@ import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { FormError } from '@components/forms/FormError';
 import rightLogo from '@assets/decorative_graphic.png';
 import logo from '@assets/logo.svg';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { authService } from '@api/auth/auth';
 
 export default function SignUpForm() {
@@ -45,6 +45,8 @@ export default function SignUpForm() {
   const password = watch('password');
   const { signup, isSigningUp } = useSignUp();
   const { sendCode, countdown, canSend } = useSendCode();
+  const [isTokenInvalid, setIsTokenInvalid] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleSendCode = async () => {
     if (!email || !canSend) return;
@@ -60,7 +62,10 @@ export default function SignUpForm() {
   };
 
   useEffect(() => {
-    authService.authToken(token ?? '').catch((e) => console.log('error'));
+    authService
+      .authToken(token ?? '')
+      .catch((e) => setIsTokenInvalid(true))
+      .finally(() => setIsLoading(false));
   }, [token]);
 
   const onSubmit = async (data: z.infer<typeof signupSchema>) => {
@@ -95,6 +100,14 @@ export default function SignUpForm() {
       toast.error(message);
     }
   };
+
+  if (isLoading) {
+    return 'Loading...';
+  }
+
+  if (isTokenInvalid) {
+    return 'Invalid invitation link. Please check your email or contact admin';
+  }
 
   return (
     <div className="w-[1440px] h-[900px] flex bg-white items-center mx-auto">

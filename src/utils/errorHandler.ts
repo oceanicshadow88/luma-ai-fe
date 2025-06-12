@@ -1,6 +1,5 @@
 import { FieldValues, UseFormSetError, Path } from 'react-hook-form';
 
-
 function isApiError(error: unknown): error is { message: string } {
   return (
     typeof error === 'object' &&
@@ -21,17 +20,15 @@ export function getErrorField<TField extends string>(
   return fallbackField;
 }
 
-
-export function getErrorMessage(
-  error: unknown,
-  fallbackMessage: string
-): string {
+export function getErrorMessage(error: unknown, fallbackMessage: string): string {
+  if (error?.message?.includes('Unhandled Error')) {
+    return 'Server Error';
+  }
   if (isApiError(error)) {
     return error.message;
   }
   return fallbackMessage;
 }
-
 
 export function handleFormError<TField extends string, TValues extends FieldValues>(
   error: unknown,

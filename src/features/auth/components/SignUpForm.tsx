@@ -56,6 +56,7 @@ export default function SignUpForm() {
     } catch (error: unknown) {
       const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR.field);
       const message = getErrorMessage(error, UNKNOWN_ERROR.message);
+      console.log(message);
       setError(field as Path<z.infer<typeof signupSchema>>, { message });
       toast.error(message);
     }
@@ -77,17 +78,18 @@ export default function SignUpForm() {
       password: data.password,
       confirmPassword: data.confirmPassword,
       verifyValue: data.code,
+      termsAccepted: true,
     };
 
     try {
       const result = await signup(payload);
-      if (result?.redirect) {
-        toast('Company not found, redirecting...');
-        navigate('/auth/signup/institution', { state: { email: data.email } });
-        return;
-      }
-      toast.success('Signup success!');
-      navigate('/dashboard');
+      // if (result?.redirect) {
+      //   toast('Company not found, redirecting...');
+      //   navigate('/auth/signup/institution', { state: { email: data.email } });
+      //   return;
+      // }
+      // toast.success('Signup success!');
+      // navigate('/dashboard');
     } catch (error: unknown) {
       const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR.field);
       const message = getErrorMessage(error, UNKNOWN_ERROR.message);
@@ -105,9 +107,9 @@ export default function SignUpForm() {
     return 'Loading...';
   }
 
-  if (isTokenInvalid) {
-    return 'Invalid invitation link. Please check your email or contact admin';
-  }
+  // if (isTokenInvalid) {
+  //   return 'Invalid invitation link. Please check your email or contact admin';
+  // }
 
   return (
     <div className="w-[1440px] h-[900px] flex bg-white items-center mx-auto">

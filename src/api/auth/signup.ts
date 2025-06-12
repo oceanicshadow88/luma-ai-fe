@@ -3,8 +3,8 @@ import { SignupFormData } from '@features/auth/types';
 
 class SignupService {
   async signup(data: SignupFormData): Promise<{ refreshToken: string }> {
-    const response = await apiClient.post('/auth/register/admin', data);
-    return response.data.data; 
+    const response = await apiClient.post('/auth/signup/admin', data);
+    return response.data.data;
   }
 
   async sendCode(email: string): Promise<void> {
@@ -12,7 +12,7 @@ class SignupService {
   }
 
   async signupRaw(data: SignupFormData) {
-    return apiClient.post('/auth/register/admin', data, {
+    return apiClient.post('/auth/signup/admin', data, {
       validateStatus: () => true,
     });
   }

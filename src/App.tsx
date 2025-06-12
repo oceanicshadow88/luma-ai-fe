@@ -2,7 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { TOAST_STYLE } from '@styles/toastStyles';
 import InstitutionPage from '@app/auth/institution/page';
 import { Toaster } from 'react-hot-toast';
-import SignUpPage from '@app/auth/signup/page';
+import LearnerSignUpPage from '@app/auth/signup/learner/page';
+import AdminSignUpPage from '@app/auth/signup/admin/page';
 import EnterpriseLoginPage from '@app/auth/login/enterprise/page';
 import LearnerLoginPage from '@app/auth/login/learner/page';
 import EnterpriseResetPasswordPage from '@app/auth/reset-password/enterprise/page';
@@ -22,7 +23,10 @@ const App = () => {
       />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/auth/signup" element={<SignUpPage />} />
+        
+        <Route path="/auth/signup" element={<Navigate to="/auth/signup/learner" replace />} />
+        <Route path="/auth/signup/learner" element={<LearnerSignUpPage />} />
+        <Route path="/auth/signup/admin" element={<AdminSignUpPage />} />
         <Route path="/auth/signup/institution" element={<InstitutionPage />} />
         
         <Route path="/auth/login" element={<LearnerLoginPage />} />

@@ -1,4 +1,3 @@
-
 export interface ResetPasswordFormData {
   email: string;
   verificationCode: string;
@@ -30,12 +29,12 @@ export interface ApiErrorResponse {
   code?: string;
 }
 
-export interface LoginFormData  {
+export interface LoginFormData {
   email: string;
   password: string;
-};
+}
 
-export type SignUpInput = {
+export interface SignUpInput {
   firstName: string;
   lastName: string;
   username: string;
@@ -43,27 +42,33 @@ export type SignUpInput = {
   code: string;
   password: string;
   confirmPassword: string;
-  agreeTerms: boolean;
-};
+  termsAccepted: boolean;
+}
 
-export type InstitutionPayload = {
-  name: string;
-  slug: string;
-  emailDomain: string;
-  logo?: File;
-};
+export interface InstitutionFormData {
+  companyName: string;
+  slug?: string;
+  emailDomain?: string;
+  logo?: File | null;
+}
 
-export type SignupFormData = {
+export interface SignupFormData {
   firstname: string;
   lastname: string;
   username: string;
   email: string;
   password: string;
-  confirmPassword?: string;
   verifyCode: string;
-};
+  termsAccepted: boolean;
+}
 
 export enum UserType {
   LEARNER = 'learner',
   ENTERPRISE = 'enterprise'
+}
+
+export enum UserRole {
+  LEARNER = 'learner',
+  ADMIN = 'admin',
+  INSTRUCTOR = 'instructor'
 }

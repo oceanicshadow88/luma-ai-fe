@@ -13,6 +13,7 @@ import { FormError } from '@components/forms/FormError';
 import arrowIcon from '@assets/arrow.svg';
 import rightLogo from '@assets/decorative_graphic.png';
 import logo from '@assets/logo.svg';
+import { filterSignupForm } from '@utils/filterSignupForm';
 
 function getSlugFromEmail(email: string): string {
     const domain = email.split('@')[1]?.toLowerCase() || '';
@@ -24,7 +25,7 @@ function getSlugFromEmail(email: string): string {
 const InstitutionForm = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const email: string = location.state?.email || '';
+    const email: string = location.state?.signupForm?.email || '';
     const emailDomain = email.split('@')[1];
     const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
@@ -45,6 +46,10 @@ const InstitutionForm = () => {
             emailDomain,
         },
     });
+
+    const handlePrev = () => {
+        navigate('/auth/signup', { state: { signupForm: filterSignupForm(location.state?.signupForm || {}) } });
+    };
 
     useEffect(() => {
         if (email) {
@@ -88,14 +93,13 @@ const InstitutionForm = () => {
     };
 
     return (
-        <div className="flex w-full h-screen items-center justify-center gap-[170px]">
-            {/* Left section */}
-            <div className="w-[400px] flex flex-col justify-center">
-                <img src={logo} alt="Luma AI Logo" className="w-[140px] h-auto mb-3" />
-                <h2 className="text-2xl font-bold mb-2 text-left block">Register New Institution</h2>
-                <p className="text-sm text-gray-500 mb-10 text-left block">Invited Email: {email}</p>
+        <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-white">
+            <div className="w-full max-w-md md:max-w-lg px-6 py-8 md:px-12 flex flex-col justify-center">
+                <img src={logo} alt="Luma AI Logo" className="w-36 h-auto mb-5 mx-auto md:mx-0" />
+                <h2 className="text-2xl font-bold mb-2 text-center md:text-left">Register New Institution</h2>
+                <p className="text-sm text-gray-500 mb-8 text-center md:text-left">Email: {email}</p>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6 text-left block">
+                <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6">
                     <Input
                         id="name"
                         label="Organisation Name"
@@ -143,8 +147,8 @@ const InstitutionForm = () => {
 
                     <FormError message={errors.root?.message} />
 
-                    <div className="flex gap-4 mt-2">
-                        <Button variant="secondary" type="button" onClick={() => navigate('/auth/signup')} fullWidth>
+                    <div className="flex gap-2 md:gap-4 mt-2">
+                        <Button variant="secondary" type="button" onClick={handlePrev} fullWidth>
                             Previous
                         </Button>
                         <Button type="submit" fullWidth isLoading={isSubmitting}>
@@ -154,12 +158,12 @@ const InstitutionForm = () => {
                 </form>
             </div>
 
-            {/* Right section */}
-            <div className="w-[600px] h-[800px] flex items-center justify-center">
-                <img src={rightLogo} alt="Luma AI Logo" className="w-[600px] h-[800px] object-contain" />
+            <div className="hidden md:flex flex-1 items-center justify-center">
+                <img src={rightLogo} alt="Luma AI Logo" className="max-w-xs md:max-w-md lg:max-w-xl h-auto object-contain" />
             </div>
         </div>
     );
+
 };
 
 export default InstitutionForm;

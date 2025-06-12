@@ -1,20 +1,27 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema } from '../schema';
-import { LoginFormData } from '../type';
-import { useLogin } from '../hooks/useLogin';
+import { loginSchema } from '@features/auth/schemas';
+import { LoginFormData, UserType } from '@features/auth/types'; 
+import { useLogin } from '@features/auth/hooks/useLogin';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { ApiError } from '@custom-types/ApiError'; 
+import { handleAdvancedFormError } from '@utils/errorHandler';
+import { LOGIN_ERROR_MESSAGE_MAP } from '@custom-types/ApiError';
+import { showToastWithAction } from '@components/toast/ToastWithAction';
 
-export function LoginForm() {
+interface LoginFormProps {
+  userType?: UserType; 
+  onSuccess?: () => void;
+}
+
+export function LoginForm({ userType = UserType.LEARNER, onSuccess }: LoginFormProps) {
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -25,17 +32,30 @@ export function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(data);
-      toast.success('Login successful!');
-      setTimeout(() => {
+      await login(data, userType); 
+
+      const timeoutId = setTimeout(() => {
         navigate('/dashboard');
       }, 3000);
+
+      showToastWithAction('Successfully logged in! Redirecting...', {
+        actionText: 'Go Now',
+        onAction: () => {
+          clearTimeout(timeoutId);
+          navigate('/dashboard');
+        },
+        duration: 2000,
+      });
+
+      onSuccess?.();
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error('An unexpected error occurred. Please try again.');
-      }
+      handleAdvancedFormError(
+        error,
+        setError,
+        LOGIN_ERROR_MESSAGE_MAP,
+        'toast',
+        'Something went wrong. Please try again later.'
+      );
     }
   };
 
@@ -43,9 +63,9 @@ export function LoginForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-8">
       <Input
         id="email"
-        label="Work Email"
+        label="Email Address"
         type="email"
-        placeholder="e.g. xxx@college.edu.au"
+        placeholder="e.g. your@email.com"
         {...register('email')}
         error={errors.email?.message}
       />
@@ -53,17 +73,17 @@ export function LoginForm() {
       <PasswordInput
         id="password"
         label="Password"
-        placeholder="your password"
-        {...register('password')} 
+        placeholder="Your password"
+        {...register('password')}
         error={errors.password?.message}
       />
 
-      <Button 
-        type="submit" 
+      <Button
+        type="submit"
         variant="primary"
         className="rounded-3xl"
-        fullWidth 
-        disabled={isSubmitting || isLoggingIn} 
+        fullWidth
+        disabled={isSubmitting || isLoggingIn}
         isLoading={isSubmitting || isLoggingIn}
       >
         Log In

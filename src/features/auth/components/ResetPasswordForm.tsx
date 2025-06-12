@@ -8,19 +8,15 @@ import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { ResetPasswordFormData, UserType } from '@features/auth/types';
-import {
-  RESET_PASSWORD_ERROR_MESSAGE_MAP,
-  UNKNOWN_ERROR,
-} from '@custom-types/ApiError';
+import { RESET_PASSWORD_ERROR_MESSAGE_MAP, UNKNOWN_ERROR } from '@custom-types/ApiError';
 import { handleAdvancedFormError } from '@utils/errorHandler';
 import { toast } from 'react-hot-toast';
-
-type Theme = 'default' | 'student';
+import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 
 interface ResetPasswordFormProps {
   userType?: UserType;
   onSuccess?: () => void;
-  theme?: Theme;
+  theme?: ThemeType;
 }
 
 export function ResetPasswordForm({
@@ -29,25 +25,7 @@ export function ResetPasswordForm({
   theme = 'default'
 }: ResetPasswordFormProps) {
   const navigate = useNavigate();
-
-  const themeStyles = {
-    default: {
-      inputClassName: 'border focus:outline-none focus:placeholder-transparent text-left border-gray-300 focus:border-blue-600 focus:ring-0 px-4 h-11 leading-normal pl-[20px]',
-      passwordInputClassName: 'border focus:outline-none rounded-3xl text-left border-gray-300 focus:border-blue-600 focus:ring-0 px-4 h-11 leading-normal pl-[20px] pr-10',
-      labelClassName: 'text-left block text-gray-600 mb-1 group-focus-within:text-blue-600',
-      buttonClass: '',
-      verificationButtonClass: '',
-    },
-    student: {
-      inputClassName: 'border focus:outline-none focus:placeholder-transparent text-left border-gray-300 focus:border-yellow-500 focus:ring-0 px-4 h-11 leading-normal pl-[20px]',
-      passwordInputClassName: 'border focus:outline-none rounded-3xl text-left border-gray-300 focus:border-yellow-500 focus:ring-0 px-4 h-11 leading-normal pl-[20px] pr-10',
-      labelClassName: 'text-left block text-gray-600 mb-1 group-focus-within:text-yellow-500',
-      buttonClass: '!bg-yellow-500 hover:!bg-yellow-600',
-      verificationButtonClass: '!bg-transparent !text-yellow-500 hover:!bg-transparent hover:!text-yellow-600 !border-yellow-500',
-    },
-  };
-
-  const currentTheme = themeStyles[theme];
+  const themeStyles = useFormTheme(theme);
 
   const {
     register,
@@ -108,7 +86,7 @@ export function ResetPasswordForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
-      <div className="space-y-4 max-w-md ">
+      <div className="space-y-4 max-w-md">
         <Input
           id="email"
           label="Email Address"
@@ -116,9 +94,10 @@ export function ResetPasswordForm({
           placeholder="e.g. your@email.com"
           {...register('email')}
           error={errors.email?.message}
-          inputClassName={currentTheme.inputClassName}
-          labelClassName={currentTheme.labelClassName}
+          inputClassName={themeStyles.inputClassName}
+          labelClassName={themeStyles.labelClassName}
         />
+        
         <VerificationCodeInput
           id="verificationCode"
           label="Verification Code"
@@ -128,36 +107,39 @@ export function ResetPasswordForm({
           isButtonDisabled={countdown > 0 || isCodeSending}
           {...register('verificationCode')}
           error={errors.verificationCode?.message}
-          inputClassName={currentTheme.inputClassName}
-          labelClassName={currentTheme.labelClassName}
-          buttonClassName={currentTheme.verificationButtonClass}
+          inputClassName={themeStyles.inputClassName}
+          labelClassName={themeStyles.labelClassName}
+          buttonClassName={themeStyles.verificationButtonClass}
         />
+        
         <PasswordInput
           id="password"
           label="New Password"
           placeholder="Create a new password"
           {...register('password')}
           error={errors.password?.message}
-          inputClassName={currentTheme.passwordInputClassName}
-          labelClassName={currentTheme.labelClassName}
+          inputClassName={themeStyles.passwordInputClassName}
+          labelClassName={themeStyles.labelClassName}
         />
+        
         <PasswordInput
           id="confirmPassword"
           label="Confirm New Password"
           placeholder="Confirm your new password"
           {...register('confirmPassword')}
           error={errors.confirmPassword?.message}
-          inputClassName={currentTheme.passwordInputClassName}
-          labelClassName={currentTheme.labelClassName}
+          inputClassName={themeStyles.passwordInputClassName}
+          labelClassName={themeStyles.labelClassName}
         />
       </div>
+      
       <div>
         <Button 
           type="submit" 
           fullWidth 
           disabled={isSubmitting} 
           isLoading={isSubmitting}
-          className={currentTheme.buttonClass}
+          className={themeStyles.buttonClass}
         >
           Reset Password
         </Button>

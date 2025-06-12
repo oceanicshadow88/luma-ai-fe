@@ -31,7 +31,7 @@ const LearnerSignUpPage = () => {
 
                 <section className="w-full max-w-sm sm:max-w-md lg:max-w-md">
                     <div className="w-full">
-                        <SignUpForm userRole={UserRole.LEARNER}  theme="student"/>
+                        <SignUpForm userRole={UserRole.LEARNER}  theme="learner"/>
                     </div>
                 </section>
             </main>

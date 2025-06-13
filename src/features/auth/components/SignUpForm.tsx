@@ -2,11 +2,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signupSchema } from '../schemas';
 import { z } from 'zod';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useSignUp } from '@features/auth/hooks/useSignUp';
+import { useAdminSignUp } from '@features/auth/hooks/useAdminSignUp';
 import { useSendCode } from '@features/auth/hooks/useSendCode';
-import { SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR } from '@custom-types/ApiError';
+import { SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR, ApiError } from '@custom-types/ApiError';
 import { getErrorField, getErrorMessage } from '@utils/errorHandler';
 import { Path } from 'react-hook-form';
 import { Input } from '@components/forms/Input';
@@ -16,16 +16,22 @@ import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { FormError } from '@components/forms/FormError';
 import rightLogo from '@assets/decorative_graphic.png';
 import logo from '@assets/logo.svg';
-import { useEffect, useState } from 'react';
-import { authService } from '@api/auth/auth';
+
+function filterSignupForm(data: any) {
+  return {
+    email: data.email,
+    firstName: data.firstName,
+    lastName: data.lastName,
+    username: data.username,
+    agreeTerms: data.agreeTerms,
+  };
+}
 
 export default function SignUpForm() {
-  const [searchParams] = useSearchParams();
-
-  const token = searchParams.get('token');
-  const isInvited = !!token;
-
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const defaultFormValues = location.state?.signupForm || {};
   const {
     register,
     handleSubmit,
@@ -35,18 +41,13 @@ export default function SignUpForm() {
   } = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
     mode: 'onTouched',
-    defaultValues: {
-      email: token ? 'testing@testing.com' : '',
-      code: token ?? '',
-    },
+    defaultValues: defaultFormValues,
   });
 
   const email = watch('email');
   const password = watch('password');
-  const { signup, isSigningUp } = useSignUp();
+  const { signup, isSigningUp } = useAdminSignUp();
   const { sendCode, countdown, canSend } = useSendCode();
-  const [isTokenInvalid, setIsTokenInvalid] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   const handleSendCode = async () => {
     if (!email || !canSend) return;
@@ -56,67 +57,57 @@ export default function SignUpForm() {
     } catch (error: unknown) {
       const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR.field);
       const message = getErrorMessage(error, UNKNOWN_ERROR.message);
-      console.log(message);
       setError(field as Path<z.infer<typeof signupSchema>>, { message });
       toast.error(message);
     }
   };
 
-  useEffect(() => {
-    authService
-      .authToken(token ?? '')
-      .catch((e) => setIsTokenInvalid(true))
-      .finally(() => setIsLoading(false));
-  }, [token]);
-
   const onSubmit = async (data: z.infer<typeof signupSchema>) => {
     const payload = {
-      firstName: data.firstName,
-      lastName: data.lastName,
+      firstname: data.firstName,
+      lastname: data.lastName,
       username: data.username,
       email: data.email,
       password: data.password,
       confirmPassword: data.confirmPassword,
-      verifyValue: data.code,
-      termsAccepted: true,
+      verifyCode: data.code,
     };
 
     try {
       const result = await signup(payload);
-      // if (result?.redirect) {
-      //   toast('Company not found, redirecting...');
-      //   navigate('/auth/signup/institution', { state: { email: data.email } });
-      //   return;
-      // }
-      // toast.success('Signup success!');
-      // navigate('/dashboard');
-    } catch (error: unknown) {
-      const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR.field);
-      const message = getErrorMessage(error, UNKNOWN_ERROR.message);
-      if (message.toLowerCase().includes('user already exist')) {
-        toast('Email already registered. Please log in.');
-        navigate('/auth/login');
+      if (result?.redirect) {
+        toast('Company not found, redirecting...');
+        navigate('/auth/signup/institution', { state: { signupForm: filterSignupForm(data) } });
         return;
       }
-      setError(field as Path<z.infer<typeof signupSchema>>, { message });
-      toast.error(message);
+      toast.success('Signup success!');
+      navigate('/dashboard');
+    } catch (error: unknown) {
+      if (error instanceof ApiError) {
+        const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR.field);
+        const message = getErrorMessage(error, UNKNOWN_ERROR.message);
+
+        setError(field as Path<z.infer<typeof signupSchema>>, { message });
+        toast.error(message);
+
+        if (message.toLowerCase().includes('user already exist')) {
+          toast('Email already registered. Please log in.');
+          navigate('/auth/login');
+          return;
+        }
+      } else {
+        setError('root', { message: 'Unexpected error occurred.' });
+        toast.error('Unexpected error occurred.');
+      }
     }
   };
 
-  if (isLoading) {
-    return 'Loading...';
-  }
-
-  // if (isTokenInvalid) {
-  //   return 'Invalid invitation link. Please check your email or contact admin';
-  // }
-
   return (
-    <div className="w-[1440px] h-[900px] flex bg-white items-center mx-auto">
-      <div className="h-[800px] my-[50px] px-[170px] pt-[20px] flex flex-col justify-start">
-        <img src={logo} alt="Luma AI Logo" className="w-[140px] h-auto mb-3" />
+    <div className="min-h-screen flex flex-col md:flex-row bg-white items-center justify-center">
+      <div className="w-full max-w-md md:max-w-lg px-6 py-10 md:px-16 md:py-12 flex flex-col justify-start">
+        <img src={logo} alt="Luma AI Logo" className="w-36 h-auto mb-6 mx-auto md:mx-0" />
 
-        <h2 className="text-xl font-semibold mb-10 text-left">
+        <h2 className="text-2xl font-semibold mb-8 text-center md:text-left">
           Sign up for Luma AI Enterprise Version
         </h2>
 
@@ -128,23 +119,20 @@ export default function SignUpForm() {
             placeholder="e.g. xxx@college.edu.au"
             {...register('email')}
             error={errors.email?.message}
-            isDisabled={isInvited}
           />
 
-          {!isInvited && (
-            <VerificationCodeInput
-              id="code"
-              label="Verification Code"
-              placeholder="Enter the 6-digit code"
-              buttonText={countdown > 0 ? `Resend in ${countdown}s` : 'Send'}
-              onButtonClick={handleSendCode}
-              isButtonDisabled={!canSend}
-              {...register('code')}
-              error={errors.code?.message}
-            />
-          )}
+          <VerificationCodeInput
+            id="code"
+            label="Verification Code"
+            placeholder="Enter the 6-digit code"
+            buttonText={countdown > 0 ? `Resend in ${countdown}s` : 'Send'}
+            onButtonClick={handleSendCode}
+            isButtonDisabled={!canSend}
+            {...register('code')}
+            error={errors.code?.message}
+          />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
               id="firstName"
               label="First Name"
@@ -172,7 +160,7 @@ export default function SignUpForm() {
           <PasswordInput
             id="password"
             label="Password"
-            placeholder="Create a password"
+            placeholder="create a password"
             {...register('password')}
             error={errors.password?.message}
           />
@@ -180,7 +168,7 @@ export default function SignUpForm() {
           <PasswordInput
             id="confirmPassword"
             label="Confirm Password"
-            placeholder="Confirm your password"
+            placeholder="confirm your password"
             {...register('confirmPassword')}
             error={errors.confirmPassword?.message}
           />
@@ -197,8 +185,12 @@ export default function SignUpForm() {
         </form>
       </div>
 
-      <div className="h-[800px] my-[50px] pr-[100px] flex items-center justify-center">
-        <img src={rightLogo} alt="Luma AI Logo" className="w-[600px] h-[800px] object-contain" />
+      <div className="hidden md:flex flex-1 h-full items-center justify-center">
+        <img
+          src={rightLogo}
+          alt="Luma AI Illustration"
+          className="max-w-xs md:max-w-lg lg:max-w-xl h-auto object-contain"
+        />
       </div>
     </div>
   );

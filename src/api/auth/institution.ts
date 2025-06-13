@@ -16,20 +16,9 @@ export class InstitutionService {
     
     formData.append('companyName', data.companyName);
     
-    if (data.emailDomain) {
-      formData.append('emailDomain', data.emailDomain);
-    }
-    
     if (data.logo) {
       formData.append('logo', data.logo);
-      console.log('Logo file added:', {
-        name: data.logo.name,
-        size: data.logo.size,
-        type: data.logo.type
-      });
-    } else {
-      console.log('No logo file provided');
-    }
+    } 
     
     const response = await apiClient.post<InstitutionCreateResponse>(
       'auth/signup/institution',

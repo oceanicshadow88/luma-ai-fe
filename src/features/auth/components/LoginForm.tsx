@@ -7,8 +7,6 @@ import { useLogin } from '@features/auth/hooks/useLogin';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
-import { handleAdvancedFormError } from '@utils/errorHandler';
-import { LOGIN_ERROR_MESSAGE_MAP } from '@custom-types/ApiError';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 
@@ -18,10 +16,10 @@ interface LoginFormProps {
   theme?: ThemeType;
 }
 
-export function LoginForm({ 
-  userType = UserType.LEARNER, 
-  onSuccess, 
-  theme = 'default' 
+export function LoginForm({
+  userType = UserType.LEARNER,
+  onSuccess,
+  theme = 'default'
 }: LoginFormProps) {
   const navigate = useNavigate();
   const themeStyles = useFormTheme(theme);
@@ -39,9 +37,9 @@ export function LoginForm({
   const { login, isLoggingIn } = useLogin();
 
   const onSubmit = async (data: LoginFormData) => {
-    try {
-      await login(data, userType);
-            
+    const result = await login(data, userType, { setError });
+    
+    if (result.success) {
       const timeoutId = setTimeout(() => {
         navigate('/dashboard');
       }, 3000);
@@ -56,14 +54,6 @@ export function LoginForm({
       });
 
       onSuccess?.();
-    } catch (error) {
-      handleAdvancedFormError(
-        error,
-        setError,
-        LOGIN_ERROR_MESSAGE_MAP,
-        'toast',
-        'Something went wrong. Please try again later.'
-      );
     }
   };
 

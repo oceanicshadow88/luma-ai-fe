@@ -10,6 +10,7 @@ export const InstitutionForm = () => {
         handleSubmit,
         errors,
         isSubmitting,
+        isCreating,
         logoError,
         isLogoInvalid,
         handleLogoChange,
@@ -39,6 +40,8 @@ export const InstitutionForm = () => {
 
         handleLogoChange(file);
     };
+
+    const isProcessing = isSubmitting || isCreating;
 
     return (
         <div className="w-full max-w-sm sm:max-w-md lg:max-w-md">
@@ -98,6 +101,7 @@ export const InstitutionForm = () => {
                         onClick={handlePrev} 
                         className="rounded-3xl"
                         fullWidth
+                        disabled={isProcessing}
                     >
                         Previous
                     </Button>
@@ -106,8 +110,8 @@ export const InstitutionForm = () => {
                         variant="primary"
                         className="rounded-3xl"
                         fullWidth 
-                        disabled={isSubmitting || isLogoInvalid} // ✅ 禁用条件
-                        isLoading={isSubmitting}
+                        disabled={isProcessing || isLogoInvalid}
+                        isLoading={isProcessing}
                     >
                         Finish Sign Up
                     </Button>

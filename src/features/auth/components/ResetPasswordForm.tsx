@@ -8,8 +8,6 @@ import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { ResetPasswordFormData, UserType } from '@features/auth/types';
-import { RESET_PASSWORD_ERROR_MESSAGE_MAP, UNKNOWN_ERROR } from '@custom-types/ApiError';
-import { handleAdvancedFormError } from '@utils/errorHandler';
 import { toast } from 'react-hot-toast';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 
@@ -41,26 +39,19 @@ export function ResetPasswordForm({
     reValidateMode: 'onBlur',
   });
 
-  const { resetPassword, sendVerificationCode, isCodeSending, countdown } = useResetPassword();
+  const { resetPassword, sendVerificationCode, isCodeSending, isResetting, countdown } = useResetPassword();
 
   const getLoginPath = () => {
     return userType === UserType.ENTERPRISE ? '/auth/login/enterprise' : '/auth/login/learner';
   };
 
   const onSubmit = async (data: ResetPasswordFormData) => {
-    try {
-      await resetPassword(data);
+    const result = await resetPassword(data, { setError });
+    
+    if (result.success) {
       toast.success('Password reset successfully. Please log in again with new password.');
       setTimeout(() => navigate(getLoginPath()), 3000);
       onSuccess?.();
-    } catch (error) {
-      handleAdvancedFormError(
-        error,
-        setError,
-        RESET_PASSWORD_ERROR_MESSAGE_MAP,
-        'toast',
-        UNKNOWN_ERROR.message
-      );
     }
   };
 
@@ -70,19 +61,14 @@ export function ResetPasswordForm({
     if (!isValid) return;
 
     const email = getValues('email');
-    try {
-      await sendVerificationCode(email);
+    const result = await sendVerificationCode(email, { setError });
+    
+    if (result.success) {
       toast.success('If the email is valid, a verification code will be sent.');
-    } catch (error) {
-      handleAdvancedFormError(
-        error,
-        setError,
-        RESET_PASSWORD_ERROR_MESSAGE_MAP,
-        'toast',
-        UNKNOWN_ERROR.message
-      );
     }
   };
+
+  const isProcessing = isSubmitting || isResetting;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
@@ -137,8 +123,8 @@ export function ResetPasswordForm({
         <Button 
           type="submit" 
           fullWidth 
-          disabled={isSubmitting} 
-          isLoading={isSubmitting}
+          disabled={isProcessing} 
+          isLoading={isProcessing}
           className={themeStyles.buttonClass}
         >
           Reset Password

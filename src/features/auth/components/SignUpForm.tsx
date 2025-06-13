@@ -5,8 +5,6 @@ import { z } from 'zod';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSignUp } from '@features/auth/hooks/useSignUp';
 import { useSendCode } from '@features/auth/hooks/useSendCode';
-import { SIGNUP_ERROR_MESSAGE_MAP } from '@custom-types/ApiError';
-import { handleAdvancedFormError, handleToastError } from '@utils/errorHandler';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
@@ -51,17 +49,13 @@ export function SignUpForm({
 
   const handleSendCode = async () => {
     if (!email || !canSend) return;
-    try {
-      await sendCode(email);
+    
+    const result = await sendCode(email, { setError });
+    
+    if (result.success) {
       showToastWithAction('If the email is valid, a verification code will be sent.', {
         duration: 2000,
       });
-    } catch (error: unknown) {
-      handleToastError(
-        error,
-        SIGNUP_ERROR_MESSAGE_MAP,
-        'Failed to send verification code. Please try again.'
-      );
     }
   };
 
@@ -77,10 +71,10 @@ export function SignUpForm({
       termsAccepted: data.termsAccepted
     };
 
-    try {
-      const result = await signup(payload, userRole);
+    const result = await signup(payload, userRole, { setError });
       
-      if (result?.redirect) {
+    if (result.success) {
+      if (result.redirect) {
         if (result.redirect === '/auth/signup/institution') {
           if (userRole === UserRole.ADMIN) {
             showToastWithAction('Company not found, redirecting to institution setup...', {
@@ -108,14 +102,6 @@ export function SignUpForm({
       });
 
       onSuccess?.();
-    } catch (error) {
-      handleAdvancedFormError(
-        error,
-        setError,
-        SIGNUP_ERROR_MESSAGE_MAP,
-        'toast',
-        'Something went wrong. Please try again later.'
-      );
     }
   };
 

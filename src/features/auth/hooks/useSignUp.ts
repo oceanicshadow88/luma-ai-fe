@@ -2,11 +2,29 @@ import { useState } from 'react';
 import { signupService } from '@api/auth/signup';
 import { SignupFormData, UserRole } from '@features/auth/types';
 import { ApiError } from '@custom-types/ApiError';
+import { handleApiError } from '@utils/errorHandler';
+import { SIGNUP_ERROR_MESSAGE_MAP } from '@custom-types/ApiError';
+import { UseFormSetError, FieldValues } from 'react-hook-form';
+
+interface SignupOptions<TValues extends FieldValues = FieldValues> {
+  setError?: UseFormSetError<TValues>;
+  useToast?: boolean;
+}
+
+interface SignupResult {
+  success: boolean;
+  redirect?: string;
+  error?: unknown;
+}
 
 export function useSignUp() {
   const [isSigningUp, setIsSigningUp] = useState(false);
   
-  const signup = async (data: SignupFormData, userRole: UserRole = UserRole.LEARNER): Promise<{ redirect?: string }> => {
+  const signup = async <TValues extends FieldValues = FieldValues>(
+    data: SignupFormData, 
+    userRole: UserRole = UserRole.LEARNER,
+    options?: SignupOptions<TValues>
+  ): Promise<SignupResult> => {
     setIsSigningUp(true);
     
     try {
@@ -39,33 +57,45 @@ export function useSignUp() {
           }
         }
         
-        return {};
+        return { success: true };
       } else {
         if (resData?.message === 'The company does not exist' && userRole === UserRole.ADMIN) {
-          return { redirect: '/auth/signup/institution' };
+          return { success: true, redirect: '/auth/signup/institution' };
         }
         
         throw new ApiError(resData?.message || 'Unexpected error occurred');
       }
       
     } catch (error) {
-      if (error instanceof ApiError) throw error;
-      throw new ApiError('Unexpected error occurred');
+      if (options?.setError) {
+        handleApiError(error, options.setError, SIGNUP_ERROR_MESSAGE_MAP);
+      }
+      
+      return { success: false, error };
     } finally {
       setIsSigningUp(false);
     }
   };
   
-  const signupAsLearner = async (data: SignupFormData): Promise<{ redirect?: string }> => {
-    return signup(data, UserRole.LEARNER);
+  const signupAsLearner = async <TValues extends FieldValues = FieldValues>(
+    data: SignupFormData, 
+    options?: SignupOptions<TValues>
+  ): Promise<SignupResult> => {
+    return signup(data, UserRole.LEARNER, options);
   };
   
-  const signupAsAdmin = async (data: SignupFormData): Promise<{ redirect?: string }> => {
-    return signup(data, UserRole.ADMIN);
+  const signupAsAdmin = async <TValues extends FieldValues = FieldValues>(
+    data: SignupFormData, 
+    options?: SignupOptions<TValues>
+  ): Promise<SignupResult> => {
+    return signup(data, UserRole.ADMIN, options);
   };
   
-  const signupAsInstructor = async (data: SignupFormData): Promise<{ redirect?: string }> => {
-    return signup(data, UserRole.INSTRUCTOR);
+  const signupAsInstructor = async <TValues extends FieldValues = FieldValues>(
+    data: SignupFormData, 
+    options?: SignupOptions<TValues>
+  ): Promise<SignupResult> => {
+    return signup(data, UserRole.INSTRUCTOR, options);
   };
   
   return {

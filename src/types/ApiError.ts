@@ -5,6 +5,8 @@ import { LoginFormData } from '@features/auth/types';
 
 export type ResetPasswordField = keyof ResetPasswordFormData | 'toast';
 export type SignupField = keyof SignUpInput | 'toast';
+export type LoginField = keyof LoginFormData | 'toast';
+export type InstitutionField = keyof InstitutionFormData | 'toast';
 
 export interface ApiErrorMeta {
   cooldownSeconds?: number;
@@ -32,14 +34,14 @@ export const RESET_PASSWORD_ERROR_MESSAGE_MAP: Record<string, [ResetPasswordFiel
   'password characters': ['password', 'Password must be 8-20 characters and contain at least one uppercase letter, lowercase letter, number and special character (!@#$%^&*)'],
 };
 
-export const LOGIN_ERROR_MESSAGE_MAP: Record<string, [keyof LoginFormData | 'toast', string]> = {
+export const LOGIN_ERROR_MESSAGE_MAP: Record<string, [LoginField, string]> = {
   'credentials': ['toast', 'Login failed. Please check your email and password.'],
   'attempts': ['toast', 'Too many failed login attempts. Please try again later.'],
   'include': ['toast', 'Login failed. Please check your email and password.'],
 };
 
 export const SIGNUP_ERROR_MESSAGE_MAP: Record<string, [SignupField, string]> = {
-  'firs tname': ['firstName', 'Please enter your first name'],
+  'first name': ['firstName', 'Please enter your first name'],
   'last name': ['lastName', 'Please enter your last name'],
   'enter your username': ['username', 'Please enter your username'],
   'email address': ['email', 'Please enter your email address'],
@@ -56,11 +58,11 @@ export const SIGNUP_ERROR_MESSAGE_MAP: Record<string, [SignupField, string]> = {
   'public': ['email', 'Public email providers are not allowed'],
 };
 
-export const INSTITUTION_ERROR_MAP: Record<string, [keyof InstitutionFormData | 'root', string]> = {
+export const INSTITUTION_ERROR_MAP: Record<string, [InstitutionField, string]> = {
   'characters': ['companyName', 'Organisation name must be at least 2 characters'],
 };
 
 export const UNKNOWN_ERROR = {
-  field: 'toast' as ResetPasswordField | SignupField | keyof InstitutionFormData,
+  field: 'toast' as const,
   message: 'Unexpected error occurred. Please try again.',
 };

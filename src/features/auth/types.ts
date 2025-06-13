@@ -47,8 +47,6 @@ export interface SignUpInput {
 
 export interface InstitutionFormData {
   companyName: string;
-  slug?: string;
-  emailDomain?: string;
   logo?: File | null;
 }
 

@@ -6,7 +6,7 @@ import { InstitutionFormData } from '@features/auth/types';
 import { institutionSchema } from '@features/auth/schemas';
 import { institutionService } from '@api/auth/institution';
 import { INSTITUTION_ERROR_MAP } from '@custom-types/ApiError';
-import { handleAdvancedFormError } from '@utils/errorHandler';
+import { handleApiError } from '@utils/errorHandler';
 import { filterSignupForm } from '@utils/filterSignupForm';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 
@@ -25,7 +25,7 @@ export const useInstitution = () => {
 
     const [logoFile, setLogoFile] = useState<File | null>(null);
     const [logoError, setLogoError] = useState<string>('');
-    const [isLogoInvalid, setIsLogoInvalid] = useState<boolean>(false);
+    const [isCreating, setIsCreating] = useState(false);
 
     type FormData = {
         companyName: string;
@@ -33,7 +33,12 @@ export const useInstitution = () => {
         emailDomain: string;
     };
 
-    const form = useForm<FormData>({
+    const {
+        register,
+        handleSubmit,
+        setError,
+        formState: { errors, isSubmitting }
+    } = useForm<FormData>({
         resolver: zodResolver(institutionSchema.omit({ logo: true })),
         mode: 'onBlur',
         defaultValues: {
@@ -43,18 +48,10 @@ export const useInstitution = () => {
         },
     });
 
-    const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = form;
-
     const handlePrev = () => {
         navigate('/auth/signup/admin', { 
             state: { signupForm: filterSignupForm(location.state?.signupForm || {}) } 
         });
-    };
-
-    const handleLogoChange = (file: File | null, error?: string) => {
-        setLogoFile(file);
-        setLogoError(error || '');
-        setIsLogoInvalid(!!error);
     };
 
     const validateLogo = (file: File): string | null => {
@@ -72,15 +69,21 @@ export const useInstitution = () => {
         return null;
     };
 
+    const handleLogoChange = (file: File | null, error?: string) => {
+        setLogoFile(file);
+        setLogoError(error || '');
+    };
+
     const onSubmit = async (data: FormData) => {
         if (logoFile) {
             const logoValidationError = validateLogo(logoFile);
             if (logoValidationError) {
                 setLogoError(logoValidationError);
-                setIsLogoInvalid(true);
                 return;
             }
         }
+
+        setIsCreating(true);
 
         try {
             const formData: InstitutionFormData = {
@@ -88,38 +91,39 @@ export const useInstitution = () => {
                 logo: logoFile,
             };
 
+            await institutionService.create(formData);
+
+            // Success handling - 与 login 保持一致的风格
             const timeoutId = setTimeout(() => {
                 navigate('/dashboard');
-              }, 3000);
+            }, 3000);
 
-            await institutionService.create(formData);
             showToastWithAction('Successfully signed up! Redirecting...', {
                 actionText: 'Go Now',
                 onAction: () => {
-                  clearTimeout(timeoutId);
-                  navigate('/dashboard');
+                    clearTimeout(timeoutId);
+                    navigate('/dashboard');
                 },
                 duration: 2000,
-              });
+            });
 
         } catch (error) {
-            handleAdvancedFormError(
-                error,
-                setError,
-                INSTITUTION_ERROR_MAP,
-                'toast',
-                'Something went wrong. Please try again later.'
-            );
+            handleApiError(error, setError, INSTITUTION_ERROR_MAP);
+        } finally {
+            setIsCreating(false);
         }
     };
 
+    const isLogoInvalid = !!logoError;
+
     return {
         email,
-        form,
         register,
         handleSubmit: handleSubmit(onSubmit),
+        setError,
         errors,
         isSubmitting,
+        isCreating,
         logoFile,
         logoError,
         isLogoInvalid,

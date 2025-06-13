@@ -48,27 +48,22 @@ export const ImageUpload = forwardRef<HTMLInputElement, ImageUploadProps>(
       const file = e.target.files?.[0];
       
       if (file) {
-        // 设置预览
         if (showPreview) {
-          // 清理之前的预览 URL
           if (preview) {
             URL.revokeObjectURL(preview);
           }
           setPreview(URL.createObjectURL(file));
         }
       } else {
-        // 清理预览
         if (preview) {
           URL.revokeObjectURL(preview);
           setPreview(null);
         }
       }
 
-      // 调用父组件的 onChange 处理器
       onChange(e);
     };
 
-    // 清理预览 URL
     const handleClearPreview = () => {
       if (preview) {
         URL.revokeObjectURL(preview);

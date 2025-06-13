@@ -13,7 +13,7 @@ interface InputProps {
   isDisabled?: boolean;
   name: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   ref: React.Ref<HTMLInputElement>;
   addonElement?: () => React.ReactNode;
 }
@@ -57,9 +57,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           placeholder={placeholder}
           ref={ref}
           onChange={onChange}
-          onBlur={onBlur}
+          onBlur={(event) => {
+            if (!onBlur) return;
+            onBlur(event);
+          }}
           disabled={isDisabled}
-          className={`w-full rounded-3xl ${inputClassName} ${error ? 'border-red-600' : ''} ${isDisabled ? 'bg-black' : ''}`}
+          className={`w-full rounded-3xl ${inputClassName} ${error ? 'border-red-600' : ''}`}
+          style={{
+            backgroundColor: isDisabled ? '#dbdbdb' : undefined,
+          }}
         />
         {addonElement?.()}
       </div>

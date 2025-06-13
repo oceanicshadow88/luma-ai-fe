@@ -11,10 +11,14 @@ class SignupService {
     await apiClient.post('/auth/request-reset-code', { email });
   }
 
-  async signupRaw(data: SignupFormData) {
+  async adminSignupRaw(data: SignupFormData) {
     return apiClient.post('/auth/signup/admin', data, {
       validateStatus: () => true,
     });
+  }
+
+  async teacherSignup(data: SignupFormData) {
+    return apiClient.post('/auth/signup/teacher', data);
   }
 }
 

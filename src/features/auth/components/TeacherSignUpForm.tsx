@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signupSchema, teacherSignupSchema } from '../schemas';
+import { teacherSignupSchema } from '../schemas';
 import { z } from 'zod';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -20,6 +20,7 @@ export default function TeacherSignUpForm() {
   const [searchParams] = useSearchParams();
   const [isTokenInvalid, setIsTokenInvalid] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const token = searchParams.get('token') ?? '';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const decodePayload: any = decodeJwt(token);
@@ -34,7 +35,6 @@ export default function TeacherSignUpForm() {
     mode: 'onTouched',
     defaultValues: {
       email: token ? decodePayload?.email : '',
-      code: token ?? '',
     },
   });
 
@@ -53,7 +53,8 @@ export default function TeacherSignUpForm() {
     verifyToken();
   }, [token, decodePayload]);
 
-  const onSubmit = async (data: z.infer<typeof signupSchema>) => {
+  const onSubmit = async (data: z.infer<typeof teacherSignupSchema>) => {
+    setIsSubmitting(true);
     const payload = {
       firstName: data.firstName,
       lastName: data.lastName,
@@ -65,9 +66,11 @@ export default function TeacherSignUpForm() {
       termsAccepted: true,
     };
 
-    const result = await signupService.teacherSignup(payload);
+    const result = await signupService.teacherSignup(payload).catch(() => {
+      setIsSubmitting(false);
+    });
 
-    if (result.status === 201) {
+    if (result?.status === 201) {
       toast.success('Signup success! You will be redirected in 3 seconds');
       setTimeout(() => navigate('/dashboard'), 3000);
     } else {
@@ -96,13 +99,7 @@ export default function TeacherSignUpForm() {
           Sign up for Luma AI Enterprise Version
         </h2>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault(); // Prevent default form submission
-            handleSubmit(onSubmit)(e);
-          }}
-          className="space-y-4 w-full"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
           <Input
             id="email"
             label="Work Email"
@@ -159,7 +156,7 @@ export default function TeacherSignUpForm() {
           </div>
           <FormError message={errors.agreeTerms?.message} />
 
-          <Button type="submit" variant="primary" fullWidth>
+          <Button type="submit" variant="primary" fullWidth disabled={isSubmitting}>
             Sign Up
           </Button>
         </form>

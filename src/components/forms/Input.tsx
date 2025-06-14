@@ -12,9 +12,9 @@ interface InputProps {
   errorClassName?: string;
   isDisabled?: boolean;
   name: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  ref: React.Ref<HTMLInputElement>;
+  ref?: React.Ref<HTMLInputElement>;
   addonElement?: () => React.ReactNode;
 }
 

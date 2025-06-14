@@ -1,7 +1,7 @@
 import React from 'react';
 import AdminSignUpForm from '@features/auth/components/SignUpForm';
 import { useSearchParams } from 'react-router-dom';
-import TeacherSignUpForm from '@features/auth/components/TeacherSignForm';
+import TeacherSignUpForm from '@features/auth/components/TeacherSignUpForm';
 
 const SignUpPage = () => {
   const [searchParams] = useSearchParams();

@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signupSchema } from '../schemas';
+import { signupSchema, teacherSignupSchema } from '../schemas';
 import { z } from 'zod';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -13,23 +13,26 @@ import logo from '@assets/logo.svg';
 import { useEffect, useState } from 'react';
 import { authService } from '@api/auth/auth';
 import { signupService } from '@api/auth/signup';
+import { jwtDecode } from 'jwt-decode';
+import { hasExpiry } from '@utils/dataUtils';
 
 export default function TeacherSignUpForm() {
   const [searchParams] = useSearchParams();
 
-  const token = searchParams.get('token');
+  const token = searchParams.get('token') ?? '';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const decodePayload: any = jwtDecode(token);
 
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors },
-  } = useForm<z.infer<typeof signupSchema>>({
-    resolver: zodResolver(signupSchema),
+  } = useForm<z.infer<typeof teacherSignupSchema>>({
+    resolver: zodResolver(teacherSignupSchema),
     mode: 'onTouched',
     defaultValues: {
-      email: token ? 'test@test.com' : '',
+      email: token ? decodePayload.email : '',
       code: token ?? '',
     },
   });
@@ -38,10 +41,13 @@ export default function TeacherSignUpForm() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    authService
-      .authToken(token ?? '')
-      .catch((e) => setIsTokenInvalid(true))
-      .finally(() => setIsLoading(false));
+    const verifyToken = async () => {
+      await authService
+        .authToken(token ?? '')
+        .catch(() => setIsTokenInvalid(true))
+        .finally(() => setIsLoading(false));
+    };
+    verifyToken();
   }, [token]);
 
   const onSubmit = async (data: z.infer<typeof signupSchema>) => {
@@ -55,19 +61,27 @@ export default function TeacherSignUpForm() {
       verifyValue: token ?? 'abc',
       termsAccepted: true,
     };
+
     const result = await signupService.teacherSignup(payload);
+
     if (result.status === 201) {
-      toast.success('Signup success! You will be redirect in 3 seconds ');
+      toast.success('Signup success! You will be redirected in 3 seconds');
       setTimeout(() => navigate('/dashboard'), 3000);
+    } else {
+      toast.error('Signup failed. Please try again.');
     }
   };
 
   if (isLoading) {
-    return 'Loading...';
+    return <div>Loading...</div>;
+  }
+
+  if (hasExpiry(decodePayload.exp)) {
+    return <div>This invitation has expired.</div>;
   }
 
   if (isTokenInvalid) {
-    return 'Invalid invitation link. Please check your email or contact admin';
+    return <div>Invalid invitation link. Please check your email or contact admin</div>;
   }
 
   return (
@@ -79,7 +93,13 @@ export default function TeacherSignUpForm() {
           Sign up for Luma AI Enterprise Version
         </h2>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault(); // Prevent default form submission
+            handleSubmit(onSubmit)(e);
+          }}
+          className="space-y-4 w-full"
+        >
           <Input
             id="email"
             label="Work Email"
@@ -136,7 +156,7 @@ export default function TeacherSignUpForm() {
           </div>
           <FormError message={errors.agreeTerms?.message} />
 
-          <Button type="submit" variant="primary" fullWidth isLoading={false}>
+          <Button type="submit" variant="primary" fullWidth>
             Sign Up
           </Button>
         </form>

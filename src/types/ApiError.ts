@@ -1,9 +1,10 @@
-import { ResetPasswordFormData } from '@features/auth/type';
+import { ResetPasswordFormData } from '@features/auth/types';
 import { SignUpInput } from '@features/auth/types';
 import { InstitutionPayload } from '@features/auth/types';
+import { LoginFormData } from '@features/auth/types';
 
-export type ResetPasswordField = keyof ResetPasswordFormData | 'root';
-export type SignupField = keyof SignUpInput | 'root';
+export type ResetPasswordField = keyof ResetPasswordFormData | 'toast';
+export type SignupField = keyof SignUpInput | 'toast';
 
 export interface ApiErrorMeta {
   cooldownSeconds?: number;
@@ -20,15 +21,21 @@ export class ApiError extends Error {
   }
 }
 
-export const ERROR_MESSAGE_MAP: Record<string, ResetPasswordField> = {
-  'Please enter your email address': 'email',
-  'Too many requests. Please try again later.': 'verificationCode',
-  'Please enter the verification code': 'verificationCode',
-  'Invalid or expired code. Please request a new one.': 'verificationCode',
-  'Too many incorrect attempts. Please request a new verification code.': 'verificationCode',
-  'Please enter a new password': 'password',
-  'Password must be 8-20 characters and contain at least one uppercase letter, lowercase letter, number and special character': 'password',
-  'Passwords do not match': 'confirmPassword',
+export const RESET_PASSWORD_ERROR_MESSAGE_MAP: Record<string, [ResetPasswordField, string]> = {
+  'email address': ['email', 'Please enter your email address'],
+  'too many requests': ['verificationCode', 'Too many requests. Please try again later.'],
+  'verification code': ['verificationCode', 'Please enter the verification code'],
+  'invalid code': ['verificationCode', 'Invalid or expired code. Please request a new one.'],
+  'invalid or expired code': ['verificationCode', 'Invalid or expired code. Please request a new one.'],
+  'too many attempts': ['verificationCode', 'Too many incorrect attempts. Please request a new verification code.'],
+  'new password': ['password', 'Please enter a new password'],
+  'password characters': ['password', 'Password must be 8-20 characters and contain at least one uppercase letter, lowercase letter, number and special character (!@#$%^&*)'],
+};
+
+export const LOGIN_ERROR_MESSAGE_MAP: Record<string, [keyof LoginFormData | 'toast', string]> = {
+  'credentials': ['toast', 'Login failed. Please check your email and password.'],
+  'attempts': ['toast', 'Too many failed login attempts. Please try again later.'],
+  'include': ['toast', 'Login failed. Please check your email and password.'],
 };
 
 export const SIGNUP_ERROR_MESSAGE_MAP: Record<string, SignupField> = {
@@ -51,6 +58,6 @@ export const INSTITUTION_ERROR_MAP: Record<string, keyof InstitutionPayload | 'r
 };
 
 export const UNKNOWN_ERROR = {
-  field: 'root' as ResetPasswordField | SignupField | keyof InstitutionPayload,
+  field: 'toast' as ResetPasswordField | SignupField | keyof InstitutionPayload,
   message: 'Unexpected error occurred. Please try again.',
 };

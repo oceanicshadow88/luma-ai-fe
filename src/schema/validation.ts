@@ -8,11 +8,12 @@ export const emailSchema = z
 export const verificationCodeSchema = z
   .string()
   .min(1, 'Please enter the verification code')
-  .length(6, 'Verification code must be 6 digits');
+  .length(6, 'Verification code must be 6 digits')
+  .regex(/^\d{6}$/, 'Verification code must contain only digits');
 
-export const passwordSchema = z
+export const newPasswordSchema = z
   .string()
-  .min(1, 'Please enter your new password')
+  .min(1, 'Please enter your password')
   .refine(
     (pwd) =>
       pwd.length >= 8 &&
@@ -23,6 +24,11 @@ export const passwordSchema = z
       /[^A-Za-z0-9]/.test(pwd),
     {
       message:
-        'Password must be 8-20 characters and contain at least one uppercase letter, lowercase letter, number and special character',
+        'Password must be 8-20 characters and contain at least one uppercase letter, lowercase letter, number and special character from the following !@#$%^&*',
     }
   );
+
+export const passwordSchema = z
+      .string()
+      .min(1, 'Please enter your password')
+      .min(8, 'Please lengthen this text to 8 characters or more')

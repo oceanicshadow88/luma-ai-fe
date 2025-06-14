@@ -16,6 +16,7 @@ import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { FormError } from '@components/forms/FormError';
 import rightLogo from '@assets/decorative_graphic.png';
 import logo from '@assets/logo.svg';
+import { filterSignupForm } from '@utils/filterSignupForm';
 
 export default function SignUpForm() {
   const navigate = useNavigate();
@@ -67,7 +68,7 @@ export default function SignUpForm() {
       const result = await adminSignup(payload);
       if (result?.redirect) {
         toast('Company not found, redirecting...');
-        navigate('/auth/signup/institution', { state: { signupForm: data } });
+        navigate('/auth/signup/institution', { state: { signupForm: filterSignupForm(data) } });
         return;
       }
       toast.success('Signup success!');

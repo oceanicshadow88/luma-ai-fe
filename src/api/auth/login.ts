@@ -1,44 +1,42 @@
-import { apiClient } from "@services/api/apiClient";
-import { LoginFormData } from "@features/auth/type";
+import { apiClient } from "@services/api/apiClient"; 
+import { LoginFormData, UserType } from "@features/auth/types"; 
 import { ApiError } from "@custom-types/ApiError";
-import { AxiosError } from "axios";
 
-interface SuccessResponse {
-    success: true;
-    data: {
-        refreshToken: string;
-    };
+interface LoginResult {
+  refreshToken?: string;
+  accessToken?: string;
+  membership?: {
+    company: string; 
+    role: string;
+  }[]; 
 }
 
-interface FailureResponse {
-    success: false;
-    error: string;
-    payload?: {
-        redirectTo?: string;
+interface LoginService {
+  login(data: LoginFormData, userType?: UserType): Promise<LoginResult>;
+  loginAsLearner(data: LoginFormData): Promise<LoginResult>;
+  loginAsEnterprise(data: LoginFormData): Promise<LoginResult>;
+}
+
+class LoginServiceImpl implements LoginService {
+  async login(data: LoginFormData, userType: UserType = UserType.LEARNER): Promise<LoginResult> {
+    const endpoint = `/auth/login/${userType}`;
+    const response = await apiClient.post(endpoint, data);
+    
+    if (!response.data.success) {
+      const { message } = response.data;
+      throw new ApiError(message);
     }
+    
+    return response.data.data;
+  }
+  
+  async loginAsLearner(data: LoginFormData): Promise<LoginResult> {
+    return this.login(data, UserType.LEARNER);
+  }
+  
+  async loginAsEnterprise(data: LoginFormData): Promise<LoginResult> {
+    return this.login(data, UserType.ENTERPRISE);
+  }
 }
 
-class LoginService {
-    async login(data: LoginFormData): Promise<{ refreshToken: string }> {
-        try {
-            const response = await apiClient.post<SuccessResponse | FailureResponse>('/auth/login', {
-                email: data.email,
-                password: data.password,
-            });
-
-            if (!response.data.success){
-                const { error, payload } = response.data as FailureResponse;
-                throw new ApiError(error, { redirectTo: payload?.redirectTo});
-            }
-
-            return response.data.data;
-        }catch (error) {
-            if (error instanceof AxiosError && error.response){
-                throw new ApiError('Failed to login');
-            }
-            throw new ApiError('Network error');
-        }
-    }
-}
-
-export const loginService = new LoginService();
+export const loginService = new LoginServiceImpl();

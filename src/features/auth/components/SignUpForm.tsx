@@ -4,7 +4,7 @@ import { signupSchema } from '../schemas';
 import { z } from 'zod';
 import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useSignUp } from '@features/auth/hooks/useSignUp';
+import { useAdminSignUp } from '@features/auth/hooks/useAdminSignUp';
 import { useSendCode } from '@features/auth/hooks/useSendCode';
 import { SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR, ApiError } from '@custom-types/ApiError';
 import { getErrorField, getErrorMessage } from '@utils/errorHandler';
@@ -37,7 +37,7 @@ export default function SignUpForm() {
 
   const email = watch('email');
   const password = watch('password');
-  const { signup, isSigningUp } = useSignUp();
+  const { adminSignup, isSigningUp } = useAdminSignUp();
   const { sendCode, countdown, canSend } = useSendCode();
 
   const handleSendCode = async () => {

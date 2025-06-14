@@ -4,7 +4,7 @@ import { signupSchema } from '../schemas';
 import { z } from 'zod';
 import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useAdminSignUp } from '@features/auth/hooks/useAdminSignUp';
+import { useSignUp } from '@features/auth/hooks/useSignUp';
 import { useSendCode } from '@features/auth/hooks/useSendCode';
 import { SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR, ApiError } from '@custom-types/ApiError';
 import { getErrorField, getErrorMessage } from '@utils/errorHandler';
@@ -16,16 +16,7 @@ import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { FormError } from '@components/forms/FormError';
 import rightLogo from '@assets/decorative_graphic.png';
 import logo from '@assets/logo.svg';
-
-function filterSignupForm(data: any) {
-  return {
-    email: data.email,
-    firstName: data.firstName,
-    lastName: data.lastName,
-    username: data.username,
-    agreeTerms: data.agreeTerms,
-  };
-}
+import { filterSignupForm } from '@utils/filterSignupForm';
 
 export default function SignUpForm() {
   const navigate = useNavigate();
@@ -46,7 +37,7 @@ export default function SignUpForm() {
 
   const email = watch('email');
   const password = watch('password');
-  const { signup, isSigningUp } = useAdminSignUp();
+  const { signup, isSigningUp } = useSignUp();
   const { sendCode, countdown, canSend } = useSendCode();
 
   const handleSendCode = async () => {

@@ -1,23 +1,29 @@
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@features/auth/schemas';
-import { LoginFormData, UserType } from '@features/auth/types'; 
+import { LoginFormData, UserType } from '@features/auth/types';
 import { useLogin } from '@features/auth/hooks/useLogin';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
-import { useNavigate } from 'react-router-dom';
-import { handleAdvancedFormError } from '@utils/errorHandler';
-import { LOGIN_ERROR_MESSAGE_MAP } from '@custom-types/ApiError';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
+import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 
 interface LoginFormProps {
-  userType?: UserType; 
+  userType?: UserType;
   onSuccess?: () => void;
+  theme?: ThemeType;
 }
 
-export function LoginForm({ userType = UserType.LEARNER, onSuccess }: LoginFormProps) {
+export function LoginForm({
+  userType = UserType.LEARNER,
+  onSuccess,
+  theme = 'default'
+}: LoginFormProps) {
   const navigate = useNavigate();
+  const themeStyles = useFormTheme(theme);
+  
   const {
     register,
     handleSubmit,
@@ -31,9 +37,9 @@ export function LoginForm({ userType = UserType.LEARNER, onSuccess }: LoginFormP
   const { login, isLoggingIn } = useLogin();
 
   const onSubmit = async (data: LoginFormData) => {
-    try {
-      await login(data, userType); 
-
+    const result = await login(data, userType, { setError });
+    
+    if (result.success) {
       const timeoutId = setTimeout(() => {
         navigate('/dashboard');
       }, 3000);
@@ -48,14 +54,6 @@ export function LoginForm({ userType = UserType.LEARNER, onSuccess }: LoginFormP
       });
 
       onSuccess?.();
-    } catch (error) {
-      handleAdvancedFormError(
-        error,
-        setError,
-        LOGIN_ERROR_MESSAGE_MAP,
-        'toast',
-        'Something went wrong. Please try again later.'
-      );
     }
   };
 
@@ -68,6 +66,8 @@ export function LoginForm({ userType = UserType.LEARNER, onSuccess }: LoginFormP
         placeholder="e.g. your@email.com"
         {...register('email')}
         error={errors.email?.message}
+        inputClassName={themeStyles.inputClassName}
+        labelClassName={themeStyles.labelClassName}
       />
 
       <PasswordInput
@@ -76,12 +76,14 @@ export function LoginForm({ userType = UserType.LEARNER, onSuccess }: LoginFormP
         placeholder="Your password"
         {...register('password')}
         error={errors.password?.message}
+        inputClassName={themeStyles.passwordInputClassName}
+        labelClassName={themeStyles.labelClassName}
       />
 
       <Button
         type="submit"
         variant="primary"
-        className="rounded-3xl"
+        className={`rounded-3xl ${themeStyles.buttonClass}`}
         fullWidth
         disabled={isSubmitting || isLoggingIn}
         isLoading={isSubmitting || isLoggingIn}

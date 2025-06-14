@@ -1,12 +1,23 @@
 import { ApiError } from '@custom-types/ApiError';
 import axios, { AxiosError, AxiosHeaders, type InternalAxiosRequestConfig } from 'axios';
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://api.example.com';
+function getBackendUrl(): string {
+  const hostname = window.location.hostname;
+  
+  if (hostname.endsWith('.localhost')) {
+    return `http://${hostname}:8000`;
+  } else {
+    return `https://${hostname}`;
+  }
+}
+
+const BASE_URL = getBackendUrl();
 const API_VERSION = '/api/v1';
 
 export const apiClient = axios.create({
   baseURL: `${BASE_URL}${API_VERSION}`,
   timeout: 10000,
+  withCredentials: true, 
 });
 
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
@@ -16,6 +27,7 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     const headers = config.headers as AxiosHeaders;
     headers.set('Authorization', `Bearer ${token}`);
   }
+  
   return config;
 });
 

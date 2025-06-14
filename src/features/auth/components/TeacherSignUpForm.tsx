@@ -13,15 +13,16 @@ import logo from '@assets/logo.svg';
 import { useEffect, useState } from 'react';
 import { authService } from '@api/auth/auth';
 import { signupService } from '@api/auth/signup';
-import { jwtDecode } from 'jwt-decode';
 import { hasExpiry } from '@utils/dataUtils';
+import { decodeJwt } from '@utils/jwtUtils';
 
 export default function TeacherSignUpForm() {
   const [searchParams] = useSearchParams();
-
+  const [isTokenInvalid, setIsTokenInvalid] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const token = searchParams.get('token') ?? '';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const decodePayload: any = jwtDecode(token);
+  const decodePayload: any = decodeJwt(token);
 
   const navigate = useNavigate();
   const {
@@ -36,9 +37,6 @@ export default function TeacherSignUpForm() {
       code: token ?? '',
     },
   });
-
-  const [isTokenInvalid, setIsTokenInvalid] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -76,12 +74,12 @@ export default function TeacherSignUpForm() {
     return <div>Loading...</div>;
   }
 
-  if (hasExpiry(decodePayload.exp)) {
-    return <div>This invitation has expired.</div>;
-  }
-
   if (isTokenInvalid) {
     return <div>Invalid invitation link. Please check your email or contact admin</div>;
+  }
+
+  if (hasExpiry(decodePayload.exp)) {
+    return <div>This invitation has expired.</div>;
   }
 
   return (

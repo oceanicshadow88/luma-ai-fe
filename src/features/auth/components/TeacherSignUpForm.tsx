@@ -33,20 +33,25 @@ export default function TeacherSignUpForm() {
     resolver: zodResolver(teacherSignupSchema),
     mode: 'onTouched',
     defaultValues: {
-      email: token ? decodePayload.email : '',
+      email: token ? decodePayload?.email : '',
       code: token ?? '',
     },
   });
 
   useEffect(() => {
     const verifyToken = async () => {
+      if (!decodePayload) {
+        setIsTokenInvalid(true);
+        setIsLoading(false);
+        return;
+      }
       await authService
         .authToken(token ?? '')
         .catch(() => setIsTokenInvalid(true))
         .finally(() => setIsLoading(false));
     };
     verifyToken();
-  }, [token]);
+  }, [token, decodePayload]);
 
   const onSubmit = async (data: z.infer<typeof signupSchema>) => {
     const payload = {

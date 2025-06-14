@@ -6,6 +6,6 @@ export function decodeJwt(token: string) {
   try {
     return jwtDecode<TokenPayload>(token);
   } catch {
-    return '';
+    return null;
   }
 }

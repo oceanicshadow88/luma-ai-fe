@@ -60,7 +60,7 @@ export default function SignUpForm() {
       email: data.email,
       password: data.password,
       confirmPassword: data.confirmPassword,
-      verifyCode: data.code,
+      verifyValue: data.code,
     };
 
     try {

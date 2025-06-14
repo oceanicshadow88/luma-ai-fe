@@ -3,7 +3,7 @@ import { ResetPasswordFormData, VerificationCodeResponse } from '@features/auth/
 
 class ResetPasswordService {
   async sendVerificationCode(email: string): Promise<VerificationCodeResponse> {
-    const response = await apiClient.post<VerificationCodeResponse>('/auth/request-reset-code', { email });
+    const response = await apiClient.post<VerificationCodeResponse>('/auth/request-verification-code', { email });
     return response.data;
   }
 

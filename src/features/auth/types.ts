@@ -1,4 +1,3 @@
-
 export interface ResetPasswordFormData {
   email: string;
   verificationCode: string;
@@ -30,10 +29,10 @@ export interface ApiErrorResponse {
   code?: string;
 }
 
-export interface LoginFormData  {
+export interface LoginFormData {
   email: string;
   password: string;
-};
+}
 
 export type SignUpInput = {
   firstName: string;
@@ -54,16 +53,16 @@ export type InstitutionPayload = {
 };
 
 export type SignupFormData = {
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   username: string;
   email: string;
   password: string;
   confirmPassword?: string;
-  verifyCode: string;
+  verifyValue: string;
 };
 
 export enum UserType {
   LEARNER = 'learner',
-  ENTERPRISE = 'enterprise'
+  ENTERPRISE = 'enterprise',
 }

@@ -4,14 +4,14 @@ import { SignupFormData } from '@features/auth/types';
 import { ApiError } from '@custom-types/ApiError';
 import { apiClient } from '@services/api/apiClient';
 
-export function useSignUp() {
+export function useAdminSignUp() {
   const [isSigningUp, setIsSigningUp] = useState(false);
 
-  const signup = async (data: SignupFormData): Promise<{ redirect?: string }> => {
+  const adminSignup = async (data: SignupFormData): Promise<{ redirect?: string }> => {
     setIsSigningUp(true);
 
     try {
-      const response = await signupService.signupRaw(data);
+      const response = await signupService.adminSignupRaw(data);
       const status = response.status;
       const resData = response.data;
 
@@ -56,7 +56,7 @@ export function useSignUp() {
   };
 
   return {
-    signup,
+    adminSignup,
     isSigningUp,
   };
 }

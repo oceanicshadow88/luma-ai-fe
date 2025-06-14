@@ -24,17 +24,17 @@ const App = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth/signup" element={<SignUpPage />} />
         <Route path="/auth/signup/institution" element={<InstitutionPage />} />
-        
+
         <Route path="/auth/login" element={<LearnerLoginPage />} />
         <Route path="/auth/login/learner" element={<LearnerLoginPage />} />
         <Route path="/auth/login/enterprise" element={<EnterpriseLoginPage />} />
-        
+
         <Route path="/auth/reset-password" element={<LearnerResetPasswordPage />} />
         <Route path="/auth/reset-password/learner" element={<LearnerResetPasswordPage />} />
         <Route path="/auth/reset-password/enterprise" element={<EnterpriseResetPasswordPage />} />
-        
+
         <Route path="/dashboard" element={<DashboardPage />} />
-        
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

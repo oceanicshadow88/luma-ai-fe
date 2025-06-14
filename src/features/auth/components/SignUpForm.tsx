@@ -16,7 +16,6 @@ import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { FormError } from '@components/forms/FormError';
 import rightLogo from '@assets/decorative_graphic.png';
 import logo from '@assets/logo.svg';
-import { filterSignupForm } from '@utils/filterSignupForm';
 
 export default function SignUpForm() {
   const navigate = useNavigate();
@@ -55,8 +54,8 @@ export default function SignUpForm() {
 
   const onSubmit = async (data: z.infer<typeof signupSchema>) => {
     const payload = {
-      firstname: data.firstName,
-      lastname: data.lastName,
+      firstName: data.firstName,
+      lastName: data.lastName,
       username: data.username,
       email: data.email,
       password: data.password,
@@ -65,10 +64,10 @@ export default function SignUpForm() {
     };
 
     try {
-      const result = await signup(payload);
+      const result = await adminSignup(payload);
       if (result?.redirect) {
         toast('Company not found, redirecting...');
-        navigate('/auth/signup/institution', { state: { signupForm: filterSignupForm(data) } });
+        navigate('/auth/signup/institution', { state: { signupForm: data } });
         return;
       }
       toast.success('Signup success!');

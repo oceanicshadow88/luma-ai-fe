@@ -47,7 +47,10 @@ export default function TeacherSignUpForm() {
       }
       await authService
         .authToken(token ?? '')
-        .catch(() => setIsTokenInvalid(true))
+        .catch((e) => {
+          if (e.message.includes('expired')) return;
+          setIsTokenInvalid(true);
+        })
         .finally(() => setIsLoading(false));
     };
     verifyToken();
@@ -87,7 +90,7 @@ export default function TeacherSignUpForm() {
   }
 
   if (hasExpiry(decodePayload.exp)) {
-    return <div>This invitation has expired.</div>;
+    return <div>This invitation link has expired.</div>;
   }
 
   return (

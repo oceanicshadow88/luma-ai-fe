@@ -38,6 +38,9 @@ apiClient.interceptors.response.use(
       toast.error(message);
       return Promise.reject(new ApiError(message, meta));
     }
+    if (status === 401 && message.includes('expired')) {
+      return Promise.reject(new ApiError(message, meta));
+    }
     if (status === 403) {
       return Promise.reject(new ApiError(message, meta));
     }

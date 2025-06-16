@@ -10,6 +10,7 @@ import EnterpriseResetPasswordPage from '@app/auth/reset-password/enterprise/pag
 import LearnerResetPasswordPage from '@app/auth/reset-password/learner/page';
 import LandingPage from '@app/landing/page';
 import DashboardPage from '@app/dashboard/page';
+import TeacherSignUpPage from './page/teacherPage/teacherPage';
 
 const App = () => {
   return (
@@ -23,22 +24,23 @@ const App = () => {
       />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        
+
         <Route path="/auth/signup" element={<Navigate to="/auth/signup/learner" replace />} />
         <Route path="/auth/signup/learner" element={<LearnerSignUpPage />} />
         <Route path="/auth/signup/admin" element={<AdminSignUpPage />} />
+        <Route path="/auth/signup/teacher" element={<TeacherSignUpPage />} />
         <Route path="/auth/signup/institution" element={<InstitutionPage />} />
-        
+
         <Route path="/auth/login" element={<LearnerLoginPage />} />
         <Route path="/auth/login/learner" element={<LearnerLoginPage />} />
         <Route path="/auth/login/enterprise" element={<EnterpriseLoginPage />} />
-        
+
         <Route path="/auth/reset-password" element={<LearnerResetPasswordPage />} />
         <Route path="/auth/reset-password/learner" element={<LearnerResetPasswordPage />} />
         <Route path="/auth/reset-password/enterprise" element={<EnterpriseResetPasswordPage />} />
-        
+
         <Route path="/dashboard" element={<DashboardPage />} />
-        
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

@@ -62,11 +62,11 @@ export interface SignupFormData {
 
 export enum UserType {
   LEARNER = 'learner',
-  ENTERPRISE = 'enterprise'
+  ENTERPRISE = 'enterprise',
 }
 
 export enum UserRole {
   LEARNER = 'learner',
   ADMIN = 'admin',
-  INSTRUCTOR = 'instructor'
+  INSTRUCTOR = 'instructor',
 }

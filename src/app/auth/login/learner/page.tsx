@@ -28,14 +28,14 @@ const LearnerLoginPage = () => {
 
                 <section className="w-full max-w-sm sm:max-w-md lg:max-w-md">
                     <div className="w-full">
-                        <LoginForm userType={UserType.LEARNER} />
+                    <LoginForm userType={UserType.LEARNER} theme="learner" />
                     </div>
 
                     <div className="mt-4 sm:mt-6 text-sm text-center">
                         <p className="text-gray-600 inline">Forgot Password?</p>
                         <Link
                             to="/auth/reset-password/learner"
-                            className="ml-1 text-blue-600 font-medium hover:text-blue-900 hover:underline active:text-blue-700 transition-colors"
+                            className="ml-1 text-[#ffa310] font-medium hover:text-yellow-600 hover:underline active:text-blue-700 transition-colors"
                         >
                             Reset Your Password
                         </Link>

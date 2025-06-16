@@ -1,18 +1,17 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@features/auth/schemas';
-import { LoginFormData, UserType } from '@features/auth/types'; 
+import { LoginFormData, UserType } from '@features/auth/types';
 import { useLogin } from '@features/auth/hooks/useLogin';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { useNavigate } from 'react-router-dom';
-import { handleAdvancedFormError } from '@utils/errorHandler';
 import { LOGIN_ERROR_MESSAGE_MAP } from '@custom-types/ApiError';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 
 interface LoginFormProps {
-  userType?: UserType; 
+  userType?: UserType;
   onSuccess?: () => void;
 }
 
@@ -31,32 +30,22 @@ export function LoginForm({ userType = UserType.LEARNER, onSuccess }: LoginFormP
   const { login, isLoggingIn } = useLogin();
 
   const onSubmit = async (data: LoginFormData) => {
-    try {
-      await login(data, userType); 
+    await login(data, userType);
 
-      const timeoutId = setTimeout(() => {
+    const timeoutId = setTimeout(() => {
+      navigate('/dashboard');
+    }, 3000);
+
+    showToastWithAction('Successfully logged in! Redirecting...', {
+      actionText: 'Go Now',
+      onAction: () => {
+        clearTimeout(timeoutId);
         navigate('/dashboard');
-      }, 3000);
+      },
+      duration: 2000,
+    });
 
-      showToastWithAction('Successfully logged in! Redirecting...', {
-        actionText: 'Go Now',
-        onAction: () => {
-          clearTimeout(timeoutId);
-          navigate('/dashboard');
-        },
-        duration: 2000,
-      });
-
-      onSuccess?.();
-    } catch (error) {
-      handleAdvancedFormError(
-        error,
-        setError,
-        LOGIN_ERROR_MESSAGE_MAP,
-        'toast',
-        'Something went wrong. Please try again later.'
-      );
-    }
+    onSuccess?.();
   };
 
   return (

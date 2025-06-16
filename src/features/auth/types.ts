@@ -66,3 +66,9 @@ export enum UserType {
   LEARNER = 'learner',
   ENTERPRISE = 'enterprise',
 }
+
+export enum UserRole {
+  LEARNER = 'learner',
+  ADMIN = 'admin',
+  INSTRUCTOR = 'instructor',
+}

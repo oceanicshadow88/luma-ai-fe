@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signupSchema } from '../schemas';
@@ -13,11 +14,11 @@ import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { FormError } from '@components/forms/FormError';
-import rightLogo from '@assets/decorative_graphic.png';
 import logo from '@assets/logo.svg';
 import { filterSignupForm } from '@utils/filterSignupForm';
 
-export default function SignUpForm() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function SignUpForm(props: any) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -56,6 +57,7 @@ export default function SignUpForm() {
       password: data.password,
       confirmPassword: data.confirmPassword,
       verifyValue: data.code,
+      termsAccepted: true,
     };
 
     try {
@@ -168,14 +170,6 @@ export default function SignUpForm() {
             Sign Up
           </Button>
         </form>
-      </div>
-
-      <div className="hidden md:flex flex-1 h-full items-center justify-center">
-        <img
-          src={rightLogo}
-          alt="Luma AI Illustration"
-          className="max-w-xs md:max-w-lg lg:max-w-xl h-auto object-contain"
-        />
       </div>
     </div>
   );

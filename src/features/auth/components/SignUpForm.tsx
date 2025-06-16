@@ -167,10 +167,10 @@ export default function SignUpForm(props: any) {
           />
 
           <div className="flex items-center">
-            <input type="checkbox" className="mr-2" {...register('agreeTerms')} />
+            <input type="checkbox" className="mr-2" {...register('termsAccepted')} />
             <label className="text-sm text-gray-700">I agree to the Terms</label>
           </div>
-          <FormError message={errors.agreeTerms?.message} />
+          <FormError message={errors.termsAccepted?.message} />
 
           <Button type="submit" variant="primary" fullWidth isLoading={isSigningUp}>
             Sign Up

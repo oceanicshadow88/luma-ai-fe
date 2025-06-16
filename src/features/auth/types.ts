@@ -51,12 +51,12 @@ export interface InstitutionFormData {
 }
 
 export interface SignupFormData {
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   username: string;
   email: string;
   password: string;
-  verifyCode: string;
+  verifyValue: string;
   termsAccepted: boolean;
 }
 

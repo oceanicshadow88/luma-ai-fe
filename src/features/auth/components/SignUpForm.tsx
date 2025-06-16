@@ -8,7 +8,6 @@ import toast from 'react-hot-toast';
 import { useAdminSignUp } from '@features/auth/hooks/useAdminSignUp';
 import { useSendCode } from '@features/auth/hooks/useSendCode';
 import { SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR, ApiError } from '@custom-types/ApiError';
-import { getErrorField, getErrorMessage } from '@utils/errorHandler';
 import { Path } from 'react-hook-form';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
@@ -43,14 +42,9 @@ export default function SignUpForm(props: any) {
 
   const handleSendCode = async () => {
     if (!email || !canSend) return;
-    try {
-      await sendCode(email);
+    const result = await sendCode(email);
+    if (result.success) {
       toast.success('Verification code sent');
-    } catch (error: unknown) {
-      const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR.field);
-      const message = getErrorMessage(error, UNKNOWN_ERROR.message);
-      setError(field as Path<z.infer<typeof signupSchema>>, { message });
-      toast.error(message);
     }
   };
 
@@ -66,33 +60,14 @@ export default function SignUpForm(props: any) {
       termsAccepted: true,
     };
 
-    try {
-      const result = await adminSignup(payload);
-      if (result?.redirect) {
-        toast('Company not found, redirecting...');
-        navigate('/auth/signup/institution', { state: { signupForm: filterSignupForm(data) } });
-        return;
-      }
-      toast.success('Signup success!');
-      navigate('/dashboard');
-    } catch (error: unknown) {
-      if (error instanceof ApiError) {
-        const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR.field);
-        const message = getErrorMessage(error, UNKNOWN_ERROR.message);
-
-        setError(field as Path<z.infer<typeof signupSchema>>, { message });
-        toast.error(message);
-
-        if (message.toLowerCase().includes('user already exist')) {
-          toast('Email already registered. Please log in.');
-          navigate('/auth/login');
-          return;
-        }
-      } else {
-        setError('root', { message: 'Unexpected error occurred.' });
-        toast.error('Unexpected error occurred.');
-      }
+    const result = await adminSignup(payload);
+    if (result?.redirect) {
+      toast('Company not found, redirecting...');
+      navigate('/auth/signup/institution', { state: { signupForm: filterSignupForm(data) } });
+      return;
     }
+    toast.success('Signup success!');
+    navigate('/dashboard');
   };
 
   return (

@@ -6,7 +6,6 @@ import { InstitutionPayload } from '@features/auth/types';
 import { institutionSchema } from '@features/auth/schemas';
 import { institutionService } from '@api/auth/institution';
 import { ApiError, INSTITUTION_ERROR_MAP, UNKNOWN_ERROR } from '@custom-types/ApiError';
-import { getErrorField } from '@utils/errorHandler';
 import { Input } from '@components/forms/Input';
 import { Button } from '@components/buttons/Button';
 import { FormError } from '@components/forms/FormError';
@@ -77,23 +76,8 @@ const InstitutionForm = () => {
   };
 
   const onSubmit = async (data: InstitutionPayload) => {
-    try {
-      await institutionService.create(data);
-      navigate('/admin/dashboard');
-    } catch (error) {
-      if (error instanceof ApiError) {
-        const field = getErrorField(error, INSTITUTION_ERROR_MAP, UNKNOWN_ERROR.field);
-        setError(field as keyof InstitutionPayload, {
-          type: 'manual',
-          message: error.message,
-        });
-      } else {
-        setError('root', {
-          type: 'manual',
-          message: UNKNOWN_ERROR.message,
-        });
-      }
-    }
+    await institutionService.create(data);
+    navigate('/admin/dashboard');
   };
 
   return (

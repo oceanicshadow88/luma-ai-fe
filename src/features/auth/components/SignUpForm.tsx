@@ -7,7 +7,6 @@ import toast from 'react-hot-toast';
 import { useAdminSignUp } from '@features/auth/hooks/useAdminSignUp';
 import { useSendCode } from '@features/auth/hooks/useSendCode';
 import { SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR, ApiError } from '@custom-types/ApiError';
-import { getErrorField, getErrorMessage } from '@utils/errorHandler';
 import { Path } from 'react-hook-form';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
@@ -42,14 +41,9 @@ export default function SignUpForm() {
 
   const handleSendCode = async () => {
     if (!email || !canSend) return;
-    try {
-      await sendCode(email);
+    const result = await sendCode(email);
+    if (result.success) {
       toast.success('Verification code sent');
-    } catch (error: unknown) {
-      const field = getErrorField(error, SIGNUP_ERROR_MESSAGE_MAP, UNKNOWN_ERROR.field);
-      const message = getErrorMessage(error, UNKNOWN_ERROR.message);
-      setError(field as Path<z.infer<typeof signupSchema>>, { message });
-      toast.error(message);
     }
   };
 

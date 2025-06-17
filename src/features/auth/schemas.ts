@@ -29,13 +29,15 @@ export const signupSchema = z
     path: ['confirmPassword'],
   });
 
-export const institutionSchema = z.object({
-  companyName: z
-    .string()
-    .min(2, 'Organisation name must be at least 2 characters')
-    .max(100, 'Organisation name too long'),
-  logo: z.any().optional(),
-});
+  export const institutionSchema = z.object({
+    companyName: z
+      .string()
+      .min(2, 'Organisation name must be at least 2 characters')
+      .max(100, 'Organisation name too long'),
+    slug: z.string(),
+    logo: z.any().optional(),
+    emailDomain: z.string(),
+  });
 
 export const resetPasswordSchema = z
   .object({

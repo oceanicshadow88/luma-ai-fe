@@ -28,7 +28,7 @@ export function useSignUp() {
     setIsSigningUp(true);
     
     try {
-      const response = await signupService.signupRaw(data, userRole);
+      const response = await signupService.adminSignupRaw(data, userRole);
       const status = response.status;
       const resData = response.data;
       

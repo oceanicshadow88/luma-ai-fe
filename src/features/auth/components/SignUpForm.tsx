@@ -21,11 +21,11 @@ interface SignUpFormProps {
   theme?: ThemeType;
 }
 
-export function SignUpForm({ 
-  userRole = UserRole.LEARNER, 
-  onSuccess, 
-  theme = 'default' 
-}: SignUpFormProps) {
+const SignUpForm = ({
+  userRole = UserRole.LEARNER,
+  onSuccess,
+  theme = 'default',
+}: SignUpFormProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const themeStyles = useFormTheme(theme);
@@ -49,9 +49,9 @@ export function SignUpForm({
 
   const handleSendCode = async () => {
     if (!email || !canSend) return;
-    
+
     const result = await sendCode(email, { setError });
-    
+
     if (result.success) {
       showToastWithAction('If the email is valid, a verification code will be sent.', {
         duration: 2000,
@@ -67,11 +67,11 @@ export function SignUpForm({
       email: data.email,
       password: data.password,
       verifyValue: data.code,
-      termsAccepted: data.termsAccepted
+      termsAccepted: data.termsAccepted,
     };
 
     const result = await signup(payload, userRole, { setError });
-      
+
     if (result.success) {
       if (result.redirect) {
         if (result.redirect === '/auth/signup/institution') {
@@ -79,8 +79,8 @@ export function SignUpForm({
             showToastWithAction('Company not found, redirecting to institution setup...', {
               duration: 2000,
             });
-            navigate('/auth/signup/institution', { 
-              state: { signupForm: filterSignupForm(data) } 
+            navigate('/auth/signup/institution', {
+              state: { signupForm: filterSignupForm(data) },
             });
             return;
           }
@@ -165,7 +165,7 @@ export function SignUpForm({
       <PasswordInput
         id="password"
         label="Password"
-        placeholder="create a password"
+        placeholder="Create a password"
         {...register('password')}
         error={errors.password?.message}
         inputClassName={themeStyles.passwordInputClassName}
@@ -175,7 +175,7 @@ export function SignUpForm({
       <PasswordInput
         id="confirmPassword"
         label="Confirm Password"
-        placeholder="confirm your password"
+        placeholder="Confirm your password"
         {...register('confirmPassword')}
         error={errors.confirmPassword?.message}
         inputClassName={themeStyles.passwordInputClassName}
@@ -186,8 +186,8 @@ export function SignUpForm({
         <Checkbox
           id="agreeTerms"
           label="I agree to the Terms"
-          {...register('termsAccepted', { 
-            setValueAs: (value) => Boolean(value)
+          {...register('termsAccepted', {
+            setValueAs: (value) => Boolean(value),
           })}
           error={errors.termsAccepted?.message}
           checkboxClassName={themeStyles.checkboxClassName}
@@ -195,11 +195,11 @@ export function SignUpForm({
         />
       </div>
 
-      <Button 
-        type="submit" 
-        variant="primary" 
+      <Button
+        type="submit"
+        variant="primary"
         className={`rounded-3xl ${themeStyles.buttonClass}`}
-        fullWidth 
+        fullWidth
         disabled={isSubmitting || isSigningUp}
         isLoading={isSubmitting || isSigningUp}
       >
@@ -207,4 +207,6 @@ export function SignUpForm({
       </Button>
     </form>
   );
-}
+};
+
+export default SignUpForm;

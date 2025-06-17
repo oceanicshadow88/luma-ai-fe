@@ -65,13 +65,13 @@ cd luma-ai-frontend
 ### 2. Install dependencies
 
 ```bash
-npm install
+yarn install
 ```
 
 ### 3. Start development server
 
 ```bash
-npm run dev
+yarn run dev
 ```
 
 App will be served at [http://localhost:5173](http://localhost:5173)
@@ -82,11 +82,11 @@ App will be served at [http://localhost:5173](http://localhost:5173)
 
 | Command            | Description                      |
 | ------------------ | -------------------------------- |
-| `npm run dev`      | Start development server         |
-| `npm run build`    | Build for production             |
-| `npm run preview`  | Preview production build locally |
-| `npm run format`   | Format code using Prettier       |
-| `npm run lint`     | Run ESLint to check code style   |
+| `yarn run dev`     | Start development server         |
+| `yarn run build`   | Build for production             |
+| `yarn run preview` | Preview production build locally |
+| `yarn run format`  | Format code using Prettier       |
+| `yarn run lint`    | Run ESLint to check code style   |
 | `npx cypress open` | Open Cypress GUI for testing     |
 | `npx cypress run`  | Run Cypress tests in CLI         |
 

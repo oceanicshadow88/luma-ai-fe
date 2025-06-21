@@ -9,17 +9,22 @@ import { Button } from '@components/buttons/Button';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { ResetPasswordFormData, UserType } from '@features/auth/types';
 import { toast } from 'react-hot-toast';
+import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 
 interface ResetPasswordFormProps {
   userType?: UserType;
   onSuccess?: () => void;
+  theme?: ThemeType;
 }
 
 export function ResetPasswordForm({
   userType = UserType.LEARNER,
   onSuccess,
+  theme = 'default'
 }: ResetPasswordFormProps) {
   const navigate = useNavigate();
+  const themeStyles = useFormTheme(theme);
+
   const {
     register,
     handleSubmit,
@@ -34,17 +39,20 @@ export function ResetPasswordForm({
     reValidateMode: 'onBlur',
   });
 
-  const { resetPassword, sendVerificationCode, isCodeSending, countdown } = useResetPassword();
+  const { resetPassword, sendVerificationCode, isCodeSending, isResetting, countdown } = useResetPassword();
 
   const getLoginPath = () => {
     return userType === UserType.ENTERPRISE ? '/auth/login/enterprise' : '/auth/login/learner';
   };
 
   const onSubmit = async (data: ResetPasswordFormData) => {
-    await resetPassword(data);
-    toast.success('Password reset successfully. Please log in again with new password.');
-    setTimeout(() => navigate(getLoginPath()), 3000);
-    onSuccess?.();
+    const result = await resetPassword(data, { setError });
+    
+    if (result.success) {
+      toast.success('Password reset successfully. Please log in again with new password.');
+      setTimeout(() => navigate(getLoginPath()), 3000);
+      onSuccess?.();
+    }
   };
 
   const handleSendCode = async () => {
@@ -53,13 +61,18 @@ export function ResetPasswordForm({
     if (!isValid) return;
 
     const email = getValues('email');
-    await sendVerificationCode(email);
-    toast.success('If the email is valid, a verification code will be sent.');
+    const result = await sendVerificationCode(email, { setError });
+    
+    if (result.success) {
+      toast.success('If the email is valid, a verification code will be sent.');
+    }
   };
+
+  const isProcessing = isSubmitting || isResetting;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
-      <div className="space-y-4 max-w-md ">
+      <div className="space-y-4 max-w-md">
         <Input
           id="email"
           label="Email Address"
@@ -67,7 +80,10 @@ export function ResetPasswordForm({
           placeholder="e.g. your@email.com"
           {...register('email')}
           error={errors.email?.message}
+          inputClassName={themeStyles.inputClassName}
+          labelClassName={themeStyles.labelClassName}
         />
+        
         <VerificationCodeInput
           id="verificationCode"
           label="Verification Code"
@@ -77,24 +93,40 @@ export function ResetPasswordForm({
           isButtonDisabled={countdown > 0 || isCodeSending}
           {...register('verificationCode')}
           error={errors.verificationCode?.message}
+          inputClassName={themeStyles.inputClassName}
+          labelClassName={themeStyles.labelClassName}
+          buttonClassName={themeStyles.verificationButtonClass}
         />
+        
         <PasswordInput
           id="password"
           label="New Password"
           placeholder="Create a new password"
           {...register('password')}
           error={errors.password?.message}
+          inputClassName={themeStyles.passwordInputClassName}
+          labelClassName={themeStyles.labelClassName}
         />
+        
         <PasswordInput
           id="confirmPassword"
           label="Confirm New Password"
           placeholder="Confirm your new password"
           {...register('confirmPassword')}
           error={errors.confirmPassword?.message}
+          inputClassName={themeStyles.passwordInputClassName}
+          labelClassName={themeStyles.labelClassName}
         />
       </div>
+      
       <div>
-        <Button type="submit" fullWidth disabled={isSubmitting} isLoading={isSubmitting}>
+        <Button 
+          type="submit" 
+          fullWidth 
+          disabled={isProcessing} 
+          isLoading={isProcessing}
+          className={themeStyles.buttonClass}
+        >
           Reset Password
         </Button>
       </div>

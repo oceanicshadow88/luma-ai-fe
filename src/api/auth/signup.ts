@@ -43,7 +43,7 @@ class SignupServiceImpl implements SignupService {
   }
 
   async signupAsInstructor(data: SignupFormData): Promise<SignupResult> {
-    return this.signup(data, UserRole.INSTRUCTOR);
+    return apiClient.post('/auth/signup/instructor', data);
   }
 
   async sendCode(email: string): Promise<void> {

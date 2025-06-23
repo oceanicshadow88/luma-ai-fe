@@ -93,7 +93,6 @@ export const useInstitution = () => {
 
             await institutionService.create(formData);
 
-            // Success handling - 与 login 保持一致的风格
             const timeoutId = setTimeout(() => {
                 navigate('/dashboard');
             }, 3000);

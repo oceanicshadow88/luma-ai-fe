@@ -34,7 +34,7 @@ export interface LoginFormData {
   password: string;
 }
 
-export type SignUpInput = {
+export interface SignUpInput {
   firstName: string;
   lastName: string;
   username: string;
@@ -42,27 +42,31 @@ export type SignUpInput = {
   code: string;
   password: string;
   confirmPassword: string;
-  agreeTerms: boolean;
-};
+  termsAccepted: boolean;
+}
 
-export type InstitutionPayload = {
-  name: string;
-  slug: string;
-  emailDomain: string;
-  logo?: File;
-};
+export interface InstitutionFormData {
+  companyName: string;
+  logo?: File | null;
+}
 
-export type SignupFormData = {
+export interface SignupFormData {
   firstName: string;
   lastName: string;
   username: string;
   email: string;
   password: string;
-  confirmPassword?: string;
   verifyValue: string;
-};
+  termsAccepted: boolean;
+}
 
 export enum UserType {
   LEARNER = 'learner',
   ENTERPRISE = 'enterprise',
+}
+
+export enum UserRole {
+  LEARNER = 'learner',
+  ADMIN = 'admin',
+  INSTRUCTOR = 'instructor',
 }

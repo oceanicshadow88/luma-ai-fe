@@ -18,30 +18,26 @@ export const signupSchema = z
       .regex(/^[a-zA-Z0-9]+$/, 'Username can only contain letters and numbers'),
     email: emailSchema,
     code: verificationCodeSchema,
-    password: passwordSchema,
+    password: newPasswordSchema,
     confirmPassword: z.string().min(1, 'Please confirm your password'),
-    agreeTerms: z.literal(true, {
-      errorMap: () => ({ message: 'You must agree to the terms to continue.' }),
-    }),
+    termsAccepted: z
+      .boolean()
+      .refine((val) => val === true, 'You must agree to the terms to continue.'),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   });
 
-export const institutionSchema = z.object({
-  name: z
-    .string()
-    .min(2, 'Organisation name must be at least 2 characters')
-    .max(100, 'Organisation name too long'),
-  slug: z
-    .string()
-    .min(1, 'Slug cannot be empty')
-    .max(100, 'Slug too long')
-    .regex(/^[a-z0-9-]+$/, 'Slug must only contain lowercase letters, numbers, and hyphens'),
-  logo: z.any().optional(),
-  emailDomain: z.string(),
-});
+  export const institutionSchema = z.object({
+    companyName: z
+      .string()
+      .min(2, 'Organisation name must be at least 2 characters')
+      .max(100, 'Organisation name too long'),
+    slug: z.string(),
+    logo: z.any().optional(),
+    emailDomain: z.string(),
+  });
 
 export const resetPasswordSchema = z
   .object({

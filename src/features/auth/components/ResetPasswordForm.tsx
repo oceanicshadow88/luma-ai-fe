@@ -8,11 +8,6 @@ import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { ResetPasswordFormData, UserType } from '@features/auth/types';
-import {
-  RESET_PASSWORD_ERROR_MESSAGE_MAP,
-  UNKNOWN_ERROR,
-} from '@custom-types/ApiError';
-import { handleAdvancedFormError } from '@utils/errorHandler';
 import { toast } from 'react-hot-toast';
 
 interface ResetPasswordFormProps {
@@ -20,9 +15,9 @@ interface ResetPasswordFormProps {
   onSuccess?: () => void;
 }
 
-export function ResetPasswordForm({ 
-  userType = UserType.LEARNER, 
-  onSuccess 
+export function ResetPasswordForm({
+  userType = UserType.LEARNER,
+  onSuccess,
 }: ResetPasswordFormProps) {
   const navigate = useNavigate();
   const {
@@ -46,20 +41,10 @@ export function ResetPasswordForm({
   };
 
   const onSubmit = async (data: ResetPasswordFormData) => {
-    try {
-      await resetPassword(data);
-      toast.success('Password reset successfully. Please log in again with new password.');
-      setTimeout(() => navigate(getLoginPath()), 3000);
-      onSuccess?.();
-    } catch (error) {
-      handleAdvancedFormError(
-        error,
-        setError,
-        RESET_PASSWORD_ERROR_MESSAGE_MAP,
-        'toast',
-        UNKNOWN_ERROR.message
-      );
-    }
+    await resetPassword(data);
+    toast.success('Password reset successfully. Please log in again with new password.');
+    setTimeout(() => navigate(getLoginPath()), 3000);
+    onSuccess?.();
   };
 
   const handleSendCode = async () => {
@@ -68,18 +53,8 @@ export function ResetPasswordForm({
     if (!isValid) return;
 
     const email = getValues('email');
-    try {
-      await sendVerificationCode(email);
-      toast.success('If the email is valid, a verification code will be sent.');
-    } catch (error) {
-      handleAdvancedFormError(
-        error,
-        setError,
-        RESET_PASSWORD_ERROR_MESSAGE_MAP,
-        'toast',
-        UNKNOWN_ERROR.message
-      );
-    }
+    await sendVerificationCode(email);
+    toast.success('If the email is valid, a verification code will be sent.');
   };
 
   return (

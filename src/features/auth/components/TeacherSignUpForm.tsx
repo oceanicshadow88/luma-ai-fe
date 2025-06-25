@@ -72,7 +72,7 @@ export default function TeacherSignUpForm() {
     const result = await signupService.signupAsInstructor(payload).catch(() => {
       setIsSubmitting(false);
     });
-    if (result?.status === 201) {
+    if (result) {
       toast.success('Signup success! You will be redirected in 3 seconds');
       setTimeout(() => navigate('/dashboard'), 3000);
     } else {

@@ -2,6 +2,7 @@ import { useSearchParams } from 'react-router-dom';
 import { decodeJwt } from '@utils/jwtUtils';
 import TeacherSignUpPage from '../../../../src/page/teacherPage/teacherPage';
 import LearnerSignUpPage from '@app/auth/signup/learner/page';
+import { UserRole } from '@features/auth/types';
 
 export default function SignupRouter() {
     const [searchParams] = useSearchParams();
@@ -18,8 +19,8 @@ export default function SignupRouter() {
 
     const role = decoded?.role;
 
-    if (role === 'instructor') return <TeacherSignUpPage />;
-    if (role === 'learner') return <LearnerSignUpPage />;
+    if (role === UserRole.INSTRUCTOR) return <TeacherSignUpPage />;
+    if (role === UserRole.LEARNER) return <LearnerSignUpPage />;
 
     return <div>Unsupported role in invitation: {role}</div>;
 }

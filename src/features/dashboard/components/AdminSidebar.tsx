@@ -66,11 +66,9 @@ const AdminSidebar = ({
 
   return (
     <div className={`w-58 bg-white border-r border-gray-200 flex flex-col ${className}`}>
-      {/* Top spacing for logo */}
-      <div className="h-20"></div>
       
       {/* Header */}
-      <div className="mx-4 px-4 py-4 bg-gray-100 rounded-lg text-left">
+      <div className="mt-5 mx-4 px-4 py-4 bg-gray-100 rounded-lg text-left">
         <div>
           <h3 className="text-base font-semibold text-gray-900 truncate mb-1">{organizationName}</h3>
           <p className="text-sm text-gray-500 truncate">{adminEmail}</p>

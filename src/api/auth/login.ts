@@ -27,7 +27,17 @@ class LoginServiceImpl implements LoginService {
       throw new ApiError(message);
     }
     
-    return response.data.data;
+    const result: LoginResult = response.data.data;
+    
+    if (result.refreshToken) {
+      localStorage.setItem('refreshToken', result.refreshToken);
+    }
+
+    if (result.accessToken) {
+      localStorage.setItem('accessToken', result.accessToken);
+    }
+    
+    return result;
   }
   
   async loginAsLearner(data: LoginFormData): Promise<LoginResult> {

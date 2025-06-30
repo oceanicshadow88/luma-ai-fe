@@ -30,7 +30,17 @@ class SignupServiceImpl implements SignupService {
       throw new ApiError(message);
     }
 
-    return response.data.data;
+    const result: SignupResult = response.data.data;
+    
+    if (result.refreshToken) {
+      localStorage.setItem('refreshToken', result.refreshToken);
+    }
+    
+    if (result.accessToken) {
+      localStorage.setItem('accessToken', result.accessToken);
+    }
+
+    return result;
   }
 
   async signupAsLearner(data: SignupFormData): Promise<SignupResult> {
@@ -39,11 +49,22 @@ class SignupServiceImpl implements SignupService {
 
   async signupAsAdmin(data: SignupFormData): Promise<SignupResult> {
     const response = await apiClient.post<SignupResult>('/auth/signup/admin', data);
+
+    if (response.data.accessToken) {
+      localStorage.setItem('accessToken', response.data.accessToken);
+    }
+    
     return response.data;
   }
 
   async signupAsInstructor(data: SignupFormData): Promise<SignupResult> {
-    return apiClient.post('/auth/signup/instructor', data);
+    const response = await apiClient.post('/auth/signup/instructor', data);
+    
+    if (response.data.accessToken) {
+      localStorage.setItem('accessToken', response.data.accessToken);
+    }
+    
+    return response.data;
   }
 
   async sendCode(email: string): Promise<void> {

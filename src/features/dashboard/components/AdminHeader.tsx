@@ -2,22 +2,6 @@ import { Menu, Plus, UserPlus, Calendar } from 'lucide-react';
 import { Button } from '@components/buttons/Button';
 
 const AdminHeader = () => {
-  const handleCreateRoadmap = () => {
-    console.log('Create Roadmap clicked');
-  };
-
-  const handleCreateQuiz = () => {
-    console.log('Create Quiz clicked');
-  };
-
-  const handleInviteInstructor = () => {
-    console.log('Invite Instructor clicked');
-  };
-
-  const handleManagePlan = () => {
-    console.log('Manage Plan clicked');
-  };
-
   return (
     <div className="w-full bg-white border-b border-gray-200">
       <div className="flex items-center justify-between px-6 py-4">

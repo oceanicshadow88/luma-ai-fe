@@ -32,6 +32,10 @@ class SignupServiceImpl implements SignupService {
 
     const result: SignupResult = response.data.data;
     
+    if (result.refreshToken) {
+      localStorage.setItem('refreshToken', result.refreshToken);
+    }
+    
     if (result.accessToken) {
       localStorage.setItem('accessToken', result.accessToken);
     }

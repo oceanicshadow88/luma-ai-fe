@@ -1,5 +1,5 @@
 import logo from '@assets/logo.svg';
-import rightLogo from '@assets/decorative_graphic.png';
+import decorativeGraphic from '@assets/decorative_graphic.png';
 import TeacherSignUpForm from '@features/auth/components/TeacherSignUpForm';
 
 export const TeacherSignUpPage = () => {
@@ -28,7 +28,7 @@ export const TeacherSignUpPage = () => {
       </main>
 
       <aside className="hidden lg:block w-full lg:w-3/5" aria-hidden="true">
-        <img src={rightLogo} alt="Luma AI Illustration" className="w-full h-full object-contain" />
+        <img src={decorativeGraphic} alt="Luma AI Illustration" className="w-full h-full object-contain" />
       </aside>
     </div>
   );

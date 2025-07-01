@@ -7,14 +7,12 @@ import toast from 'react-hot-toast';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
-import { FormError } from '@components/forms/FormError';
-import rightLogo from '@assets/decorative_graphic.png';
-import logo from '@assets/logo.svg';
 import { useEffect, useState } from 'react';
 import { authService } from '@api/auth/auth';
 import { signupService } from '@api/auth/signup';
 import { hasExpiry } from '@utils/dataUtils';
 import { decodeJwt } from '@utils/jwtUtils';
+import { Checkbox } from '@components/forms/Checkbox';
 
 export default function TeacherSignUpForm() {
   const [searchParams] = useSearchParams();
@@ -81,92 +79,101 @@ export default function TeacherSignUpForm() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center py-8">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    );
   }
 
   if (isTokenInvalid) {
-    return <div>Invalid invitation link. Please check your email or contact admin</div>;
+    return (
+      <div className="text-center py-8">
+        <div className="text-red-600">Invalid invitation link. Please check your email or contact admin</div>
+      </div>
+    );
   }
 
   if (hasExpiry(decodePayload.exp)) {
-    return <div>This invitation link has expired.</div>;
+    return (
+      <div className="text-center py-8">
+        <div className="text-red-600">This invitation link has expired.</div>
+      </div>
+    );
   }
 
   return (
-    <div className="w-[1440px] h-[900px] flex bg-white items-center mx-auto">
-      <div className="h-[800px] my-[50px] px-[170px] pt-[20px] flex flex-col justify-start">
-        <img src={logo} alt="Luma AI Logo" className="w-[140px] h-auto mb-3" />
-
-        <h2 className="text-xl font-semibold mb-10 text-left">
-          Sign up for Luma AI Enterprise Version
-        </h2>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
-          <Input
-            id="email"
-            label="Work Email"
-            type="email"
-            placeholder="e.g. xxx@college.edu.au"
-            {...register('email')}
-            error={errors.email?.message}
-            isDisabled={true}
-          />
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              id="firstName"
-              label="First Name"
-              placeholder="e.g. John"
-              {...register('firstName')}
-              error={errors.firstName?.message}
-            />
-            <Input
-              id="lastName"
-              label="Last Name"
-              placeholder="e.g. Smith"
-              {...register('lastName')}
-              error={errors.lastName?.message}
-            />
-          </div>
-
-          <Input
-            id="username"
-            label="Username"
-            placeholder="e.g. johnsmith123"
-            {...register('username')}
-            error={errors.username?.message}
-          />
-
-          <PasswordInput
-            id="password"
-            label="Password"
-            placeholder="Create a password"
-            {...register('password')}
-            error={errors.password?.message}
-          />
-
-          <PasswordInput
-            id="confirmPassword"
-            label="Confirm Password"
-            placeholder="Confirm your password"
-            {...register('confirmPassword')}
-            error={errors.confirmPassword?.message}
-          />
-
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-2" {...register('agreeTerms')} />
-            <label className="text-sm text-gray-700">I agree to the Terms</label>
-          </div>
-          <FormError message={errors.agreeTerms?.message} />
-
-          <Button type="submit" variant="primary" fullWidth disabled={isSubmitting}>
-            Sign Up
-          </Button>
-        </form>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full mt-8">
+      <Input
+        id="email"
+        label="Work Email"
+        type="email"
+        placeholder="e.g. xxx@college.edu.au"
+        {...register('email')}
+        error={errors.email?.message}
+        isDisabled={true}
+      />
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Input
+          id="firstName"
+          label="First Name"
+          placeholder="e.g. John"
+          {...register('firstName')}
+          error={errors.firstName?.message}
+        />
+        <Input
+          id="lastName"
+          label="Last Name"
+          placeholder="e.g. Smith"
+          {...register('lastName')}
+          error={errors.lastName?.message}
+        />
       </div>
 
-      <div className="h-[800px] my-[50px] pr-[100px] flex items-center justify-center">
-        <img src={rightLogo} alt="Luma AI Logo" className="w-[600px] h-[800px] object-contain" />
+      <Input
+        id="username"
+        label="Username"
+        placeholder="e.g. johnsmith123"
+        {...register('username')}
+        error={errors.username?.message}
+      />
+
+      <PasswordInput
+        id="password"
+        label="Password"
+        placeholder="Create a password"
+        {...register('password')}
+        error={errors.password?.message}
+      />
+
+      <PasswordInput
+        id="confirmPassword"
+        label="Confirm Password"
+        placeholder="Confirm your password"
+        {...register('confirmPassword')}
+        error={errors.confirmPassword?.message}
+      />
+
+      <div className="flex flex-col space-y-1">
+        <Checkbox
+          id="agreeTerms"
+          label="I agree to the Terms"
+          {...register('agreeTerms')}
+          error={errors.agreeTerms?.message}
+        />
       </div>
-    </div>
+
+      <Button 
+        type="submit" 
+        variant="primary" 
+        className="rounded-3xl"
+        fullWidth 
+        disabled={isSubmitting}
+        isLoading={isSubmitting}
+      >
+        Sign Up
+      </Button>
+    </form>
   );
 }

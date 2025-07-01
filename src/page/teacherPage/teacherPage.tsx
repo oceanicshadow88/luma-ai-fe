@@ -1,5 +1,5 @@
 import logo from '@assets/logo.svg';
-import leftLogo from '@assets/decorative_graphic.png';
+import decorativeGraphic from '@assets/decorative_graphic.png';
 import TeacherSignUpForm from '@features/auth/components/TeacherSignUpForm';
 
 export const TeacherSignUpPage = () => {
@@ -9,11 +9,7 @@ export const TeacherSignUpPage = () => {
 
   return (
     <div className="flex flex-col lg:flex-row w-full min-h-screen">
-      <aside className="hidden lg:block w-full lg:w-3/5" aria-hidden="true">
-        <img src={leftLogo} alt="Luma AI Illustration" className="w-full h-full object-contain" />
-      </aside>
-
-      <main className="w-full lg:w-3/5 sm:mt-10 sm:p-6 md:p-8 lg:pl-30 flex flex-col justify-center items-start bg-white">
+      <main className="w-full lg:w-3/5 sm:mt-10 sm:p-6 md:p-8 lg:pr-30 flex flex-col justify-center items-start bg-white">
         <header className="w-full mb-6 sm:mb-8 flex flex-row items-center gap-2 justify-center sm:justify-start">
           <img src={logo} alt="Luma AI Logo" className="h-6 sm:h-8" />
         </header>
@@ -30,6 +26,10 @@ export const TeacherSignUpPage = () => {
           </div>
         </section>
       </main>
+
+      <aside className="hidden lg:block w-full lg:w-3/5" aria-hidden="true">
+        <img src={decorativeGraphic} alt="Luma AI Illustration" className="w-full h-full object-contain" />
+      </aside>
     </div>
   );
 };

@@ -1,6 +1,5 @@
-import { ApiError } from '@custom-types/ApiError';
 import axios, { AxiosHeaders, type InternalAxiosRequestConfig } from 'axios';
-import { toast } from 'react-hot-toast';
+import { ApiErrorMeta, ApiError } from '@custom-types/ApiError';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://api.example.com';
 const API_VERSION = '/api/v1';
@@ -23,33 +22,19 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    const status = error.response?.status;
     const data = error.response?.data as
       | {
           message?: string;
-          meta?: Record<string, unknown>;
+          field?: string;
           cooldownSeconds?: number;
         }
       | undefined;
     const message = data?.message || 'Unexpected error occurred';
-    const meta = data?.meta;
+    const meta: ApiErrorMeta = {
+      cooldownSeconds: data?.cooldownSeconds,
+      field: data?.field
+    };
 
-    if (status === 400) {
-      toast.error(message);
-      return Promise.reject(new ApiError(message, meta));
-    }
-    if (status === 401 && message.includes('expired')) {
-      return Promise.reject(new ApiError(message, meta));
-    }
-    if (status === 403) {
-      return Promise.reject(new ApiError(message, meta));
-    }
-    // if (status === 429 && data?.cooldownSeconds !== undefined) {
-    //   throw new ApiError(data.message || 'Too many requests', {
-    //     cooldownSeconds: data.cooldownSeconds,
-    //   });
-    // }
-    toast.error('Server Error. Please try again or contact support');
     return Promise.reject(new ApiError(message, meta));
   }
 );

@@ -1,6 +1,5 @@
 import { apiClient } from "@services/api/apiClient"; 
 import { LoginFormData, UserType } from "@features/auth/types"; 
-import { ApiError } from "@custom-types/ApiError";
 
 interface LoginResult {
   refreshToken?: string;
@@ -22,11 +21,6 @@ class LoginServiceImpl implements LoginService {
     const endpoint = `/auth/login/${userType}`;
     const response = await apiClient.post(endpoint, data);
     
-    if (!response.data.success) {
-      const { message } = response.data;
-      throw new ApiError(message);
-    }
-    
     const result: LoginResult = response.data.data;
     
     if (result.refreshToken) {
@@ -36,7 +30,7 @@ class LoginServiceImpl implements LoginService {
     if (result.accessToken) {
       localStorage.setItem('accessToken', result.accessToken);
     }
-    
+
     return result;
   }
   

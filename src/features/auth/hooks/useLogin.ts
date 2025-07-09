@@ -1,61 +1,64 @@
 import { useState } from 'react';
 import { loginService } from '@api/auth/login';
 import { LoginFormData, UserType } from '@features/auth/types';
-import { handleApiError } from '@utils/errorHandler';
-import { LOGIN_ERROR_MESSAGE_MAP} from '@custom-types/ApiError';
-import { UseFormSetError, FieldValues } from 'react-hook-form';
-
-interface LoginOptions<TValues extends FieldValues = FieldValues> {
-  setError?: UseFormSetError<TValues>;
-  useToast?: boolean;
-}
-
+import { ApiError } from '@custom-types/ApiError';
+import { toast } from 'react-hot-toast';
 interface LoginResult {
   success: boolean;
-  error?: unknown;
+  data?: any;
+  error?: {
+    message: string;
+    field?: string;
+  };
 }
 
 export function useLogin() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  
-  const login = async <TValues extends FieldValues = FieldValues>(
-    data: LoginFormData, 
+
+  const login = async (
+    data: LoginFormData,
     userType: UserType = UserType.LEARNER,
-    options?: LoginOptions<TValues>
   ): Promise<LoginResult> => {
     setIsLoggingIn(true);
     
     try {
-      await loginService.login(data, userType);
-      return { success: true };
-    } catch (error) {
-      if (options?.setError) {
-        handleApiError(
-          error,
-          options.setError,
-          LOGIN_ERROR_MESSAGE_MAP,
-        );
-      } 
-      return { success: false, error };
-    } finally {
+      const result = await loginService.login(data, userType);
       setIsLoggingIn(false);
+      
+      return { 
+        success: true, 
+        data: result 
+      };
+    } catch (error) {
+      setIsLoggingIn(false);
+      
+      const apiError = error as ApiError;
+      
+      if (!apiError.meta?.field) {
+        toast.error(apiError.message);
+        return { 
+          success: false 
+        };
+      }
+      
+      return {
+        success: false,
+        error: {
+          message: apiError.message,
+          field: apiError.meta.field
+        }
+      };
     }
   };
-  
-  const loginAsLearner = async <TValues extends FieldValues = FieldValues>(
-    data: LoginFormData,
-    options?: LoginOptions<TValues>
-  ): Promise<LoginResult> => {
-    return login(data, UserType.LEARNER, options);
+
+  const loginAsLearner = async (data: LoginFormData): Promise<LoginResult> => {
+    return login(data, UserType.LEARNER);
   };
-  
-  const loginAsEnterprise = async <TValues extends FieldValues = FieldValues>(
-    data: LoginFormData,
-    options?: LoginOptions<TValues>
-  ): Promise<LoginResult> => {
-    return login(data, UserType.ENTERPRISE, options);
+
+  const loginAsEnterprise = async (data: LoginFormData): Promise<LoginResult> => {
+    return login(data, UserType.ENTERPRISE);
   };
-  
+
   return {
     login,
     loginAsLearner,

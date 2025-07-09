@@ -37,7 +37,7 @@ export function LoginForm({
   const { login, isLoggingIn } = useLogin();
 
   const onSubmit = async (data: LoginFormData) => {
-    const result = await login(data, userType, { setError });
+  const result = await login(data, userType);
     
     if (result.success) {
       const timeoutId = setTimeout(() => {
@@ -54,6 +54,10 @@ export function LoginForm({
       });
 
       onSuccess?.();
+    } else if (result.error?.field) {
+      setError(result.error.field as keyof LoginFormData, {
+        message: result.error.message
+      });
     }
   };
 

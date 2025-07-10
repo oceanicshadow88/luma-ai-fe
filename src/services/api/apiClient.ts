@@ -1,5 +1,6 @@
 import axios, { AxiosHeaders, type InternalAxiosRequestConfig } from 'axios';
 import { ApiErrorMeta, ApiError } from '@custom-types/ApiError';
+import { toast } from 'react-hot-toast';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://api.example.com';
 const API_VERSION = '/api/v1';
@@ -31,10 +32,13 @@ apiClient.interceptors.response.use(
       | undefined;
     const message = data?.message || 'Unexpected error occurred';
     const meta: ApiErrorMeta = {
-      cooldownSeconds: data?.cooldownSeconds,
       field: data?.field
     };
 
-    return Promise.reject(new ApiError(message, meta));
+    if (!data?.field) {
+      toast.error(message);
+    }
+
+    return Promise.reject(new ApiError(message, meta)); 
   }
 );

@@ -3,12 +3,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@features/auth/schemas';
 import { LoginFormData, UserType } from '@features/auth/types';
-import { useLogin } from '@features/auth/hooks/useLogin';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
+import { loginService } from '@api/auth/login';
+import { ApiError } from '@custom-types/ApiError';
 
 interface LoginFormProps {
   userType?: UserType;
@@ -34,16 +35,14 @@ export function LoginForm({
     mode: 'onBlur',
   });
 
-  const { login, isLoggingIn } = useLogin();
-
   const onSubmit = async (data: LoginFormData) => {
-  const result = await login(data, userType);
     
-    if (result.success) {
+    try {
+      await loginService.login(data, userType);
       const timeoutId = setTimeout(() => {
         navigate('/dashboard');
       }, 3000);
-
+  
       showToastWithAction('Successfully logged in! Redirecting...', {
         actionText: 'Go Now',
         onAction: () => {
@@ -52,13 +51,19 @@ export function LoginForm({
         },
         duration: 2000,
       });
-
+      
       onSuccess?.();
-    } else if (result.error?.field) {
-      setError(result.error.field as keyof LoginFormData, {
-        message: result.error.message
-      });
-    }
+    } catch(error){
+      const apiError = error as ApiError;
+      if (!apiError.meta?.field)
+      {
+        return;
+      }
+        setError(apiError.meta.field as keyof LoginFormData, {
+          message: apiError.message
+        });
+        return;
+      }
   };
 
   return (
@@ -89,11 +94,12 @@ export function LoginForm({
         variant="primary"
         className={`rounded-3xl ${themeStyles.buttonClass}`}
         fullWidth
-        disabled={isSubmitting || isLoggingIn}
-        isLoading={isSubmitting || isLoggingIn}
+        disabled={isSubmitting }
+        isLoading={isSubmitting }
       >
         Log In
       </Button>
     </form>
   );
 }
+

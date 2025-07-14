@@ -75,29 +75,30 @@ export function ResetPasswordForm({
 
     const result = await resetPasswordService.resetPassword(payload);
 
-    if (!(result instanceof ApiError)) {
-      const timeoutId = setTimeout(() => {
-        navigate(getLoginPath());
-      }, 3000);
-
-      showToastWithAction('Password reset successfully! Redirecting to login...', {
-        actionText: 'Go Now',
-        onAction: () => {
-          clearTimeout(timeoutId);
-          navigate(getLoginPath());
-        },
-        duration: 2000,
-      });
-
-      onSuccess?.();
+    if (result instanceof ApiError) { 
+      if (result.meta?.field){
+        setError(result.meta?.field as keyof ResetPasswordFormData, {
+          message: result.message
+        });
+      }
       return;
     }
+    
+    const timeoutId = setTimeout(() => {
+      navigate(getLoginPath());
+    }, 3000);
 
-    if (!result.meta?.field) return;
-
-    setError(result.meta.field as keyof ResetPasswordFormData, {
-      message: result.message
+    showToastWithAction('Password reset successfully! Redirecting to login...', {
+      actionText: 'Go Now',
+      onAction: () => {
+        clearTimeout(timeoutId);
+        navigate(getLoginPath());
+      },
+      duration: 2000,
     });
+
+    onSuccess?.();
+    return;
   };
 
   return (

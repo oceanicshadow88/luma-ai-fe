@@ -52,17 +52,17 @@ const SignUpForm = ({
 
     const result = await sendCode(email);
 
-    if (!(result instanceof ApiError)) {
-      showToastWithAction('If the email is valid, a verification code will be sent.', {
-        duration: 2000,
-      });
+    if (result instanceof ApiError) { 
+      if (result.meta?.field){
+        setError(result.meta?.field as keyof z.infer<typeof signupSchema>, {
+          message: result.message
+        });
+      }
       return;
     }
-
-    if (!result.meta?.field) return;
-
-    setError(result.meta.field as keyof z.infer<typeof signupSchema>, {
-      message: result.message
+  
+    showToastWithAction('If the email is valid, a verification code will be sent.', {
+      duration: 2000,
     });
   };
 
@@ -79,36 +79,37 @@ const SignUpForm = ({
 
     const result = await signupService.signup(payload, userRole);
 
-    if (!(result instanceof ApiError)) {
-      const timeoutId = setTimeout(() => {
+    if (result instanceof ApiError) { 
+      if (result.message === 'No existing institution found. Please create your organization.' && userRole === UserRole.ADMIN) {
+        navigate('/auth/signup/institution', {
+          state: { signupForm: filterSignupForm(data) },
+        });
+        return;
+      }
+
+      if (result.meta?.field){
+        setError(result.meta.field as keyof z.infer<typeof signupSchema>, {
+          message: result.message
+        });
+      }
+      return;
+    }
+    
+    const timeoutId = setTimeout(() => {
+      navigate('/dashboard');
+    }, 3000);
+
+    showToastWithAction('Successfully signed up! Redirecting...', {
+      actionText: 'Go Now',
+      onAction: () => {
+        clearTimeout(timeoutId);
         navigate('/dashboard');
-      }, 3000);
-
-      showToastWithAction('Successfully signed up! Redirecting...', {
-        actionText: 'Go Now',
-        onAction: () => {
-          clearTimeout(timeoutId);
-          navigate('/dashboard');
-        },
-        duration: 2000,
-      });
-
-      onSuccess?.();
-      return;
-    }
-
-    if (result.message === 'No existing institution found. Please create your organization.' && userRole === UserRole.ADMIN) {
-      navigate('/auth/signup/institution', {
-        state: { signupForm: filterSignupForm(data) },
-      });
-      return;
-    }
-
-    if (!result.meta?.field) return;
-
-    setError(result.meta.field as keyof z.infer<typeof signupSchema>, {
-      message: result.message
+      },
+      duration: 2000,
     });
+
+    onSuccess?.();
+    return;
   };
 
   return (

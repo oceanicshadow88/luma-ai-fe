@@ -67,30 +67,29 @@ export default function TeacherSignUpForm() {
       termsAccepted: true,
     };
 
-    try {
-      await signupService.signupAsInstructor(payload);
+    const result = await signupService.signupAsInstructor(payload);
 
-      const timeoutId = setTimeout(() => {
-        navigate('/dashboard');
-      }, 3000);
-
-      showToastWithAction('Successfully signed up! Redirecting...', {
-        actionText: 'Go Now',
-        onAction: () => {
-          clearTimeout(timeoutId);
-          navigate('/dashboard');
-        },
-        duration: 2000,
-      });
-    } catch (error) {
-      const apiError = error as ApiError;
-      if (apiError?.meta?.field) {
-        setError(apiError.meta.field as keyof z.infer<typeof teacherSignupSchema>, {
-          message: apiError.message
+    if (result instanceof ApiError) { 
+      if (result.meta?.field){
+        setError(result.meta.field as keyof z.infer<typeof teacherSignupSchema>, {
+          message: result.message
         });
-        return;
       }
+      return;
     }
+
+    const timeoutId = setTimeout(() => {
+      navigate('/dashboard');
+    }, 3000);
+
+    showToastWithAction('Successfully signed up! Redirecting...', {
+      actionText: 'Go Now',
+      onAction: () => {
+        clearTimeout(timeoutId);
+        navigate('/dashboard');
+      },
+      duration: 2000,
+    });
   };
 
   if (isLoading) {

@@ -27,7 +27,6 @@ apiClient.interceptors.response.use(
       | {
           message?: string;
           field?: string;
-          cooldownSeconds?: number;
         }
       | undefined;
     const message = data?.message || 'Unexpected error occurred';
@@ -39,6 +38,6 @@ apiClient.interceptors.response.use(
       toast.error(message);
     }
 
-    return Promise.reject(new ApiError(message, meta)); 
+    return Promise.resolve(new ApiError(message, meta)); 
   }
 );

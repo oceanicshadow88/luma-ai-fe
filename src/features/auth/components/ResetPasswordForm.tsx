@@ -2,14 +2,16 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { resetPasswordSchema } from '@features/auth/schemas';
-import { useResetPassword } from '@features/auth/hooks/useResetPassword';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { ResetPasswordFormData, UserType } from '@features/auth/types';
-import { toast } from 'react-hot-toast';
+import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
+import { ApiError } from '@custom-types/ApiError';
+import { resetPasswordService } from '@api/auth/resetPassword';
+import { useSendCode } from '@features/auth/hooks/useSendCode';
 
 interface ResetPasswordFormProps {
   userType?: UserType;
@@ -25,50 +27,78 @@ export function ResetPasswordForm({
   const navigate = useNavigate();
   const themeStyles = useFormTheme(theme);
 
+  const { sendCode, countdown, canSend } = useSendCode();
+
   const {
     register,
     handleSubmit,
-    trigger,
-    clearErrors,
-    getValues,
-    formState: { errors, isSubmitting },
+    watch,
     setError,
+    formState: { errors, isSubmitting },
   } = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
     mode: 'onBlur',
-    reValidateMode: 'onBlur',
   });
 
-  const { resetPassword, sendVerificationCode, isCodeSending, isResetting, countdown } = useResetPassword();
+  const email = watch('email');
 
   const getLoginPath = () => {
     return userType === UserType.ENTERPRISE ? '/auth/login/enterprise' : '/auth/login/learner';
   };
 
-  const onSubmit = async (data: ResetPasswordFormData) => {
-    const result = await resetPassword(data, { setError });
-    
-    if (result.success) {
-      toast.success('Password reset successfully. Please log in again with new password.');
-      setTimeout(() => navigate(getLoginPath()), 3000);
-      onSuccess?.();
-    }
-  };
-
   const handleSendCode = async () => {
-    clearErrors('email');
-    const isValid = await trigger('email');
-    if (!isValid) return;
+    if (!email || !canSend) return;
 
-    const email = getValues('email');
-    const result = await sendVerificationCode(email, { setError });
-    
-    if (result.success) {
-      toast.success('If the email is valid, a verification code will be sent.');
+    const result = await sendCode(email);
+
+    if (!(result instanceof ApiError)) {
+      showToastWithAction('If the email is valid, a verification code will be sent.', {
+        duration: 2000,
+      });
+      return;
     }
+
+    if (!result.meta?.field) return;
+
+    setError(result.meta.field as keyof ResetPasswordFormData, {
+      message: result.message
+    });
   };
 
-  const isProcessing = isSubmitting || isResetting;
+  const onSubmit = async (data: ResetPasswordFormData) => {
+    const payload = {
+      email: data.email,
+      verificationCode: data.verificationCode,
+      password: data.password,
+      confirmPassword: data.confirmPassword,
+    };
+
+    const result = await resetPasswordService.resetPassword(payload);
+
+    if (!(result instanceof ApiError)) {
+      const timeoutId = setTimeout(() => {
+        navigate(getLoginPath());
+      }, 3000);
+
+      showToastWithAction('Password reset successfully! Redirecting to login...', {
+        actionText: 'Go Now',
+        onAction: () => {
+          clearTimeout(timeoutId);
+          navigate(getLoginPath());
+        },
+        duration: 2000,
+      });
+
+      onSuccess?.();
+      return;
+    }
+
+    if (!result.meta?.field) return;
+
+    setError(result.meta.field as keyof ResetPasswordFormData, {
+      message: result.message
+    });
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
@@ -90,7 +120,7 @@ export function ResetPasswordForm({
           placeholder="Enter the 6-digit code"
           buttonText={countdown > 0 ? `Resend in ${countdown}s` : 'Send'}
           onButtonClick={handleSendCode}
-          isButtonDisabled={countdown > 0 || isCodeSending}
+          isButtonDisabled={!canSend}
           {...register('verificationCode')}
           error={errors.verificationCode?.message}
           inputClassName={themeStyles.inputClassName}
@@ -122,10 +152,11 @@ export function ResetPasswordForm({
       <div>
         <Button 
           type="submit" 
+          variant="primary"
+          className={`rounded-3xl ${themeStyles.buttonClass}`}
           fullWidth 
-          disabled={isProcessing} 
-          isLoading={isProcessing}
-          className={themeStyles.buttonClass}
+          disabled={isSubmitting} 
+          isLoading={isSubmitting}
         >
           Reset Password
         </Button>

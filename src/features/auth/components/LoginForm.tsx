@@ -28,7 +28,6 @@ export function LoginForm({
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -37,34 +36,27 @@ export function LoginForm({
 
   const onSubmit = async (data: LoginFormData) => {
     
-    try {
-      await loginService.login(data, userType);
-      const timeoutId = setTimeout(() => {
+    const result = await loginService.login(data, userType);
+
+    if (result instanceof ApiError) {
+      return; 
+    }
+
+    const timeoutId = setTimeout(() => {
+      navigate('/dashboard');
+    }, 3000);
+
+    showToastWithAction('Successfully logged in! Redirecting...', {
+      actionText: 'Go Now',
+      onAction: () => {
+        clearTimeout(timeoutId);
         navigate('/dashboard');
-      }, 3000);
-  
-      showToastWithAction('Successfully logged in! Redirecting...', {
-        actionText: 'Go Now',
-        onAction: () => {
-          clearTimeout(timeoutId);
-          navigate('/dashboard');
-        },
-        duration: 2000,
-      });
-      
-      onSuccess?.();
-    } catch(error){
-      const apiError = error as ApiError;
-      if (!apiError.meta?.field)
-      {
-        return;
-      }
-        setError(apiError.meta.field as keyof LoginFormData, {
-          message: apiError.message
-        });
-        return;
-      }
-  };
+      },
+      duration: 2000,
+    });
+    
+    onSuccess?.();
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-8">

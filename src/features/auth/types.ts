@@ -8,7 +8,7 @@ export interface ResetPasswordFormData {
 export interface VerificationCodeResponse {
   success: true;
   message: string;
-  code?: string;
+  verificationCode?: string;
   expiresAt: string;
 }
 
@@ -26,7 +26,7 @@ export interface ResetPasswordResponse {
 export interface ApiErrorResponse {
   success: false;
   message: string;
-  code?: string;
+  verificationCode?: string;
 }
 
 export interface LoginFormData {
@@ -39,7 +39,7 @@ export interface SignUpInput {
   lastName: string;
   username: string;
   email: string;
-  code: string;
+  verificationCode: string;
   password: string;
   confirmPassword: string;
   termsAccepted: boolean;

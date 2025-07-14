@@ -1,28 +1,32 @@
-import { apiClient } from "@services/api/apiClient"; 
-import { LoginFormData, UserType } from "@features/auth/types"; 
+import { apiClient } from "@services/api/apiClient";
+import { LoginFormData, UserType } from "@features/auth/types";
+import { ApiError } from "@custom-types/ApiError";
+import { AxiosResponse } from "axios";
 
 interface LoginResult {
   refreshToken?: string;
   accessToken?: string;
-  membership?: {
-    company: string; 
-    role: string;
-  }[]; 
+  companySlug?: string;
+  role?: string;
 }
 
 interface LoginService {
-  login(data: LoginFormData, userType?: UserType): Promise<LoginResult>;
-  loginAsLearner(data: LoginFormData): Promise<LoginResult>;
-  loginAsEnterprise(data: LoginFormData): Promise<LoginResult>;
+  login(data: LoginFormData, userType?: UserType): Promise<LoginResult | ApiError>; 
+  loginAsLearner(data: LoginFormData): Promise<LoginResult | ApiError>;
+  loginAsEnterprise(data: LoginFormData): Promise<LoginResult | ApiError>;
 }
 
 class LoginServiceImpl implements LoginService {
-  async login(data: LoginFormData, userType: UserType = UserType.LEARNER): Promise<LoginResult> {
+  async login(data: LoginFormData, userType: UserType = UserType.LEARNER): Promise<LoginResult | ApiError> {
     const endpoint = `/auth/login/${userType}`;
     const response = await apiClient.post(endpoint, data);
-    
-    const result: LoginResult = response.data.data;
-    
+
+    if (response instanceof ApiError) {
+      return response; 
+    }
+
+    const result: LoginResult = (response as AxiosResponse).data.data;
+
     if (result.refreshToken) {
       localStorage.setItem('refreshToken', result.refreshToken);
     }
@@ -33,12 +37,12 @@ class LoginServiceImpl implements LoginService {
 
     return result;
   }
-  
-  async loginAsLearner(data: LoginFormData): Promise<LoginResult> {
+
+  async loginAsLearner(data: LoginFormData): Promise<LoginResult | ApiError> {
     return this.login(data, UserType.LEARNER);
   }
-  
-  async loginAsEnterprise(data: LoginFormData): Promise<LoginResult> {
+
+  async loginAsEnterprise(data: LoginFormData): Promise<LoginResult | ApiError> {
     return this.login(data, UserType.ENTERPRISE);
   }
 }

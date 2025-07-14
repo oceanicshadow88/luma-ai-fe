@@ -3,7 +3,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { teacherSignupSchema } from '../schemas';
 import { z } from 'zod';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import toast from 'react-hot-toast';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
@@ -13,12 +12,13 @@ import { signupService } from '@api/auth/signup';
 import { hasExpiry } from '@utils/dataUtils';
 import { decodeJwt } from '@utils/jwtUtils';
 import { Checkbox } from '@components/forms/Checkbox';
+import { showToastWithAction } from '@components/toast/ToastWithAction';
+import { ApiError } from '@custom-types/ApiError';
 
 export default function TeacherSignUpForm() {
   const [searchParams] = useSearchParams();
   const [isTokenInvalid, setIsTokenInvalid] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const token = searchParams.get('token') ?? '';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const decodePayload: any = decodeJwt(token);
@@ -27,7 +27,8 @@ export default function TeacherSignUpForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setError,
+    formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof teacherSignupSchema>>({
     resolver: zodResolver(teacherSignupSchema),
     mode: 'onTouched',
@@ -55,7 +56,6 @@ export default function TeacherSignUpForm() {
   }, [token, decodePayload]);
 
   const onSubmit = async (data: z.infer<typeof teacherSignupSchema>) => {
-    setIsSubmitting(true);
     const payload = {
       firstName: data.firstName,
       lastName: data.lastName,
@@ -67,14 +67,29 @@ export default function TeacherSignUpForm() {
       termsAccepted: true,
     };
 
-    const result = await signupService.signupAsInstructor(payload).catch(() => {
-      setIsSubmitting(false);
-    });
-    if (result) {
-      toast.success('Signup success! You will be redirected in 3 seconds');
-      setTimeout(() => navigate('/dashboard'), 3000);
-    } else {
-      toast.error('Signup failed. Please try again.');
+    try {
+      await signupService.signupAsInstructor(payload);
+
+      const timeoutId = setTimeout(() => {
+        navigate('/dashboard');
+      }, 3000);
+
+      showToastWithAction('Successfully signed up! Redirecting...', {
+        actionText: 'Go Now',
+        onAction: () => {
+          clearTimeout(timeoutId);
+          navigate('/dashboard');
+        },
+        duration: 2000,
+      });
+    } catch (error) {
+      const apiError = error as ApiError;
+      if (apiError?.meta?.field) {
+        setError(apiError.meta.field as keyof z.infer<typeof teacherSignupSchema>, {
+          message: apiError.message
+        });
+        return;
+      }
     }
   };
 

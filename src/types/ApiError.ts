@@ -9,7 +9,6 @@ export type LoginField = keyof LoginFormData | 'toast';
 export type InstitutionField = keyof InstitutionFormData | 'toast';
 
 export interface ApiErrorMeta {
-  cooldownSeconds?: number;
   field?: string;
 }
 

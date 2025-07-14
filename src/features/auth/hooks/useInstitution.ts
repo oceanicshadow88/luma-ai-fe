@@ -5,8 +5,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { InstitutionFormData } from '@features/auth/types';
 import { institutionSchema } from '@features/auth/schemas';
 import { institutionService } from '@api/auth/institution';
-import { INSTITUTION_ERROR_MAP } from '@custom-types/ApiError';
-import { handleApiError } from '@utils/errorHandler';
 import { filterSignupForm } from '@utils/filterSignupForm';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 
@@ -107,7 +105,6 @@ export const useInstitution = () => {
             });
 
         } catch (error) {
-            handleApiError(error, setError, INSTITUTION_ERROR_MAP);
         } finally {
             setIsCreating(false);
         }

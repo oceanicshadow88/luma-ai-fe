@@ -1,41 +1,38 @@
 import { apiClient } from '@services/api/apiClient';
 import { SignupFormData, UserRole } from '@features/auth/types';
 import { ApiError } from '@custom-types/ApiError';
+import { AxiosResponse } from 'axios';
 
 interface SignupResult {
   refreshToken?: string;
   accessToken?: string;
-  membership?: {
-    company: string;
-    role: string;
-  }[];
+  message?: string;
 }
 
 interface SignupService {
-  signup(data: SignupFormData, userRole?: UserRole): Promise<SignupResult>;
-  signupAsLearner(data: SignupFormData): Promise<SignupResult>;
-  signupAsAdmin(data: SignupFormData): Promise<SignupResult>;
-  signupAsInstructor(data: SignupFormData): Promise<SignupResult>;
-  sendCode(email: string): Promise<void>;
+  signup(data: SignupFormData, userRole?: UserRole): Promise<SignupResult | ApiError>;
+  signupAsLearner(data: SignupFormData): Promise<SignupResult | ApiError>;
+  signupAsAdmin(data: SignupFormData): Promise<SignupResult | ApiError>;
+  signupAsInstructor(data: SignupFormData): Promise<SignupResult | ApiError>;
+  sendCode(email: string): Promise<void | ApiError>;
   adminSignupRaw(data: SignupFormData, userRole?: UserRole): Promise<any>;
 }
 
 class SignupServiceImpl implements SignupService {
-  async signup(data: SignupFormData, userRole: UserRole = UserRole.LEARNER): Promise<SignupResult> {
+  async signup(data: SignupFormData, userRole: UserRole = UserRole.LEARNER): Promise<SignupResult | ApiError> {
     const endpoint = `/auth/signup/${userRole}`;
     const response = await apiClient.post(endpoint, data);
 
-    if (!response.data.success) {
-      const { message } = response.data;
-      throw new ApiError(message);
+    if (response instanceof ApiError) {
+      return response;
     }
 
-    const result: SignupResult = response.data.data;
-    
+    const result: SignupResult = (response as AxiosResponse).data;
+
     if (result.refreshToken) {
       localStorage.setItem('refreshToken', result.refreshToken);
     }
-    
+
     if (result.accessToken) {
       localStorage.setItem('accessToken', result.accessToken);
     }
@@ -43,32 +40,50 @@ class SignupServiceImpl implements SignupService {
     return result;
   }
 
-  async signupAsLearner(data: SignupFormData): Promise<SignupResult> {
+  async signupAsLearner(data: SignupFormData): Promise<SignupResult | ApiError> {
     return this.signup(data, UserRole.LEARNER);
   }
 
-  async signupAsAdmin(data: SignupFormData): Promise<SignupResult> {
+  async signupAsAdmin(data: SignupFormData): Promise<SignupResult | ApiError> {
     const response = await apiClient.post<SignupResult>('/auth/signup/admin', data);
 
-    if (response.data.accessToken) {
-      localStorage.setItem('accessToken', response.data.accessToken);
+    if (response instanceof ApiError) {
+      return response;
     }
-    
-    return response.data;
+
+    const result = (response as AxiosResponse<SignupResult>).data;
+
+    if (result.accessToken) {
+      localStorage.setItem('accessToken', result.accessToken);
+    }
+
+    return result;
   }
 
-  async signupAsInstructor(data: SignupFormData): Promise<SignupResult> {
+  async signupAsInstructor(data: SignupFormData): Promise<SignupResult | ApiError> {
     const response = await apiClient.post('/auth/signup/instructor', data);
-    
-    if (response.data.accessToken) {
-      localStorage.setItem('accessToken', response.data.accessToken);
+
+    if (response instanceof ApiError) {
+      return response;
     }
-    
-    return response.data;
+
+    const result = (response as AxiosResponse).data;
+
+    if (result.accessToken) {
+      localStorage.setItem('accessToken', result.accessToken);
+    }
+
+    return result;
   }
 
-  async sendCode(email: string): Promise<void> {
-    await apiClient.post('/auth/request-verification-code', { email });
+  async sendCode(email: string): Promise<void | ApiError> {
+    const response = await apiClient.post('/auth/request-verification-code', { email });
+    
+    if (response instanceof ApiError) {
+      return response;
+    }
+    
+    return; 
   }
 
   async adminSignupRaw(data: SignupFormData, userRole: UserRole = UserRole.LEARNER): Promise<any> {

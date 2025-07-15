@@ -44,14 +44,20 @@ export default function TeacherSignUpForm() {
         setIsLoading(false);
         return;
       }
-      await authService
-        .authToken(token ?? '')
-        .catch((e) => {
-          if (e.message.includes('expired')) return;
-          setIsTokenInvalid(true);
-        })
-        .finally(() => setIsLoading(false));
+
+      const result = await authService.authToken(token ?? '');
+
+      if (result instanceof ApiError) {
+        if (result.message.includes('expired')) {
+          setIsLoading(false);
+          return;
+        }
+        setIsTokenInvalid(true);
+      }
+
+      setIsLoading(false);
     };
+
     verifyToken();
   }, [token, decodePayload]);
 
@@ -69,8 +75,8 @@ export default function TeacherSignUpForm() {
 
     const result = await signupService.signupAsInstructor(payload);
 
-    if (result instanceof ApiError) { 
-      if (result.meta?.field){
+    if (result instanceof ApiError) {
+      if (result.meta?.field) {
         setError(result.meta.field as keyof z.infer<typeof teacherSignupSchema>, {
           message: result.message
         });
@@ -127,7 +133,7 @@ export default function TeacherSignUpForm() {
         error={errors.email?.message}
         isDisabled={true}
       />
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
           id="firstName"
@@ -178,11 +184,11 @@ export default function TeacherSignUpForm() {
         />
       </div>
 
-      <Button 
-        type="submit" 
-        variant="primary" 
+      <Button
+        type="submit"
+        variant="primary"
         className="rounded-3xl"
-        fullWidth 
+        fullWidth
         disabled={isSubmitting}
         isLoading={isSubmitting}
       >

@@ -31,7 +31,7 @@ export class InstitutionService {
       }
     );
     
-    return response.data ??  ApiError;
+    return response instanceof ApiError ? response : response.data;
   }
 }
 

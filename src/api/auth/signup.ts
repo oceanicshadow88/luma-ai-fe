@@ -4,90 +4,90 @@ import { ApiError } from '@custom-types/ApiError';
 import { AxiosResponse } from 'axios';
 
 interface SignupResult {
- refreshToken?: string;
- accessToken?: string;
- message?: string;
+  refreshToken?: string;
+  accessToken?: string;
+  message?: string;
 }
 
 interface SignupService {
- signup(data: SignupFormData, userRole?: UserRole): Promise<SignupResult | ApiError>;
- signupAsLearner(data: SignupFormData): Promise<SignupResult | ApiError>;
- signupAsAdmin(data: SignupFormData): Promise<SignupResult | ApiError>;
- signupAsInstructor(data: SignupFormData): Promise<SignupResult | ApiError>;
- sendCode(email: string): Promise<void | ApiError>;
- adminSignupRaw(data: SignupFormData, userRole?: UserRole): Promise<any>;
+  signup(data: SignupFormData, userRole?: UserRole): Promise<SignupResult | ApiError>;
+  signupAsLearner(data: SignupFormData): Promise<SignupResult | ApiError>;
+  signupAsAdmin(data: SignupFormData): Promise<SignupResult | ApiError>;
+  signupAsInstructor(data: SignupFormData): Promise<SignupResult | ApiError>;
+  sendCode(email: string): Promise<void | ApiError>;
+  adminSignupRaw(data: SignupFormData, userRole?: UserRole): Promise<any>;
 }
 
 class SignupServiceImpl implements SignupService {
- async signup(data: SignupFormData, userRole: UserRole = UserRole.LEARNER): Promise<SignupResult | ApiError> {
-   const endpoint = `/auth/signup/${userRole}`;
-   const response = await apiClient.post(endpoint, data);
+  async signup(data: SignupFormData, userRole: UserRole = UserRole.LEARNER): Promise<SignupResult | ApiError> {
+    const endpoint = `/auth/signup/${userRole}`;
+    const response = await apiClient.post(endpoint, data);
 
-   if (response instanceof ApiError) {
-     return response;
-   }
+    if (response instanceof ApiError) {
+      return response;
+    }
 
-   const result: SignupResult = (response as AxiosResponse).data;
+    const result: SignupResult = (response as AxiosResponse).data;
 
-   if (result.refreshToken) {
-     localStorage.setItem('refreshToken', result.refreshToken);
-   }
+    if (result.refreshToken) {
+      localStorage.setItem('refreshToken', result.refreshToken);
+    }
 
-   if (result.accessToken) {
-     localStorage.setItem('accessToken', result.accessToken);
-   }
+    if (result.accessToken) {
+      localStorage.setItem('accessToken', result.accessToken);
+    }
 
-   return response instanceof ApiError ? response : result;
- }
+    return result;
+  }
 
- async signupAsLearner(data: SignupFormData): Promise<SignupResult | ApiError> {
-   return this.signup(data, UserRole.LEARNER);
- }
+  async signupAsLearner(data: SignupFormData): Promise<SignupResult | ApiError> {
+    return this.signup(data, UserRole.LEARNER);
+  }
 
- async signupAsAdmin(data: SignupFormData): Promise<SignupResult | ApiError> {
-   const response = await apiClient.post<SignupResult>('/auth/signup/admin', data);
+  async signupAsAdmin(data: SignupFormData): Promise<SignupResult | ApiError> {
+    const response = await apiClient.post<SignupResult>('/auth/signup/admin', data);
 
-   if (response instanceof ApiError) {
-     return response;
-   }
+    if (response instanceof ApiError) {
+      return response;
+    }
 
-   const result = (response as AxiosResponse<SignupResult>).data;
+    const result = (response as AxiosResponse<SignupResult>).data;
 
-   if (result.accessToken) {
-     localStorage.setItem('accessToken', result.accessToken);
-   }
+    if (result.accessToken) {
+      localStorage.setItem('accessToken', result.accessToken);
+    }
 
-   return response instanceof ApiError ? response : result;
- }
+    return result;
+  }
 
- async signupAsInstructor(data: SignupFormData): Promise<SignupResult | ApiError> {
-   const response = await apiClient.post('/auth/signup/instructor', data);
+  async signupAsInstructor(data: SignupFormData): Promise<SignupResult | ApiError> {
+    const response = await apiClient.post('/auth/signup/instructor', data);
 
-   if (response instanceof ApiError) {
-     return response;
-   }
+    if (response instanceof ApiError) {
+      return response;
+    }
 
-   const result = (response as AxiosResponse).data;
+    const result = (response as AxiosResponse).data;
 
-   if (result.accessToken) {
-     localStorage.setItem('accessToken', result.accessToken);
-   }
+    if (result.accessToken) {
+      localStorage.setItem('accessToken', result.accessToken);
+    }
 
-   return response instanceof ApiError ? response : result;
- }
+    return result;
+  }
 
- async sendCode(email: string): Promise<void | ApiError> {
-   const response = await apiClient.post('/auth/request-verification-code', { email });
+  async sendCode(email: string): Promise<void | ApiError> {
+    const response = await apiClient.post('/auth/request-verification-code', { email });
 
-   return response instanceof ApiError ? response : undefined;
- }
+    return response instanceof ApiError ? response : undefined;
+  }
 
- async adminSignupRaw(data: SignupFormData, userRole: UserRole = UserRole.LEARNER): Promise<any> {
-   const endpoint = `/auth/signup/${userRole}`;
-   return apiClient.post(endpoint, data, {
-     validateStatus: () => true,
-   });
- }
+  async adminSignupRaw(data: SignupFormData, userRole: UserRole = UserRole.LEARNER): Promise<any> {
+    const endpoint = `/auth/signup/${userRole}`;
+    return apiClient.post(endpoint, data, {
+      validateStatus: () => true,
+    });
+  }
 }
 
 export const signupService = new SignupServiceImpl();

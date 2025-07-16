@@ -11,7 +11,7 @@ interface LoginResult {
 }
 
 interface LoginService {
-  login(data: LoginFormData, userType?: UserType): Promise<LoginResult | ApiError>; 
+  login(data: LoginFormData, userType?: UserType): Promise<LoginResult | ApiError>;
   loginAsLearner(data: LoginFormData): Promise<LoginResult | ApiError>;
   loginAsEnterprise(data: LoginFormData): Promise<LoginResult | ApiError>;
 }
@@ -20,6 +20,10 @@ class LoginServiceImpl implements LoginService {
   async login(data: LoginFormData, userType: UserType = UserType.LEARNER): Promise<LoginResult | ApiError> {
     const endpoint = `/auth/login/${userType}`;
     const response = await apiClient.post(endpoint, data);
+
+    if (response instanceof ApiError) {
+      return response;
+    }
 
     const result: LoginResult = (response as AxiosResponse).data.data;
 
@@ -31,7 +35,7 @@ class LoginServiceImpl implements LoginService {
       localStorage.setItem('accessToken', result.accessToken);
     }
 
-    return result ??  ApiError;
+    return result;
   }
 
   async loginAsLearner(data: LoginFormData): Promise<LoginResult | ApiError> {

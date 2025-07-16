@@ -27,7 +27,7 @@ export function ResetPasswordForm({
   const navigate = useNavigate();
   const themeStyles = useFormTheme(theme);
 
-  const { sendCode, countdown, canSend } = useSendCode();
+  const { sendCode, countDown, canSend } = useSendCode();
 
   const {
     register,
@@ -51,18 +51,19 @@ export function ResetPasswordForm({
 
     const result = await sendCode(email);
 
-    if (!(result instanceof ApiError)) {
-      showToastWithAction('If the email is valid, a verification code will be sent.', {
-        duration: 2000,
-      });
+    if (result instanceof ApiError) { 
+      if (!result.meta?.field){
+        setError(result.meta?.field as keyof ResetPasswordFormData, {
+          message: result.message
+        });
+      }
       return;
     }
 
-    if (!result.meta?.field) return;
-
-    setError(result.meta.field as keyof ResetPasswordFormData, {
-      message: result.message
+    showToastWithAction('If the email is valid, a verification code will be sent.', {
+      duration: 2000,
     });
+
   };
 
   const onSubmit = async (data: ResetPasswordFormData) => {
@@ -76,7 +77,7 @@ export function ResetPasswordForm({
     const result = await resetPasswordService.resetPassword(payload);
 
     if (result instanceof ApiError) { 
-      if (result.meta?.field){
+      if (!result.meta?.field){
         setError(result.meta?.field as keyof ResetPasswordFormData, {
           message: result.message
         });
@@ -119,7 +120,7 @@ export function ResetPasswordForm({
           id="verificationCode"
           label="Verification Code"
           placeholder="Enter the 6-digit code"
-          buttonText={countdown > 0 ? `Resend in ${countdown}s` : 'Send'}
+          buttonText={countDown > 0 ? `Resend in ${countDown}s` : 'Send'}
           onButtonClick={handleSendCode}
           isButtonDisabled={!canSend}
           {...register('verificationCode')}

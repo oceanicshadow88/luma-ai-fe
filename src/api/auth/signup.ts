@@ -23,10 +23,6 @@ class SignupServiceImpl implements SignupService {
     const endpoint = `/auth/signup/${userRole}`;
     const response = await apiClient.post(endpoint, data);
 
-    if (response instanceof ApiError) {
-      return response;
-    }
-
     const result: SignupResult = (response as AxiosResponse).data;
 
     if (result.refreshToken) {
@@ -37,7 +33,7 @@ class SignupServiceImpl implements SignupService {
       localStorage.setItem('accessToken', result.accessToken);
     }
 
-    return result;
+    return result ?? ApiError;
   }
 
   async signupAsLearner(data: SignupFormData): Promise<SignupResult | ApiError> {
@@ -47,25 +43,17 @@ class SignupServiceImpl implements SignupService {
   async signupAsAdmin(data: SignupFormData): Promise<SignupResult | ApiError> {
     const response = await apiClient.post<SignupResult>('/auth/signup/admin', data);
 
-    if (response instanceof ApiError) {
-      return response;
-    }
-
     const result = (response as AxiosResponse<SignupResult>).data;
 
     if (result.accessToken) {
       localStorage.setItem('accessToken', result.accessToken);
     }
 
-    return result;
+    return result ?? ApiError;
   }
 
   async signupAsInstructor(data: SignupFormData): Promise<SignupResult | ApiError> {
     const response = await apiClient.post('/auth/signup/instructor', data);
-
-    if (response instanceof ApiError) {
-      return response;
-    }
 
     const result = (response as AxiosResponse).data;
 
@@ -73,17 +61,17 @@ class SignupServiceImpl implements SignupService {
       localStorage.setItem('accessToken', result.accessToken);
     }
 
-    return result;
+    return result ?? ApiError;
   }
 
   async sendCode(email: string): Promise<void | ApiError> {
     const response = await apiClient.post('/auth/request-verification-code', { email });
-    
+
     if (response instanceof ApiError) {
       return response;
     }
-    
-    return; 
+
+    return;
   }
 
   async adminSignupRaw(data: SignupFormData, userRole: UserRole = UserRole.LEARNER): Promise<any> {

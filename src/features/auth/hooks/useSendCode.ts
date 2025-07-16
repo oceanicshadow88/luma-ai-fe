@@ -4,7 +4,7 @@ import { ApiError } from '@custom-types/ApiError';
 
 export function useSendCode() {
   const [isSendingCode, setIsSendingCode] = useState(false);
-  const [countdown, setCountdown] = useState(0);
+  const [countDown, setCountdown] = useState(0);
   const [canSend, setCanSend] = useState(true);
 
   const sendCode = async (email: string): Promise<void | ApiError> => {
@@ -39,7 +39,7 @@ export function useSendCode() {
 
   return {
     sendCode,
-    countdown,
+    countDown,
     canSend,
     isSendingCode,
   };

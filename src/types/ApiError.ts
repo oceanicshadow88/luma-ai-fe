@@ -22,10 +22,6 @@ export class ApiError extends Error {
   }
 }
 
-export interface INSTITUTION_ERROR_MAP {
-
-}
-
 export const UNKNOWN_ERROR = {
   field: 'toast' as const,
   message: 'Unexpected error occurred. Please try again.',

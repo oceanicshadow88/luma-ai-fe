@@ -14,7 +14,7 @@ class AuthServiceImpl implements AuthService {
     if (response instanceof ApiError) {
       return response;
     }
-    
+
     return;
   }
 }

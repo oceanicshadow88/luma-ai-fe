@@ -45,7 +45,7 @@ const SignUpForm = ({
   });
 
   const email = watch('email');
-  const { sendCode, countdown, canSend } = useSendCode();
+  const { sendCode, countDown, canSend } = useSendCode();
 
   const handleSendCode = async () => {
     if (!email || !canSend) return;
@@ -129,7 +129,7 @@ const SignUpForm = ({
         id="verificationCode"
         label="Verification Code"
         placeholder="Enter the 6-digit code"
-        buttonText={countdown > 0 ? `Resend in ${countdown}s` : 'Send'}
+        buttonText={countDown > 0 ? `Resend in ${countDown}s` : 'Send'}
         onButtonClick={handleSendCode}
         isButtonDisabled={!canSend}
         {...register('verificationCode')}

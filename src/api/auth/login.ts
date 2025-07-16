@@ -21,10 +21,6 @@ class LoginServiceImpl implements LoginService {
     const endpoint = `/auth/login/${userType}`;
     const response = await apiClient.post(endpoint, data);
 
-    if (response instanceof ApiError) {
-      return response; 
-    }
-
     const result: LoginResult = (response as AxiosResponse).data.data;
 
     if (result.refreshToken) {
@@ -35,7 +31,7 @@ class LoginServiceImpl implements LoginService {
       localStorage.setItem('accessToken', result.accessToken);
     }
 
-    return result;
+    return result ??  ApiError;
   }
 
   async loginAsLearner(data: LoginFormData): Promise<LoginResult | ApiError> {

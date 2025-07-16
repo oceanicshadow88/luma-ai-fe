@@ -5,13 +5,6 @@ export interface ResetPasswordFormData {
   confirmPassword: string;
 }
 
-export interface VerificationCodeResponse {
-  success: true;
-  message: string;
-  verificationCode?: string;
-  expiresAt: string;
-}
-
 export interface VerificationCodeRateLimitError {
   success: false;
   message: string;

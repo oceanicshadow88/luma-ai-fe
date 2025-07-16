@@ -14,8 +14,8 @@ class ResetPasswordService {
       verifyValue: data.verificationCode,
       newPassword: data.password,
     });
-    
-    return response.data ??  response;
+
+    return response instanceof ApiError ? response : response.data;
   }
 }
 

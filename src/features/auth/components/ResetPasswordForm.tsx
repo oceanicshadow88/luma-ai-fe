@@ -52,7 +52,7 @@ export function ResetPasswordForm({
     const result = await sendCode(email);
 
     if (result instanceof ApiError) { 
-      if (!result.meta?.field){
+      if (result.meta?.field){
         setError(result.meta?.field as keyof ResetPasswordFormData, {
           message: result.message
         });
@@ -77,7 +77,7 @@ export function ResetPasswordForm({
     const result = await resetPasswordService.resetPassword(payload);
 
     if (result instanceof ApiError) { 
-      if (!result.meta?.field){
+      if (result.meta?.field){
         setError(result.meta?.field as keyof ResetPasswordFormData, {
           message: result.message
         });

@@ -1,11 +1,11 @@
 import { apiClient } from '@services/api/apiClient';
-import { ResetPasswordFormData, VerificationCodeResponse, ResetPasswordResponse } from '@features/auth/types';
+import { ResetPasswordFormData, ResetPasswordResponse } from '@features/auth/types';
 import { ApiError } from '@custom-types/ApiError';
 
 class ResetPasswordService {
-  async sendVerificationCode(email: string): Promise<VerificationCodeResponse | ApiError> {
-    const response = await apiClient.post<VerificationCodeResponse>('/auth/request-verification-code', { email });
-    return response.data ??  ApiError;
+  async sendVerificationCode(email: string): Promise<void | ApiError> {
+    const response = await apiClient.post('/auth/request-verification-code', { email });
+    return response instanceof ApiError ? response : undefined;
   }
 
   async resetPassword(data: ResetPasswordFormData): Promise<ResetPasswordResponse | ApiError> {
@@ -15,7 +15,7 @@ class ResetPasswordService {
       newPassword: data.password,
     });
     
-    return response.data ??  ApiError;
+    return response.data ??  response;
   }
 }
 

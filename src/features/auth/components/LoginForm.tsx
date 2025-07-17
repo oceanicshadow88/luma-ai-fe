@@ -3,12 +3,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@features/auth/schemas';
 import { LoginFormData, UserType } from '@features/auth/types';
-import { useLogin } from '@features/auth/hooks/useLogin';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
+import { loginService } from '@api/auth/login';
 
 interface LoginFormProps {
   userType?: UserType;
@@ -27,35 +27,33 @@ export function LoginForm({
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: 'onBlur',
   });
 
-  const { login, isLoggingIn } = useLogin();
-
   const onSubmit = async (data: LoginFormData) => {
-    const result = await login(data, userType, { setError });
     
-    if (result.success) {
-      const timeoutId = setTimeout(() => {
+    const result = await loginService.login(data, userType);
+
+    if (result) return;
+
+    const timeoutId = setTimeout(() => {
+      navigate('/dashboard');
+    }, 3000);
+
+    showToastWithAction('Successfully logged in! Redirecting...', {
+      actionText: 'Go Now',
+      onAction: () => {
+        clearTimeout(timeoutId);
         navigate('/dashboard');
-      }, 3000);
-
-      showToastWithAction('Successfully logged in! Redirecting...', {
-        actionText: 'Go Now',
-        onAction: () => {
-          clearTimeout(timeoutId);
-          navigate('/dashboard');
-        },
-        duration: 2000,
-      });
-
-      onSuccess?.();
-    }
-  };
+      },
+      duration: 2000,
+    });
+    
+    onSuccess?.();
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-8">
@@ -85,11 +83,12 @@ export function LoginForm({
         variant="primary"
         className={`rounded-3xl ${themeStyles.buttonClass}`}
         fullWidth
-        disabled={isSubmitting || isLoggingIn}
-        isLoading={isSubmitting || isLoggingIn}
+        disabled={isSubmitting }
+        isLoading={isSubmitting }
       >
         Log In
       </Button>
     </form>
   );
 }
+

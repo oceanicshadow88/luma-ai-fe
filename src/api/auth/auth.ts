@@ -1,11 +1,18 @@
 import { apiClient } from '@services/api/apiClient';
+import { ApiError } from '@custom-types/ApiError';
 
-class AuthService {
-  async authToken(token: string): Promise<void> {
-    await apiClient.post('/auth/token', {
+interface AuthService {
+  authToken(token: string): Promise<ApiError | void>;
+}
+
+class AuthServiceImpl implements AuthService {
+  async authToken(token: string): Promise<ApiError | void> {
+    const response = await apiClient.post('/auth/token', {
       token,
     });
+
+    if (response instanceof ApiError) return response;
   }
 }
 
-export const authService = new AuthService();
+export const authService = new AuthServiceImpl();

@@ -3,7 +3,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { teacherSignupSchema } from '../schemas';
 import { z } from 'zod';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import toast from 'react-hot-toast';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
@@ -13,12 +12,12 @@ import { signupService } from '@api/auth/signup';
 import { hasExpiry } from '@utils/dataUtils';
 import { decodeJwt } from '@utils/jwtUtils';
 import { Checkbox } from '@components/forms/Checkbox';
+import { showToastWithAction } from '@components/toast/ToastWithAction';
 
 export default function TeacherSignUpForm() {
   const [searchParams] = useSearchParams();
   const [isTokenInvalid, setIsTokenInvalid] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const token = searchParams.get('token') ?? '';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const decodePayload: any = decodeJwt(token);
@@ -27,7 +26,8 @@ export default function TeacherSignUpForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setError,
+    formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof teacherSignupSchema>>({
     resolver: zodResolver(teacherSignupSchema),
     mode: 'onTouched',
@@ -43,19 +43,24 @@ export default function TeacherSignUpForm() {
         setIsLoading(false);
         return;
       }
-      await authService
-        .authToken(token ?? '')
-        .catch((e) => {
-          if (e.message.includes('expired')) return;
-          setIsTokenInvalid(true);
-        })
-        .finally(() => setIsLoading(false));
+
+      const result = await authService.authToken(token ?? '');
+
+      if (result) {
+        if (result.message.includes('expired')) {
+          setIsLoading(false);
+          return;
+        }
+        setIsTokenInvalid(true);
+      }
+
+      setIsLoading(false);
     };
+
     verifyToken();
   }, [token, decodePayload]);
 
   const onSubmit = async (data: z.infer<typeof teacherSignupSchema>) => {
-    setIsSubmitting(true);
     const payload = {
       firstName: data.firstName,
       lastName: data.lastName,
@@ -67,15 +72,29 @@ export default function TeacherSignUpForm() {
       termsAccepted: true,
     };
 
-    const result = await signupService.signupAsInstructor(payload).catch(() => {
-      setIsSubmitting(false);
-    });
+    const result = await signupService.signupAsInstructor(payload);
+
     if (result) {
-      toast.success('Signup success! You will be redirected in 3 seconds');
-      setTimeout(() => navigate('/dashboard'), 3000);
-    } else {
-      toast.error('Signup failed. Please try again.');
+      if (result.meta?.field) {
+        setError(result.meta.field as keyof z.infer<typeof teacherSignupSchema>, {
+          message: result.message
+        });
+      }
+      return;
     }
+
+    const timeoutId = setTimeout(() => {
+      navigate('/dashboard');
+    }, 3000);
+
+    showToastWithAction('Successfully signed up! Redirecting...', {
+      actionText: 'Go Now',
+      onAction: () => {
+        clearTimeout(timeoutId);
+        navigate('/dashboard');
+      },
+      duration: 2000,
+    });
   };
 
   if (isLoading) {
@@ -113,7 +132,7 @@ export default function TeacherSignUpForm() {
         error={errors.email?.message}
         isDisabled={true}
       />
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
           id="firstName"
@@ -164,11 +183,11 @@ export default function TeacherSignUpForm() {
         />
       </div>
 
-      <Button 
-        type="submit" 
-        variant="primary" 
+      <Button
+        type="submit"
+        variant="primary"
         className="rounded-3xl"
-        fullWidth 
+        fullWidth
         disabled={isSubmitting}
         isLoading={isSubmitting}
       >

@@ -3,7 +3,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { signupSchema } from '../schemas';
 import { z } from 'zod';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useSignUp } from '@features/auth/hooks/useSignUp';
 import { useSendCode } from '@features/auth/hooks/useSendCode';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
@@ -14,6 +13,7 @@ import { filterSignupForm } from '@utils/filterSignupForm';
 import { UserRole } from '@features/auth/types';
 import { Checkbox } from '@components/forms/Checkbox';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
+import { signupService } from '@api/auth/signup';
 
 interface SignUpFormProps {
   userRole?: UserRole;
@@ -44,19 +44,25 @@ const SignUpForm = ({
   });
 
   const email = watch('email');
-  const { signup, isSigningUp } = useSignUp();
-  const { sendCode, countdown, canSend } = useSendCode();
+  const { sendCode, countDown, canSend } = useSendCode();
 
   const handleSendCode = async () => {
     if (!email || !canSend) return;
 
-    const result = await sendCode(email, { setError });
+    const result = await sendCode(email);
 
-    if (result.success) {
-      showToastWithAction('If the email is valid, a verification code will be sent.', {
-        duration: 2000,
-      });
+    if (result) { 
+      if (result.meta?.field){
+        setError(result.meta?.field as keyof z.infer<typeof signupSchema>, {
+          message: result.message
+        });
+      }
+      return;
     }
+  
+    showToastWithAction('If the email is valid, a verification code will be sent.', {
+      duration: 2000,
+    });
   };
 
   const onSubmit = async (data: z.infer<typeof signupSchema>) => {
@@ -66,42 +72,43 @@ const SignUpForm = ({
       username: data.username,
       email: data.email,
       password: data.password,
-      verifyValue: data.code,
+      verifyValue: data.verificationCode,
       termsAccepted: data.termsAccepted,
     };
 
-    const result = await signup(payload, userRole, { setError });
+    const result = await signupService.signup(payload, userRole);
 
-    if (result.success) {
-      if (result.redirect) {
-        if (result.redirect === '/auth/signup/institution') {
-          if (userRole === UserRole.ADMIN) {
-            showToastWithAction('Company not found, redirecting to institution setup...', {
-              duration: 2000,
-            });
-            navigate('/auth/signup/institution', {
-              state: { signupForm: filterSignupForm(data) },
-            });
-            return;
-          }
-        }
+    if (result) { 
+      if (result.message === 'No existing institution found. Please create your organization.' && userRole === UserRole.ADMIN) {
+        navigate('/auth/signup/institution', {
+          state: { signupForm: filterSignupForm(data) },
+        });
+        return;
       }
 
-      const timeoutId = setTimeout(() => {
-        navigate('/dashboard');
-      }, 3000);
-
-      showToastWithAction('Successfully signed up! Redirecting...', {
-        actionText: 'Go Now',
-        onAction: () => {
-          clearTimeout(timeoutId);
-          navigate('/dashboard');
-        },
-        duration: 2000,
-      });
-
-      onSuccess?.();
+      if (result.meta?.field){
+        setError(result.meta.field as keyof z.infer<typeof signupSchema>, {
+          message: result.message
+        });
+      }
+      return;
     }
+    
+    const timeoutId = setTimeout(() => {
+      navigate('/dashboard');
+    }, 3000);
+
+    showToastWithAction('Successfully signed up! Redirecting...', {
+      actionText: 'Go Now',
+      onAction: () => {
+        clearTimeout(timeoutId);
+        navigate('/dashboard');
+      },
+      duration: 2000,
+    });
+
+    onSuccess?.();
+    return;
   };
 
   return (
@@ -118,14 +125,14 @@ const SignUpForm = ({
       />
 
       <VerificationCodeInput
-        id="code"
+        id="verificationCode"
         label="Verification Code"
         placeholder="Enter the 6-digit code"
-        buttonText={countdown > 0 ? `Resend in ${countdown}s` : 'Send'}
+        buttonText={countDown > 0 ? `Resend in ${countDown}s` : 'Send'}
         onButtonClick={handleSendCode}
         isButtonDisabled={!canSend}
-        {...register('code')}
-        error={errors.code?.message}
+        {...register('verificationCode')}
+        error={errors.verificationCode?.message}
         inputClassName={themeStyles.inputClassName}
         labelClassName={themeStyles.labelClassName}
         buttonClassName={themeStyles.verificationButtonClass}
@@ -200,8 +207,8 @@ const SignUpForm = ({
         variant="primary"
         className={`rounded-3xl ${themeStyles.buttonClass}`}
         fullWidth
-        disabled={isSubmitting || isSigningUp}
-        isLoading={isSubmitting || isSigningUp}
+        disabled={isSubmitting}
+        isLoading={isSubmitting}
       >
         Sign Up
       </Button>

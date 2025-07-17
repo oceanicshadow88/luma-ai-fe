@@ -17,7 +17,7 @@ export const signupSchema = z
       .max(20, 'Username must be at most 20 characters')
       .regex(/^[a-zA-Z0-9]+$/, 'Username can only contain letters and numbers'),
     email: emailSchema,
-    code: verificationCodeSchema,
+    verificationCode: verificationCodeSchema,
     password: newPasswordSchema,
     confirmPassword: z.string().min(1, 'Please confirm your password'),
     termsAccepted: z

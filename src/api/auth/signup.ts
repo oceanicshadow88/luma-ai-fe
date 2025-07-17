@@ -50,6 +50,10 @@ class SignupServiceImpl implements SignupService {
 
     const result = response.data;
 
+    if (result.refreshToken) {
+      localStorage.setItem('refreshToken', result.refreshToken);
+    }
+
     if (result.accessToken) {
       localStorage.setItem('accessToken', result.accessToken);
     }
@@ -64,11 +68,14 @@ class SignupServiceImpl implements SignupService {
 
     const result = response.data;
 
+    if (result.refreshToken) {
+      localStorage.setItem('refreshToken', result.refreshToken);
+    }
+
     if (result.accessToken) {
       localStorage.setItem('accessToken', result.accessToken);
     }
 
-    return result;
   }
 
   async sendCode(email: string): Promise<ApiError | void> {

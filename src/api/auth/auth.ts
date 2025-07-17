@@ -11,7 +11,7 @@ class AuthServiceImpl implements AuthService {
       token,
     });
 
-    return response instanceof ApiError ? response : undefined;
+    if (response instanceof ApiError) return response;
   }
 }
 

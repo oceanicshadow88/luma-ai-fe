@@ -11,11 +11,6 @@ export interface VerificationCodeRateLimitError {
   cooldownSeconds: number;
 }
 
-export interface ResetPasswordResponse {
-  success: true;
-  message: string;
-}
-
 export interface ApiErrorResponse {
   success: false;
   message: string;

@@ -1,7 +1,6 @@
 import { apiClient } from "@services/api/apiClient";
 import { LoginFormData, UserType } from "@features/auth/types";
 import { ApiError } from "@custom-types/ApiError";
-import { AxiosResponse } from "axios";
 
 interface LoginResult {
   refreshToken?: string;
@@ -11,13 +10,13 @@ interface LoginResult {
 }
 
 interface LoginService {
-  login(data: LoginFormData, userType?: UserType): Promise<LoginResult | ApiError>;
-  loginAsLearner(data: LoginFormData): Promise<LoginResult | ApiError>;
-  loginAsEnterprise(data: LoginFormData): Promise<LoginResult | ApiError>;
+  login(data: LoginFormData, userType?: UserType): Promise<ApiError | void>;
+  loginAsLearner(data: LoginFormData): Promise<ApiError | void>;
+  loginAsEnterprise(data: LoginFormData): Promise<ApiError | void>;
 }
 
 class LoginServiceImpl implements LoginService {
-  async login(data: LoginFormData, userType: UserType = UserType.LEARNER): Promise<LoginResult | ApiError> {
+  async login(data: LoginFormData, userType: UserType = UserType.LEARNER): Promise<ApiError | void> {
     const endpoint = `/auth/login/${userType}`;
     const response = await apiClient.post(endpoint, data);
 
@@ -25,7 +24,7 @@ class LoginServiceImpl implements LoginService {
       return response;
     }
 
-    const result: LoginResult = (response as AxiosResponse).data.data;
+    const result: LoginResult = response.data.data;
 
     if (result.refreshToken) {
       localStorage.setItem('refreshToken', result.refreshToken);
@@ -34,15 +33,13 @@ class LoginServiceImpl implements LoginService {
     if (result.accessToken) {
       localStorage.setItem('accessToken', result.accessToken);
     }
-
-    return result;
   }
 
-  async loginAsLearner(data: LoginFormData): Promise<LoginResult | ApiError> {
+  async loginAsLearner(data: LoginFormData): Promise<ApiError | void> {
     return this.login(data, UserType.LEARNER);
   }
 
-  async loginAsEnterprise(data: LoginFormData): Promise<LoginResult | ApiError> {
+  async loginAsEnterprise(data: LoginFormData): Promise<ApiError | void> {
     return this.login(data, UserType.ENTERPRISE);
   }
 }

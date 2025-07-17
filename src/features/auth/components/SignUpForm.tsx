@@ -14,7 +14,6 @@ import { UserRole } from '@features/auth/types';
 import { Checkbox } from '@components/forms/Checkbox';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 import { signupService } from '@api/auth/signup';
-import { ApiError } from '@custom-types/ApiError';
 
 interface SignUpFormProps {
   userRole?: UserRole;
@@ -52,7 +51,7 @@ const SignUpForm = ({
 
     const result = await sendCode(email);
 
-    if (result instanceof ApiError) { 
+    if (result) { 
       if (result.meta?.field){
         setError(result.meta?.field as keyof z.infer<typeof signupSchema>, {
           message: result.message
@@ -79,7 +78,7 @@ const SignUpForm = ({
 
     const result = await signupService.signup(payload, userRole);
 
-    if (result instanceof ApiError) { 
+    if (result) { 
       if (result.message === 'No existing institution found. Please create your organization.' && userRole === UserRole.ADMIN) {
         navigate('/auth/signup/institution', {
           state: { signupForm: filterSignupForm(data) },

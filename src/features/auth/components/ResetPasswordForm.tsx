@@ -9,7 +9,6 @@ import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { ResetPasswordFormData, UserType } from '@features/auth/types';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
-import { ApiError } from '@custom-types/ApiError';
 import { resetPasswordService } from '@api/auth/resetPassword';
 import { useSendCode } from '@features/auth/hooks/useSendCode';
 
@@ -51,7 +50,7 @@ export function ResetPasswordForm({
 
     const result = await sendCode(email);
 
-    if (result instanceof ApiError) { 
+    if (result) { 
       if (result.meta?.field){
         setError(result.meta?.field as keyof ResetPasswordFormData, {
           message: result.message
@@ -76,7 +75,7 @@ export function ResetPasswordForm({
 
     const result = await resetPasswordService.resetPassword(payload);
 
-    if (result instanceof ApiError) { 
+    if (result) { 
       if (result.meta?.field){
         setError(result.meta?.field as keyof ResetPasswordFormData, {
           message: result.message

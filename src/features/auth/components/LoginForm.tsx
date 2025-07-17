@@ -9,7 +9,6 @@ import { Button } from '@components/buttons/Button';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 import { loginService } from '@api/auth/login';
-import { ApiError } from '@custom-types/ApiError';
 
 interface LoginFormProps {
   userType?: UserType;
@@ -38,9 +37,7 @@ export function LoginForm({
     
     const result = await loginService.login(data, userType);
 
-    if (result instanceof ApiError) {
-      return; 
-    }
+    if (result) return;
 
     const timeoutId = setTimeout(() => {
       navigate('/dashboard');

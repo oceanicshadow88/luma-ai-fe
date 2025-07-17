@@ -13,7 +13,6 @@ import { hasExpiry } from '@utils/dataUtils';
 import { decodeJwt } from '@utils/jwtUtils';
 import { Checkbox } from '@components/forms/Checkbox';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
-import { ApiError } from '@custom-types/ApiError';
 
 export default function TeacherSignUpForm() {
   const [searchParams] = useSearchParams();
@@ -47,7 +46,7 @@ export default function TeacherSignUpForm() {
 
       const result = await authService.authToken(token ?? '');
 
-      if (result instanceof ApiError) {
+      if (result) {
         if (result.message.includes('expired')) {
           setIsLoading(false);
           return;
@@ -75,7 +74,7 @@ export default function TeacherSignUpForm() {
 
     const result = await signupService.signupAsInstructor(payload);
 
-    if (result instanceof ApiError) {
+    if (result) {
       if (result.meta?.field) {
         setError(result.meta.field as keyof z.infer<typeof teacherSignupSchema>, {
           message: result.message

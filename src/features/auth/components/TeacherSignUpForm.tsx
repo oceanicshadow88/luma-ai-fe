@@ -13,6 +13,7 @@ import { hasExpiry } from '@utils/dataUtils';
 import { decodeJwt } from '@utils/jwtUtils';
 import { Checkbox } from '@components/forms/Checkbox';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
+import toast from 'react-hot-toast';
 
 export default function TeacherSignUpForm() {
   const [searchParams] = useSearchParams();
@@ -39,6 +40,7 @@ export default function TeacherSignUpForm() {
   useEffect(() => {
     const verifyToken = async () => {
       if (!decodePayload) {
+        toast.error('Invalid or expired invitation link. Please check your email or contact admin.');
         setIsTokenInvalid(true);
         setIsLoading(false);
         return;
@@ -48,6 +50,7 @@ export default function TeacherSignUpForm() {
 
       if (result) {
         if (result.message.includes('expired')) {
+          setIsTokenInvalid(true);
           setIsLoading(false);
           return;
         }
@@ -105,18 +108,10 @@ export default function TeacherSignUpForm() {
     );
   }
 
-  if (isTokenInvalid) {
+  if (isTokenInvalid || hasExpiry(decodePayload?.exp)) {
     return (
       <div className="text-center py-8">
-        <div className="text-red-600">Invalid invitation link. Please check your email or contact admin</div>
-      </div>
-    );
-  }
-
-  if (hasExpiry(decodePayload.exp)) {
-    return (
-      <div className="text-center py-8">
-        <div className="text-red-600">This invitation link has expired.</div>
+        <div className="text-red-600">Invalid or expired invitation link. Please check your email or contact admin.</div>
       </div>
     );
   }

@@ -10,10 +10,15 @@ export default function SignupRouter() {
 
     if (!token) return <div>Missing invitation token</div>;
 
-    let decoded: any;
+    interface InvitationTokenPayload {
+        role: UserRole;
+    }
+
+    let decoded: InvitationTokenPayload | null = null;
+
     try {
-        decoded = decodeJwt(token);
-    } catch (err) {
+        decoded = decodeJwt(token) as InvitationTokenPayload | null;
+    } catch {
         return <div>Invalid invitation token</div>;
     }
 

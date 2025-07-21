@@ -9,6 +9,8 @@ interface ShowToastWithActionOptions {
   buttonClassName?: string;
 }
 
+// TODO:  Move your component(s) to a separate file
+// eslint-disable-next-line react-refresh/only-export-components
 const ToastContent = ({
   message,
   onAction,
@@ -32,7 +34,7 @@ const ToastContent = ({
   return (
     <div
       className="flex flex-col items-center space-y-4"
-      style={{ ...TOAST_STYLE, ...style }} 
+      style={{ ...TOAST_STYLE, ...style }}
     >
       <span>{message}</span>
       {onAction && actionText && (
@@ -64,7 +66,7 @@ export const showToastWithAction = (
         actionText={actionText}
         toastId={t.id}
         buttonClassName={buttonClassName}
-        style={style} 
+        style={style}
       />
     ),
     { duration }

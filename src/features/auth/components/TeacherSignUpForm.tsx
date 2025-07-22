@@ -6,19 +6,19 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { authService } from '@api/auth/auth';
 import { signupService } from '@api/auth/signup';
 import { hasExpiry } from '@utils/dataUtils';
 import { decodeJwt } from '@utils/jwtUtils';
 import { Checkbox } from '@components/forms/Checkbox';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
-import toast from 'react-hot-toast';
 
 export default function TeacherSignUpForm() {
   const [searchParams] = useSearchParams();
   const [isTokenInvalid, setIsTokenInvalid] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const hasVerified = useRef(false);
   const token = searchParams.get('token') ?? '';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const decodePayload: any = decodeJwt(token);
@@ -38,9 +38,12 @@ export default function TeacherSignUpForm() {
   });
 
   useEffect(() => {
+    if (hasVerified.current) return;
+
     const verifyToken = async () => {
+      hasVerified.current = true;
+
       if (!decodePayload) {
-        toast.error('Invalid or expired invitation link. Please check your email or contact admin.');
         setIsTokenInvalid(true);
         setIsLoading(false);
         return;
@@ -61,7 +64,7 @@ export default function TeacherSignUpForm() {
     };
 
     verifyToken();
-  }, [token, decodePayload]);
+  }, [token]);
 
   const onSubmit = async (data: z.infer<typeof teacherSignupSchema>) => {
     const payload = {
@@ -71,7 +74,7 @@ export default function TeacherSignUpForm() {
       email: data.email,
       password: data.password,
       confirmPassword: data.confirmPassword,
-      verifyValue: token ?? 'abc',
+      verifyValue: token ?? '',
       termsAccepted: true,
     };
 

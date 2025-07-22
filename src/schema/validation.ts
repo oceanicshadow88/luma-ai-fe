@@ -3,7 +3,7 @@ import * as z from 'zod';  // TypeScript-first schema validation library with st
 export const emailSchema = z
   .string()
   .min(1, 'Please enter your email address')
-  .email('Sorry, please type a valid email');
+  .email('Please type a valid email');
 
 export const verificationCodeSchema = z
   .string()
@@ -29,6 +29,6 @@ export const newPasswordSchema = z
   );
 
 export const passwordSchema = z
-      .string()
-      .min(1, 'Please enter your password')
-      .min(8, 'Please lengthen this text to 8 characters or more')
+  .string()
+  .min(1, 'Please enter your password')
+  .min(8, 'Please lengthen this text to 8 characters or more')

@@ -15,7 +15,6 @@ interface NotFoundPageProps {
         justifyContent: 'center',
         height: '100vh',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        backgroundColor: '#f8fafc'
       }}>
         <div style={{
           fontSize: '8rem',

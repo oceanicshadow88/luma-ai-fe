@@ -100,12 +100,22 @@ NOTE: UPDATE THE ENV ACCORDING TO YOUR ENVIRONMENT
 
 ---
 
-## 🧪 Cypress E2E Testing
+## 🧪 PlayWright E2E Test
 
-Install and open the Cypress testing GUI:
 
 ```bash
-npx cypress open
+# run test
+npx playwright test
+
+# Show result
+npx playwright show-report
+
+# debug and gui mode
+npx playwright test --ui\
+
+# GenCode mode. First, make sure your dev server is running manually
+yarn dev & 
+npx playwright codegen http://localhost:5173
 ```
 
 Tests are located in the `cypress/e2e/` folder.

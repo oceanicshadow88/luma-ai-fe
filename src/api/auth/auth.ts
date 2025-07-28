@@ -13,6 +13,10 @@ class AuthServiceImpl implements AuthService {
 
     if (response instanceof ApiError) return response;
   }
+  async verifySubdomain(): Promise<boolean> {
+    const response = await apiClient.get('/auth/verify-subdomain');
+    return !(response instanceof ApiError);
+  }
 }
 
 export const authService = new AuthServiceImpl();

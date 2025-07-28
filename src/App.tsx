@@ -20,19 +20,24 @@ const App = () => {
   const [isSubdomainValid, setIsSubdomainValid] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const shouldSkipValidation = () => {
-      const hostname = window.location.hostname;
-      const pathname = window.location.pathname;
-      
+    const hostname = window.location.hostname;
+    const pathname = window.location.pathname;
 
+    if (pathname === '/auth/signup/admin') {
+      const allowedUrls = ['lumaai.com', 'lumaai.localhost'];
+      setIsSubdomainValid(allowedUrls.includes(hostname));
+      return;
+    }
+
+    const shouldSkipValidation = () => {
       if (hostname === 'lumaai.com') {
-        if (pathname === '/' || pathname === '/auth/signup/admin' || pathname === '/auth/signup/institution') {
+        if (pathname === '/' || pathname === '/auth/signup/institution') {
           return true;
         }
       }
       
       if (hostname === 'lumaai.localhost') {
-        if (pathname === '/' || pathname === '/auth/signup/admin' || pathname === '/auth/signup/institution') {
+        if (pathname === '/' || pathname === '/auth/signup/institution') {
           return true;
         }
       }
@@ -48,12 +53,8 @@ const App = () => {
   }, []);
 
   if (isSubdomainValid === null) return <div>Loading...</div>;
-  if (!isSubdomainValid) return (
-    <NotFoundPage 
-      message="Company Not Found" 
-      description="The company you're looking for doesn't exist or has been deactivated." 
-    />
-  );
+  
+  if (!isSubdomainValid) return <NotFoundPage />;
 
   return (
     <BrowserRouter>

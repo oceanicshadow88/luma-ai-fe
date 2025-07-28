@@ -51,15 +51,15 @@ const SignUpForm = ({
 
     const result = await sendCode(email);
 
-    if (result) { 
-      if (result.meta?.field){
+    if (result) {
+      if (result.meta?.field) {
         setError(result.meta?.field as keyof z.infer<typeof signupSchema>, {
           message: result.message
         });
       }
       return;
     }
-  
+
     showToastWithAction('If the email is valid, a verification code will be sent.', {
       duration: 2000,
     });
@@ -78,22 +78,22 @@ const SignUpForm = ({
 
     const result = await signupService.signup(payload, userRole);
 
-    if (result) { 
+    if (result) {
       if (result.message === 'No existing institution found. Please create your organization.' && userRole === UserRole.ADMIN) {
-        navigate('/auth/signup/institution', {
+        navigate('/auth/signup/institution-owner', {
           state: { signupForm: filterSignupForm(data) },
         });
         return;
       }
 
-      if (result.meta?.field){
+      if (result.meta?.field) {
         setError(result.meta.field as keyof z.infer<typeof signupSchema>, {
           message: result.message
         });
       }
       return;
     }
-    
+
     const timeoutId = setTimeout(() => {
       navigate('/dashboard');
     }, 3000);

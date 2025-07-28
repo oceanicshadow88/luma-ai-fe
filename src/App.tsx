@@ -23,20 +23,20 @@ const App = () => {
     const shouldSkipValidation = () => {
       const hostname = window.location.hostname;
       const pathname = window.location.pathname;
-      
+
 
       if (hostname === 'lumaai.com') {
         if (pathname === '/' || pathname === '/auth/signup/admin' || pathname === '/auth/signup/institution') {
           return true;
         }
       }
-      
+
       if (hostname === 'lumaai.localhost') {
         if (pathname === '/' || pathname === '/auth/signup/admin' || pathname === '/auth/signup/institution') {
           return true;
         }
       }
-      
+
       return false;
     };
 
@@ -49,9 +49,9 @@ const App = () => {
 
   if (isSubdomainValid === null) return <div>Loading...</div>;
   if (!isSubdomainValid) return (
-    <NotFoundPage 
-      message="Company Not Found" 
-      description="The company you're looking for doesn't exist or has been deactivated." 
+    <NotFoundPage
+      message="Company Not Found"
+      description="The company you're looking for doesn't exist or has been deactivated."
     />
   );
 
@@ -66,23 +66,23 @@ const App = () => {
       />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        
+
         <Route path="/auth/signup" element={<SignupRouter />} />
         <Route path="/auth/signup/learner" element={<LearnerSignUpPage />} />
         <Route path="/auth/signup/admin" element={<AdminSignUpPage />} />
         <Route path="/auth/signup/teacher" element={<TeacherSignUpPage />} />
-        <Route path="/auth/signup/institution" element={<InstitutionPage />} />
-        
+        <Route path="/auth/signup/institution-owner" element={<InstitutionPage />} />
+
         <Route path="/auth/login" element={<LearnerLoginPage />} />
         <Route path="/auth/login/learner" element={<LearnerLoginPage />} />
         <Route path="/auth/login/enterprise" element={<EnterpriseLoginPage />} />
-        
+
         <Route path="/auth/reset-password" element={<LearnerResetPasswordPage />} />
         <Route path="/auth/reset-password/learner" element={<LearnerResetPasswordPage />} />
         <Route path="/auth/reset-password/enterprise" element={<EnterpriseResetPasswordPage />} />
-        
+
         <Route path="/dashboard" element={<DashboardPage />} />
-        
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

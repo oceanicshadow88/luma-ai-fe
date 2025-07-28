@@ -1,12 +1,4 @@
-interface NotFoundPageProps {
-    message?: string;
-    description?: string;
-  }
-  
-  const NotFoundPage = ({ 
-    message = "Page Not Found", 
-    description = "The page you're looking for doesn't exist or has been moved." 
-  }: NotFoundPageProps) => {
+const NotFoundPage = () => {
     return (
       <div style={{
         display: 'flex',
@@ -33,7 +25,7 @@ interface NotFoundPageProps {
           marginBottom: '0.5rem',
           margin: '0 0 8px 0'
         }}>
-          {message}
+          Oops! We couldn't find that page.
         </h1>
   
         <p style={{
@@ -44,7 +36,7 @@ interface NotFoundPageProps {
           lineHeight: '1.5',
           margin: '0 0 2rem 0'
         }}>
-          {description}
+          The page you're looking for doesn't exist or may have been moved.
         </p>
       </div>
     );

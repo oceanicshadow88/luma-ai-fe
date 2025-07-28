@@ -1,21 +1,29 @@
 import { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import logo from '@assets/logo.svg';
 import background from '@assets/decorative_graphic.png';
 import InstitutionForm from '@features/auth/components/InstitutionForm';
 
 const InstitutionPage = () => {
-  const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     const hasRequiredData = location.state?.signupForm?.email;
 
     if (!hasRequiredData) {
-      navigate('/auth/signup/admin', { replace: true });
+      const hostname = window.location.hostname;
+      const protocol = window.location.protocol;
+      
+      if (hostname.endsWith('.lumaai.com')) {
+        window.location.href = `${protocol}//lumaai.com/auth/signup/admin`;
+      } else if (hostname.endsWith('.lumaai.localhost')) {
+        window.location.href = `${protocol}//lumaai.localhost:${window.location.port}/auth/signup/admin`;
+      } else {
+        window.location.href = '/auth/signup/admin';
+      }
       return;
     }
-  }, [location.state, navigate]);
+  }, [location.state]);
 
   if (!location.state?.signupForm?.email) {
     return null;

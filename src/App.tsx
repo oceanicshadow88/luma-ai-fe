@@ -24,8 +24,11 @@ const App = () => {
     const pathname = window.location.pathname;
 
     if (pathname === '/auth/signup/admin') {
-      const allowedUrls = ['lumaai.com', 'lumaai.localhost'];
-      setIsSubdomainValid(allowedUrls.includes(hostname));
+      if (hostname === 'lumaai.com' || hostname === 'lumaai.localhost') {
+        setIsSubdomainValid(true);
+        return;
+      }
+      authService.verifySubdomain().then(setIsSubdomainValid);
       return;
     }
 

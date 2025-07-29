@@ -35,6 +35,7 @@ export interface SignUpInput {
 
 export interface InstitutionFormData {
   companyName: string;
+  slug: string;
   logo?: File | null;
 }
 

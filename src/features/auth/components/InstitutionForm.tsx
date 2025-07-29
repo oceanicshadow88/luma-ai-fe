@@ -2,6 +2,7 @@ import { Input } from '@components/forms/Input';
 import { Button } from '@components/buttons/Button';
 import { ImageUpload } from '@components/forms/ImageUpload';
 import { useInstitution } from '@features/auth/hooks/useInstitution';
+import { useEffect } from 'react';
 
 const InstitutionForm = () => {
   const {
@@ -15,7 +16,19 @@ const InstitutionForm = () => {
     isLogoInvalid,
     handleLogoChange,
     handlePrev,
+    watch,
+    setValue,
+    generateSlugFromCompanyName,
   } = useInstitution();
+
+  const companyName = watch('companyName');
+
+  useEffect(() => {
+    if (companyName) {
+      const newSlug = generateSlugFromCompanyName(companyName);
+      setValue('slug', newSlug);
+    }
+  }, [companyName, setValue, generateSlugFromCompanyName]);
 
   const onLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -81,15 +94,13 @@ const InstitutionForm = () => {
         <div className="flex flex-col">
           <label className="text-sm text-gray-600 text-left mb-1">
             Organisation Slug
-            <span className="text-gray-400">(Auto-generated from email, not editable)</span>
           </label>
           <div className="flex items-center">
+            {/* this is to be in company name  */}
             <input
               {...register('slug')}
               type="text"
-              placeholder="Auto-generated from email (not editable)"
-              className="rounded-3xl border border-gray-300 h-11 px-4 w-full bg-gray-100 cursor-not-allowed text-gray-500"
-              disabled
+              className="rounded-3xl border border-gray-300 h-11 px-4 w-full cursor-not-allowed text-gray-500"
             />
             <span className="ml-2 text-gray-500 whitespace-nowrap">.lumaai.com</span>
           </div>

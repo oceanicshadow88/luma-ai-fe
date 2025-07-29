@@ -88,8 +88,7 @@ const SignUpForm = ({
       password: data.password,
       verifyValue: data.verificationCode,
       termsAccepted: data.termsAccepted,
-      token: data.token,  
-      wtf: true,
+      token: data.token,
     };
 
     const result = await signupService.signup(payload, userRole);

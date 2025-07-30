@@ -2,8 +2,12 @@ import logo from '@assets/logo.svg';
 import rightLogo from '@assets/decorative_graphic.png';
 import SignUpForm from '@features/auth/components/SignUpForm';
 import { UserRole } from '@features/auth/types';
+import { useSearchParams } from 'react-router-dom';
 
 const AdminSignUpPage = () => {
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token') ?? '';
+
   const getFormTitle = () => {
     return 'Sign up for Luma AI Enterprise Version';
   };
@@ -23,7 +27,7 @@ const AdminSignUpPage = () => {
 
         <section className="w-full max-w-sm sm:max-w-md lg:max-w-md">
           <div className="w-full">
-            <SignUpForm userRole={UserRole.ADMIN} />
+            <SignUpForm userRole={UserRole.ADMIN} token={token}/>
           </div>
         </section>
       </main>

@@ -14,7 +14,7 @@ interface SignupService {
   signupAsAdmin(data: SignupFormData): Promise<ApiError | void>;
   signupAsInstructor(data: SignupFormData): Promise<ApiError | void>;
   sendCode(email: string): Promise<ApiError | void>;
-  adminSignupRaw(data: SignupFormData, userRole?: UserRole): Promise<any>;
+  adminSignupRaw(data: SignupFormData, userRole?: UserRole): Promise<ApiError | void>;
 }
 
 class SignupServiceImpl implements SignupService {
@@ -84,7 +84,7 @@ class SignupServiceImpl implements SignupService {
     return response instanceof ApiError ? response : undefined;
   }
 
-  async adminSignupRaw(data: SignupFormData, userRole: UserRole = UserRole.LEARNER): Promise<any> {
+  async adminSignupRaw(data: SignupFormData, userRole: UserRole = UserRole.LEARNER): Promise<ApiError | void> {
     const endpoint = `/auth/signup/${userRole}`;
     return apiClient.post(endpoint, data, {
       validateStatus: () => true,

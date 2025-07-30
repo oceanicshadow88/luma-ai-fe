@@ -15,17 +15,20 @@ import { Checkbox } from '@components/forms/Checkbox';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 import { signupService } from '@api/auth/signup';
 import { useEffect } from 'react';
+import { decodeJwt } from '@utils/jwtUtils';
 
 interface SignUpFormProps {
   userRole?: UserRole;
   onSuccess?: () => void;
   theme?: ThemeType;
+  token?:string;
 }
 
 const SignUpForm = ({
   userRole = UserRole.LEARNER,
   onSuccess,
   theme = 'default',
+  token
 }: SignUpFormProps) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,6 +40,7 @@ const SignUpForm = ({
     handleSubmit,
     watch,
     setError,
+    setValue,
     clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof signupSchema>>({
@@ -44,6 +48,15 @@ const SignUpForm = ({
     mode: 'onBlur',
     defaultValues: defaultFormValues,
   });
+
+  useEffect(() => {
+    if (!token) {
+      return
+    }
+    const decodePayload: any = decodeJwt(token);
+    setValue('email', decodePayload.email);
+    setValue('token', token);
+  }, [token]);
 
   const email = watch('email');
   const verificationCode = watch('verificationCode');
@@ -85,11 +98,15 @@ const SignUpForm = ({
       password: data.password,
       verifyValue: data.verificationCode,
       termsAccepted: data.termsAccepted,
+      token: data.token,
     };
 
     const result = await signupService.signup(payload, userRole);
 
     if (result) { 
+      if(token){
+        return;
+      }
       if (result.message === 'No existing institution found. Please create your organization.' && userRole === UserRole.ADMIN) {
         navigate('/auth/signup/institution', {
           state: { signupForm: filterSignupForm(data) },
@@ -133,6 +150,7 @@ const SignUpForm = ({
         error={errors.email?.message}
         inputClassName={themeStyles.inputClassName}
         labelClassName={themeStyles.labelClassName}
+        isDisabled={!!token}
       />
 
       <VerificationCodeInput

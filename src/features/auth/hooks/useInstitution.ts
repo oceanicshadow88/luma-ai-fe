@@ -9,11 +9,13 @@ import { filterSignupForm } from '@utils/filterSignupForm';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { ApiError } from '@custom-types/ApiError';
 
-function getSlugFromEmail(email: string): string {
-   const domain = email.split('@')[1]?.toLowerCase() || '';
-   if (!domain) return '';
-   const parts = domain.split('.');
-   return parts.length > 0 ? parts[0] : '';
+function generateSlugFromCompanyName(companyName: string): string {
+   return companyName
+       .toLowerCase()
+       .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+       .replace(/\s+/g, '-') // Replace spaces with hyphens
+       .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+       .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
 }
 
 export const useInstitution = () => {
@@ -36,13 +38,14 @@ export const useInstitution = () => {
        register,
        handleSubmit,
        setError,
+       watch,
+       setValue,
        formState: { errors, isSubmitting }
    } = useForm<FormData>({
        resolver: zodResolver(institutionSchema.omit({ logo: true })),
        mode: 'onBlur',
        defaultValues: {
            companyName: '',
-           slug: getSlugFromEmail(email),
            emailDomain: emailDomain || '',
        },
    });
@@ -119,6 +122,8 @@ export const useInstitution = () => {
        register,
        handleSubmit: handleSubmit(onSubmit),
        setError,
+       watch,
+       setValue,
        errors,
        isSubmitting,
        isCreating,
@@ -127,6 +132,6 @@ export const useInstitution = () => {
        isLogoInvalid,
        handleLogoChange,
        handlePrev,
-       getSlugFromEmail,
+       generateSlugFromCompanyName,
    };
 };

@@ -35,6 +35,7 @@ export interface SignUpInput {
 
 export interface InstitutionFormData {
   companyName: string;
+  slug: string;
   logo?: File | null;
 }
 
@@ -46,6 +47,7 @@ export interface SignupFormData {
   password: string;
   verifyValue: string;
   termsAccepted: boolean;
+  token?: string; 
 }
 
 export enum UserType {

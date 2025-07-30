@@ -74,10 +74,10 @@ export const ImageUpload = forwardRef<HTMLInputElement, ImageUploadProps>(
         ref.current.value = '';
       }
       
-      const fakeEvent = {
+      const event = {
         target: { files: null }
       } as React.ChangeEvent<HTMLInputElement>;
-      onChange(fakeEvent);
+      onChange(event);
     };
 
     return (

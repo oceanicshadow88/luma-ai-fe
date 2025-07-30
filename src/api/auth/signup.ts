@@ -18,7 +18,8 @@ interface SignupService {
 }
 
 class SignupServiceImpl implements SignupService {
-  async signup(data: SignupFormData, userRole: UserRole = UserRole.LEARNER): Promise<ApiError | void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async signup(data: SignupFormData, userRole: UserRole = UserRole.LEARNER): Promise<ApiError | void | any> {
     const endpoint = `/auth/signup/${userRole}`;
     const response = await apiClient.post(endpoint, data);
 
@@ -35,6 +36,7 @@ class SignupServiceImpl implements SignupService {
     if (result.accessToken) {
       localStorage.setItem('accessToken', result.accessToken);
     }
+    return response
   }
 
   async signupAsLearner(data: SignupFormData): Promise<ApiError | void> {

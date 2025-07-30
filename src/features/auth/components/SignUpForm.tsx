@@ -21,14 +21,14 @@ interface SignUpFormProps {
   userRole?: UserRole;
   onSuccess?: () => void;
   theme?: ThemeType;
-  token?:string;
+  token?: string;
 }
 
 const SignUpForm = ({
   userRole = UserRole.LEARNER,
   onSuccess,
   theme = 'default',
-  token
+  token,
 }: SignUpFormProps) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -50,7 +50,7 @@ const SignUpForm = ({
 
   useEffect(() => {
     if (!token) {
-      return
+      return;
     }
     const decodePayload: any = decodeJwt(token);
     setValue('email', decodePayload.email);
@@ -65,15 +65,15 @@ const SignUpForm = ({
 
     const result = await sendCode(email);
 
-    if (result) { 
-      if (result.meta?.field){
+    if (result) {
+      if (result.meta?.field) {
         setError(result.meta?.field as keyof z.infer<typeof signupSchema>, {
-          message: result.message
+          message: result.message,
         });
       }
       return;
     }
-  
+
     showToastWithAction('If the email is valid, a verification code will be sent.', {
       duration: 2000,
     });
@@ -93,36 +93,35 @@ const SignUpForm = ({
 
     const result = await signupService.signup(payload, userRole);
 
-    if (result) { 
-      if(token){
-        return;
-      }
-      if (result.message === 'No existing institution found. Please create your organization.' && userRole === UserRole.ADMIN) {
-        navigate('/auth/signup/institution', {
-          state: { signupForm: filterSignupForm(data) },
-        });
-        return;
-      }
-
-      if (result.meta?.field){
-        setError(result.meta.field as keyof z.infer<typeof signupSchema>, {
-          message: result.message
-        });
-      }
+    if (!result) {
       return;
     }
-    
-    const timeoutId = setTimeout(() => {
-      navigate('/dashboard');
-    }, 3000);
+    if (result.meta?.field) {
+      setError(result.meta.field as keyof z.infer<typeof signupSchema>, {
+        message: result.message,
+      });
+      return;
+    }
 
-    showToastWithAction('Successfully signed up! Redirecting...', {
-      actionText: 'Go Now',
-      onAction: () => {
-        clearTimeout(timeoutId);
+    if (token) {
+      const timeoutId = setTimeout(() => {
         navigate('/dashboard');
-      },
-      duration: 2000,
+      }, 3000);
+
+      showToastWithAction('Successfully signed up! Redirecting...', {
+        actionText: 'Go Now',
+        onAction: () => {
+          clearTimeout(timeoutId);
+          navigate('/dashboard');
+        },
+        duration: 2000,
+      });
+      onSuccess?.();
+      return;
+    }
+
+    navigate('/auth/signup/institution', {
+      state: { signupForm: filterSignupForm(data) },
     });
 
     onSuccess?.();

@@ -96,14 +96,21 @@ const InstitutionForm = () => {
             Organisation Slug
           </label>
           <div className="flex items-center">
-            {/* this is to be in company name  */}
             <input
               {...register('slug')}
               type="text"
-              className="rounded-3xl border border-gray-300 h-11 px-4 w-full cursor-not-allowed text-gray-500"
+              placeholder="e.g. ivy-college"
+              className={`rounded-3xl border h-11 px-4 w-full focus:outline-none focus:border-blue-600 focus:ring-0 ${
+                errors.slug ? 'border-red-500' : 'border-gray-300'
+              }`}
             />
             <span className="ml-2 text-gray-500 whitespace-nowrap">.lumaai.com</span>
           </div>
+          {errors.slug && (
+            <p className="text-left mt-1 text-sm text-red-600">
+              {errors.slug.message}
+            </p>
+          )}
         </div>
 
         <div className="flex gap-2 md:gap-4 mt-8">

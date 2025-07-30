@@ -1,22 +1,24 @@
-import * as z from 'zod'; // TypeScript-first schema validation library with static type inference. Reference: https://github.com/colinhacks/zod
+import * as z from 'zod';
+// TypeScript-first schema validation library with static type inference. Reference: https://github.com/colinhacks/zod
 // Zod is designed to centralize validation logic in schema files. Referenc: https://zod.dev/?id=writing-schemas; https://react-hook-form.com/get-started#SchemaValidation
 import {
   emailSchema,
   verificationCodeSchema,
   newPasswordSchema,
   passwordSchema,
+  firstNameSchema,
+  lastNameSchema,
+  usernameSchema,
+  organizationNameSchema,
+  slugSchema,
 } from '@schema/validation';
 
 export const signupSchema = z
   .object({
-    firstName: z.string().min(1, 'Please enter your first name'),
-    lastName: z.string().min(1, 'Please enter your last name'),
+    firstName: firstNameSchema,
+    lastName: lastNameSchema,
     token: z.string().optional(),
-    username: z
-      .string()
-      .min(2, 'Username must be at least 2 characters')
-      .max(20, 'Username must be at most 20 characters')
-      .regex(/^[a-zA-Z0-9]+$/, 'Username can only contain letters and numbers'),
+    username: usernameSchema,
     email: emailSchema,
     verificationCode: verificationCodeSchema,
     password: newPasswordSchema,
@@ -30,15 +32,12 @@ export const signupSchema = z
     path: ['confirmPassword'],
   });
 
-  export const institutionSchema = z.object({
-    companyName: z
-      .string()
-      .min(2, 'Organisation name must be at least 2 characters')
-      .max(100, 'Organisation name too long'),
-    slug: z.string(),
-    logo: z.any().optional(),
-    emailDomain: z.string(),
-  });
+export const institutionSchema = z.object({
+  companyName: organizationNameSchema,
+  slug: slugSchema,
+  logo: z.any().optional(),
+  emailDomain: z.string(),
+});
 
 export const resetPasswordSchema = z
   .object({
@@ -59,13 +58,9 @@ export const loginSchema = z.object({
 
 export const teacherSignupSchema = z
   .object({
-    firstName: z.string().min(1, 'Please enter your first name'),
-    lastName: z.string().min(1, 'Please enter your last name'),
-    username: z
-      .string()
-      .min(2, 'Username must be at least 2 characters')
-      .max(20, 'Username must be at most 20 characters')
-      .regex(/^[a-zA-Z0-9]+$/, 'Username can only contain letters and numbers'),
+    firstName: firstNameSchema,
+    lastName: lastNameSchema,
+    username: usernameSchema,
     email: z
       .string()
       .min(1, 'Please enter your email address')

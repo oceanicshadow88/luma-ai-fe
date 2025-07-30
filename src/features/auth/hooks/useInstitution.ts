@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -46,9 +46,21 @@ export const useInstitution = () => {
        mode: 'onBlur',
        defaultValues: {
            companyName: '',
+           slug: '',
            emailDomain: emailDomain || '',
        },
    });
+
+   const companyName = watch('companyName');
+
+   useEffect(() => {
+       if (companyName) {
+           const generatedSlug = generateSlugFromCompanyName(companyName);
+           setValue('slug', generatedSlug);
+       } else {
+           setValue('slug', '');
+       }
+   }, [companyName, setValue]);
 
    const handlePrev = () => {
        navigate('/auth/signup/admin', { 

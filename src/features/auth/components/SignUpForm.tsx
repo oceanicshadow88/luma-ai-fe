@@ -14,6 +14,7 @@ import { UserRole } from '@features/auth/types';
 import { Checkbox } from '@components/forms/Checkbox';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 import { signupService } from '@api/auth/signup';
+import { useEffect } from 'react';
 
 interface SignUpFormProps {
   userRole?: UserRole;
@@ -36,6 +37,7 @@ const SignUpForm = ({
     handleSubmit,
     watch,
     setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -44,10 +46,19 @@ const SignUpForm = ({
   });
 
   const email = watch('email');
+  const verificationCode = watch('verificationCode');
   const { sendCode, countDown, canSend } = useSendCode();
+
+  useEffect(() => {
+    if (verificationCode && errors.verificationCode) {
+      clearErrors('verificationCode');
+    }
+  }, [verificationCode, clearErrors]);
 
   const handleSendCode = async () => {
     if (!email || !canSend) return;
+
+    clearErrors('verificationCode');
 
     const result = await sendCode(email);
 

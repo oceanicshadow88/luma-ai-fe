@@ -11,6 +11,7 @@ import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 import { resetPasswordService } from '@api/auth/resetPassword';
 import { useSendCode } from '@features/auth/hooks/useSendCode';
+import { useEffect } from 'react';
 
 interface ResetPasswordFormProps {
   userType?: UserType;
@@ -33,6 +34,7 @@ export function ResetPasswordForm({
     handleSubmit,
     watch,
     setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
@@ -40,6 +42,13 @@ export function ResetPasswordForm({
   });
 
   const email = watch('email');
+  const verificationCode = watch('verificationCode');
+
+  useEffect(() => {
+    if (verificationCode && errors.verificationCode) {
+      clearErrors('verificationCode');
+    }
+  }, [verificationCode, clearErrors]);
 
   const getLoginPath = () => {
     return userType === UserType.ENTERPRISE ? '/auth/login/enterprise' : '/auth/login/learner';
@@ -47,6 +56,8 @@ export function ResetPasswordForm({
 
   const handleSendCode = async () => {
     if (!email || !canSend) return;
+
+    clearErrors('verificationCode');
 
     const result = await sendCode(email);
 
@@ -62,7 +73,6 @@ export function ResetPasswordForm({
     showToastWithAction('If the email is valid, a verification code will be sent.', {
       duration: 2000,
     });
-
   };
 
   const onSubmit = async (data: ResetPasswordFormData) => {

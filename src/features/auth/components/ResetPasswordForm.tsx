@@ -83,7 +83,7 @@ export function ResetPasswordForm({
       confirmPassword: data.confirmPassword,
     };
 
-    const result = await resetPasswordService.resetPassword(payload);
+    const result = await resetPasswordService.resetPassword(payload, userType);
 
     if (result) { 
       if (result.meta?.field){

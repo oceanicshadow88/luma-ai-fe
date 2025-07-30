@@ -17,6 +17,12 @@ class AuthServiceImpl implements AuthService {
     const response = await apiClient.get('/auth/verify-domain');
     return !(response instanceof ApiError);
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async isActiveUser(): Promise<ApiError | any> {
+    const response = await apiClient.get('/auth/verify-user');
+    return response;
+  }
 }
 
 export const authService = new AuthServiceImpl();

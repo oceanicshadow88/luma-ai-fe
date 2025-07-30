@@ -38,6 +38,17 @@ export default function TeacherSignUpForm() {
   });
 
   useEffect(() => {
+    const checkIfActiveUser = async () => {
+      const result = await authService.isActiveUser();
+      if (result?.data.isActive) {
+        navigate('/auth/login/enterprise');
+        return;
+      }
+    };
+    checkIfActiveUser();
+  }, []);
+
+  useEffect(() => {
     if (hasVerified.current) return;
 
     const verifyToken = async () => {

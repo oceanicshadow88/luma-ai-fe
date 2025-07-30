@@ -3,7 +3,7 @@ import { ResetPasswordInput, ResetPasswordFormData, UserType } from "@features/a
 import { ApiError } from "@custom-types/ApiError";
 
 interface ResetPasswordService {
-  resetPassword(data: ResetPasswordInput, userType?: UserType): Promise<ApiError | void>; 
+  resetPassword(data: ResetPasswordInput, userType?: UserType): Promise<ApiError | void>;
   resetPasswordAsEnterprise(data: ResetPasswordInput): Promise<ApiError | void>;
 }
 
@@ -13,21 +13,17 @@ class ResetPasswordServiceImpl implements ResetPasswordService {
     
     const payload: ResetPasswordFormData = {
       email: data.email,
-      verifyValue: data.verificationCode,  
-      newPassword: data.password,         
+      verifyValue: data.verificationCode,
+      newPassword: data.password,
     };
     
     const response = await apiClient.post(endpoint, payload);
-
+    
     if (response instanceof ApiError) {
       return response;
     }
   }
-
-  async resetPasswordAsLearner(data: ResetPasswordInput): Promise<ApiError | void> {
-    return this.resetPassword(data, UserType.LEARNER);
-  }
-
+  
   async resetPasswordAsEnterprise(data: ResetPasswordInput): Promise<ApiError | void> {
     return this.resetPassword(data, UserType.ENTERPRISE);
   }

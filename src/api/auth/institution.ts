@@ -6,6 +6,7 @@ export class InstitutionService {
     const formData = new FormData();
     
     formData.append('companyName', data.companyName);
+    formData.append('slug', data.slug);
     
     if (data.logo) {
       formData.append('logo', data.logo);

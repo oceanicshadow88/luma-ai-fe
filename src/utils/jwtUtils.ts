@@ -1,6 +1,6 @@
 import { jwtDecode } from 'jwt-decode';
 
-type TokenPayload = never;
+export type TokenPayload = never;
 
 export function decodeJwt(token: string) {
   try {

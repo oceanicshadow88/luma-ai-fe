@@ -83,7 +83,7 @@ export default function TeacherSignUpForm() {
     if (result) {
       if (result.meta?.field) {
         setError(result.meta.field as keyof z.infer<typeof teacherSignupSchema>, {
-          message: result.message
+          message: result.message,
         });
       }
       return;
@@ -111,10 +111,12 @@ export default function TeacherSignUpForm() {
     );
   }
 
-  if (isTokenInvalid || hasExpiry(decodePayload?.exp)) {
+  if (isTokenInvalid || hasExpiry(decodePayload?.exp) || decodePayload.role === 'admin') {
     return (
       <div className="text-center py-8">
-        <div className="text-red-600">Invalid or expired invitation link. Please check your email or contact admin.</div>
+        <div className="text-red-600">
+          Invalid or expired invitation link. Please check your email or contact admin.
+        </div>
       </div>
     );
   }

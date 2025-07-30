@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState} from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -46,6 +46,7 @@ export const useInstitution = () => {
        mode: 'onBlur',
        defaultValues: {
            companyName: '',
+           slug: '',
            emailDomain: emailDomain || '',
        },
    });

@@ -6,7 +6,7 @@ import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
-import { ResetPasswordFormData, UserType } from '@features/auth/types';
+import { ResetPasswordInput, UserType } from '@features/auth/types';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 import { resetPasswordService } from '@api/auth/resetPassword';
@@ -36,7 +36,7 @@ export function ResetPasswordForm({
     setError,
     clearErrors,
     formState: { errors, isSubmitting },
-  } = useForm<ResetPasswordFormData>({
+  } = useForm<ResetPasswordInput>({
     resolver: zodResolver(resetPasswordSchema),
     mode: 'onBlur',
   });
@@ -63,7 +63,7 @@ export function ResetPasswordForm({
 
     if (result) { 
       if (result.meta?.field){
-        setError(result.meta?.field as keyof ResetPasswordFormData, {
+        setError(result.meta?.field as keyof ResetPasswordInput, {
           message: result.message
         });
       }
@@ -75,7 +75,7 @@ export function ResetPasswordForm({
     });
   };
 
-  const onSubmit = async (data: ResetPasswordFormData) => {
+  const onSubmit = async (data: ResetPasswordInput) => {
     const payload = {
       email: data.email,
       verificationCode: data.verificationCode,
@@ -87,7 +87,7 @@ export function ResetPasswordForm({
 
     if (result) { 
       if (result.meta?.field){
-        setError(result.meta?.field as keyof ResetPasswordFormData, {
+        setError(result.meta?.field as keyof ResetPasswordInput, {
           message: result.message
         });
       }

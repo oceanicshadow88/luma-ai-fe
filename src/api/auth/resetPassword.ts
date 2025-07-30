@@ -1,22 +1,32 @@
-import { apiClient } from '@services/api/apiClient';
-import { ResetPasswordFormData } from '@features/auth/types';
-import { ApiError } from '@custom-types/ApiError';
+import { apiClient } from "@services/api/apiClient";
+import { ResetPasswordInput, ResetPasswordFormData, UserType } from "@features/auth/types";
+import { ApiError } from "@custom-types/ApiError";
 
-class ResetPasswordService {
-  async sendVerificationCode(email: string): Promise<ApiError | void> {
-    const response = await apiClient.post('/auth/request-verification-code', { email });
-    if (response instanceof ApiError) return response;
-  }
+interface ResetPasswordService {
+  resetPassword(data: ResetPasswordInput, userType?: UserType): Promise<ApiError | void>;
+  resetPasswordAsEnterprise(data: ResetPasswordInput): Promise<ApiError | void>;
+}
 
-  async resetPassword(data: ResetPasswordFormData): Promise<ApiError | void> {
-    const response = await apiClient.post('/auth/reset-password', {
+class ResetPasswordServiceImpl implements ResetPasswordService {
+  async resetPassword(data: ResetPasswordInput, userType: UserType = UserType.LEARNER): Promise<ApiError | void> {
+    const endpoint = `/auth/reset-password/${userType}`;
+    
+    const payload: ResetPasswordFormData = {
       email: data.email,
       verifyValue: data.verificationCode,
       newPassword: data.password,
-    });
-
-    if (response instanceof ApiError) return response;
+    };
+    
+    const response = await apiClient.post(endpoint, payload);
+    
+    if (response instanceof ApiError) {
+      return response;
+    }
+  }
+  
+  async resetPasswordAsEnterprise(data: ResetPasswordInput): Promise<ApiError | void> {
+    return this.resetPassword(data, UserType.ENTERPRISE);
   }
 }
 
-export const resetPasswordService = new ResetPasswordService();
+export const resetPasswordService = new ResetPasswordServiceImpl();

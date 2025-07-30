@@ -41,6 +41,7 @@ const SignUpForm = ({
     watch,
     setError,
     setValue,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -58,10 +59,19 @@ const SignUpForm = ({
   }, [token]);
 
   const email = watch('email');
+  const verificationCode = watch('verificationCode');
   const { sendCode, countDown, canSend } = useSendCode();
+
+  useEffect(() => {
+    if (verificationCode && errors.verificationCode) {
+      clearErrors('verificationCode');
+    }
+  }, [verificationCode, clearErrors]);
 
   const handleSendCode = async () => {
     if (!email || !canSend) return;
+
+    clearErrors('verificationCode');
 
     const result = await sendCode(email);
 

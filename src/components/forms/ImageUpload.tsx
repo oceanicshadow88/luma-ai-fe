@@ -69,6 +69,15 @@ export const ImageUpload = forwardRef<HTMLInputElement, ImageUploadProps>(
         URL.revokeObjectURL(preview);
         setPreview(null);
       }
+      
+      if (ref && 'current' in ref && ref.current) {
+        ref.current.value = '';
+      }
+      
+      const event = {
+        target: { files: null }
+      } as React.ChangeEvent<HTMLInputElement>;
+      onChange(event);
     };
 
     return (

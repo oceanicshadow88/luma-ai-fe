@@ -6,11 +6,12 @@ import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
-import { ResetPasswordFormData, UserType } from '@features/auth/types';
+import { ResetPasswordInput, UserType } from '@features/auth/types';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 import { resetPasswordService } from '@api/auth/resetPassword';
 import { useSendCode } from '@features/auth/hooks/useSendCode';
+import { useEffect } from 'react';
 
 interface ResetPasswordFormProps {
   userType?: UserType;
@@ -33,13 +34,21 @@ export function ResetPasswordForm({
     handleSubmit,
     watch,
     setError,
+    clearErrors,
     formState: { errors, isSubmitting },
-  } = useForm<ResetPasswordFormData>({
+  } = useForm<ResetPasswordInput>({
     resolver: zodResolver(resetPasswordSchema),
     mode: 'onBlur',
   });
 
   const email = watch('email');
+  const verificationCode = watch('verificationCode');
+
+  useEffect(() => {
+    if (verificationCode && errors.verificationCode) {
+      clearErrors('verificationCode');
+    }
+  }, [verificationCode, clearErrors]);
 
   const getLoginPath = () => {
     return userType === UserType.ENTERPRISE ? '/auth/login/enterprise' : '/auth/login/learner';
@@ -48,11 +57,13 @@ export function ResetPasswordForm({
   const handleSendCode = async () => {
     if (!email || !canSend) return;
 
+    clearErrors('verificationCode');
+
     const result = await sendCode(email);
 
     if (result) { 
       if (result.meta?.field){
-        setError(result.meta?.field as keyof ResetPasswordFormData, {
+        setError(result.meta?.field as keyof ResetPasswordInput, {
           message: result.message
         });
       }
@@ -62,10 +73,9 @@ export function ResetPasswordForm({
     showToastWithAction('If the email is valid, a verification code will be sent.', {
       duration: 2000,
     });
-
   };
 
-  const onSubmit = async (data: ResetPasswordFormData) => {
+  const onSubmit = async (data: ResetPasswordInput) => {
     const payload = {
       email: data.email,
       verificationCode: data.verificationCode,
@@ -73,11 +83,11 @@ export function ResetPasswordForm({
       confirmPassword: data.confirmPassword,
     };
 
-    const result = await resetPasswordService.resetPassword(payload);
+    const result = await resetPasswordService.resetPassword(payload, userType);
 
     if (result) { 
       if (result.meta?.field){
-        setError(result.meta?.field as keyof ResetPasswordFormData, {
+        setError(result.meta?.field as keyof ResetPasswordInput, {
           message: result.message
         });
       }

@@ -29,6 +29,7 @@ const AdminSignUpPage = () => {
         },
         duration: 2000,
       });
+      return;
     }
 
     navigate('/auth/signup/institution', {

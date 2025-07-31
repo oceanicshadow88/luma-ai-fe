@@ -51,7 +51,7 @@ const SignUpForm = ({
 
   useEffect(() => {
     const checkIfActiveUser = async () => {
-      if (userRole === UserRole.ADMIN) {
+      if (!token) {
         return;
       }
       const result = await authService.isActiveUser(token ?? '');

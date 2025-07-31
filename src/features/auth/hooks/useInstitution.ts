@@ -7,15 +7,14 @@ import { institutionSchema } from '@features/auth/schemas';
 import { institutionService } from '@api/auth/institution';
 import { filterSignupForm } from '@utils/filterSignupForm';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
-import { ApiError } from '@custom-types/ApiError';
 
 function generateSlugFromCompanyName(companyName: string): string {
    return companyName
        .toLowerCase()
-       .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-       .replace(/\s+/g, '-') // Replace spaces with hyphens
-       .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
-       .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+       .replace(/[^a-z0-9\s-]/g, '')
+       .replace(/\s+/g, '-')
+       .replace(/-+/g, '-')
+       .replace(/^-|-$/g, '');
 }
 
 export const useInstitution = () => {
@@ -52,24 +51,9 @@ export const useInstitution = () => {
    });
 
    const handlePrev = () => {
-       navigate('/auth/signup/admin', { 
-           state: { signupForm: filterSignupForm(location.state?.signupForm || {}) } 
-       });
-   };
-
-   const validateLogo = (file: File): string | null => {
-       const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml'];
-       const maxSize = 5 * 1024 * 1024;
-
-       if (!allowedTypes.includes(file.type)) {
-           return 'Only JPG, PNG, SVG files are allowed';
-       }
-
-       if (file.size > maxSize) {
-           return 'File must be smaller than 5MB';
-       }
-
-       return null;
+       navigate('/auth/signup/admin', {
+            state: { signupForm: filterSignupForm(location.state?.signupForm || {}) }
+        });
    };
 
    const handleLogoChange = (file: File | null, error?: string) => {
@@ -77,11 +61,18 @@ export const useInstitution = () => {
        setLogoError(error || '');
    };
 
-   const onSubmit = async (data: FormData) => {
+   const onSubmit = handleSubmit(async (data: FormData) => {
        if (logoFile) {
-           const logoValidationError = validateLogo(logoFile);
-           if (logoValidationError) {
-               setLogoError(logoValidationError);
+           const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml'];
+           const maxSize = 5 * 1024 * 1024;
+
+           if (!allowedTypes.includes(logoFile.type)) {
+               setLogoError('Only JPG, PNG, SVG files are allowed');
+               return;
+           }
+
+           if (logoFile.size > maxSize) {
+               setLogoError('File must be smaller than 5MB');
                return;
            }
        }
@@ -94,8 +85,13 @@ export const useInstitution = () => {
        };
 
        const result = await institutionService.create(formData);
-       
-       if (result instanceof ApiError) {
+               
+       if (result) {
+           if (result.meta?.field === 'slug') {
+               setError('slug', {
+                   message: result.message,
+               });
+           }
            setIsCreating(false);
            return;
        }
@@ -114,25 +110,23 @@ export const useInstitution = () => {
        });
 
        setIsCreating(false);
-   };
+   });
 
    const isLogoInvalid = !!logoError;
 
    return {
        email,
        register,
-       handleSubmit: handleSubmit(onSubmit),
-       setError,
-       watch,
-       setValue,
+       handleSubmit: onSubmit, 
        errors,
        isSubmitting,
        isCreating,
-       logoFile,
        logoError,
        isLogoInvalid,
        handleLogoChange,
        handlePrev,
+       watch,
+       setValue,
        generateSlugFromCompanyName,
    };
 };

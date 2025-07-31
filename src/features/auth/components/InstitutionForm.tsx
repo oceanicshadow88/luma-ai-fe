@@ -91,27 +91,18 @@ const InstitutionForm = () => {
           />
         </div>
 
-        <div className="flex flex-col">
-          <label className="text-sm text-gray-600 text-left mb-1">
-            Organisation Slug
-          </label>
-          <div className="flex items-center">
-            <input
-              {...register('slug')}
-              type="text"
-              placeholder="e.g. ivy-college"
-              className={`rounded-3xl border h-11 px-4 w-full focus:outline-none focus:border-blue-600 focus:ring-0 ${
-                errors.slug ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            <span className="ml-2 text-gray-500 whitespace-nowrap">.lumaai.com</span>
-          </div>
-          {errors.slug && (
-            <p className="text-left mt-1 text-sm text-red-600">
-              {errors.slug.message}
-            </p>
+        <Input
+          id="slug"
+          label="Organisation Slug"
+          placeholder="e.g. ivy-college"
+          {...register('slug')}
+          error={errors.slug?.message}
+          addonElement={() => (
+            <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 whitespace-nowrap pointer-events-none">
+              .lumaai.com
+            </span>
           )}
-        </div>
+        />
 
         <div className="flex gap-2 md:gap-4 mt-8">
           <Button

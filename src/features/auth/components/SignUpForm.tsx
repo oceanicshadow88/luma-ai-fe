@@ -51,6 +51,9 @@ const SignUpForm = ({
 
   useEffect(() => {
     if (!token) {
+      return;
+    }
+    if (!token && userRole === UserRole.LEARNER) {
       navigate('/auth/login/learner');
       return;
     }

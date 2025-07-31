@@ -22,7 +22,7 @@ interface ResetPasswordFormProps {
 export function ResetPasswordForm({
   userType = UserType.LEARNER,
   onSuccess,
-  theme = 'default'
+  theme = 'default',
 }: ResetPasswordFormProps) {
   const navigate = useNavigate();
   const themeStyles = useFormTheme(theme);
@@ -61,10 +61,10 @@ export function ResetPasswordForm({
 
     const result = await sendCode(email);
 
-    if (result) { 
-      if (result.meta?.field){
+    if (result) {
+      if (result.meta?.field) {
         setError(result.meta?.field as keyof ResetPasswordInput, {
-          message: result.message
+          message: result.message,
         });
       }
       return;
@@ -83,17 +83,17 @@ export function ResetPasswordForm({
       confirmPassword: data.confirmPassword,
     };
 
-    const result = await resetPasswordService.resetPassword(payload, userType);
+    const result = await resetPasswordService.resetPassword(payload);
 
-    if (result) { 
-      if (result.meta?.field){
+    if (result) {
+      if (result.meta?.field) {
         setError(result.meta?.field as keyof ResetPasswordInput, {
-          message: result.message
+          message: result.message,
         });
       }
       return;
     }
-    
+
     const timeoutId = setTimeout(() => {
       navigate(getLoginPath());
     }, 3000);
@@ -124,7 +124,7 @@ export function ResetPasswordForm({
           inputClassName={themeStyles.inputClassName}
           labelClassName={themeStyles.labelClassName}
         />
-        
+
         <VerificationCodeInput
           id="verificationCode"
           label="Verification Code"
@@ -138,7 +138,7 @@ export function ResetPasswordForm({
           labelClassName={themeStyles.labelClassName}
           buttonClassName={themeStyles.verificationButtonClass}
         />
-        
+
         <PasswordInput
           id="password"
           label="New Password"
@@ -148,7 +148,7 @@ export function ResetPasswordForm({
           inputClassName={themeStyles.passwordInputClassName}
           labelClassName={themeStyles.labelClassName}
         />
-        
+
         <PasswordInput
           id="confirmPassword"
           label="Confirm New Password"
@@ -159,14 +159,14 @@ export function ResetPasswordForm({
           labelClassName={themeStyles.labelClassName}
         />
       </div>
-      
+
       <div>
-        <Button 
-          type="submit" 
+        <Button
+          type="submit"
           variant="primary"
           className={`rounded-3xl ${themeStyles.buttonClass}`}
-          fullWidth 
-          disabled={isSubmitting} 
+          fullWidth
+          disabled={isSubmitting}
           isLoading={isSubmitting}
         >
           Reset Password

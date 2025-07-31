@@ -8,8 +8,8 @@ interface ResetPasswordService {
 }
 
 class ResetPasswordServiceImpl implements ResetPasswordService {
-  async resetPassword(data: ResetPasswordInput, userType: UserType = UserType.LEARNER): Promise<ApiError | void> {
-    const endpoint = `/auth/reset-password/${userType}`;
+  async resetPassword(data: ResetPasswordInput): Promise<ApiError | void> {
+    const endpoint = `/auth/reset-password`;
     
     const payload: ResetPasswordFormData = {
       email: data.email,
@@ -25,7 +25,7 @@ class ResetPasswordServiceImpl implements ResetPasswordService {
   }
   
   async resetPasswordAsEnterprise(data: ResetPasswordInput): Promise<ApiError | void> {
-    return this.resetPassword(data, UserType.ENTERPRISE);
+    return this.resetPassword(data);
   }
 }
 

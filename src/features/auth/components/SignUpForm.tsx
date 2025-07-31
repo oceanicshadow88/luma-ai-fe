@@ -133,7 +133,11 @@ const SignUpForm = ({
       onSuccess?.();
       return;
     }
-
+    if (userRole === UserRole.LEARNER) {
+      navigate('/dashboard');
+      onSuccess?.();
+      return;
+    }
     navigate('/auth/signup/institution', {
       state: { signupForm: filterSignupForm(data) },
     });

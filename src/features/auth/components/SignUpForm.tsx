@@ -56,7 +56,7 @@ const SignUpForm = ({
       }
       const result = await authService.isActiveUser(token ?? '');
       if (result?.data.isActive) {
-        navigate('/auth/login/learner');
+        navigate(userRole === UserRole.LEARNER ? '/auth/login/learner' : '/auth/login/enterprise');
         return;
       }
     };

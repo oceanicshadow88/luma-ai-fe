@@ -19,9 +19,9 @@ export default function TeacherSignUpForm() {
   const [isTokenInvalid, setIsTokenInvalid] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const hasVerified = useRef(false);
-  const token = searchParams.get('token') ?? '';
+  const token = searchParams.get('token') ?? null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const decodePayload: any = decodeJwt(token);
+  const decodePayload: any = decodeJwt(token ?? '');
 
   const navigate = useNavigate();
   const {
@@ -120,6 +120,11 @@ export default function TeacherSignUpForm() {
         <div className="text-gray-600">Loading...</div>
       </div>
     );
+  }
+
+  if (!token) {
+    navigate('/auth/login/enterprise');
+    return;
   }
 
   if (isTokenInvalid || hasExpiry(decodePayload?.exp) || decodePayload.role === 'admin') {

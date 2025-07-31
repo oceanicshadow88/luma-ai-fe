@@ -51,6 +51,7 @@ const SignUpForm = ({
 
   useEffect(() => {
     if (!token) {
+      navigate('/auth/login/learner');
       return;
     }
     const decodePayload: any = decodeJwt(token);

@@ -39,7 +39,7 @@ export default function TeacherSignUpForm() {
 
   useEffect(() => {
     const checkIfActiveUser = async () => {
-      const result = await authService.isActiveUser();
+      const result = await authService.isActiveUser(token ?? '');
       if (result?.data.isActive) {
         navigate('/auth/login/enterprise');
         return;

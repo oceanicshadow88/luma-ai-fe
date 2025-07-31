@@ -2,11 +2,13 @@ import logo from '@assets/logo.svg';
 import leftLogo from '@assets/decorative_graphic.png';
 import SignUpForm from '@features/auth/components/SignUpForm';
 import { UserRole } from '@features/auth/types';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 
 const LearnerSignUpPage = () => {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const token = searchParams.get('token') ?? '';
 
   const getFormTitle = () => {
     return 'Sign up for Luma AI Learner Version';
@@ -46,7 +48,12 @@ const LearnerSignUpPage = () => {
 
         <section className="w-full max-w-sm sm:max-w-md lg:max-w-md">
           <div className="w-full">
-            <SignUpForm userRole={UserRole.LEARNER} theme="learner" onSuccess={onSuccess} />
+            <SignUpForm
+              userRole={UserRole.LEARNER}
+              token={token}
+              theme="learner"
+              onSuccess={onSuccess}
+            />
           </div>
         </section>
       </main>

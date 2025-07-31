@@ -15,6 +15,7 @@ import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 import { signupService } from '@api/auth/signup';
 import { useEffect } from 'react';
 import { decodeJwt } from '@utils/jwtUtils';
+import { authService } from '@api/auth/auth';
 
 interface SignUpFormProps {
   userRole?: UserRole;
@@ -47,6 +48,20 @@ const SignUpForm = ({
     mode: 'onBlur',
     defaultValues: defaultFormValues,
   });
+
+  useEffect(() => {
+    const checkIfActiveUser = async () => {
+      if (userRole === UserRole.ADMIN) {
+        return;
+      }
+      const result = await authService.isActiveUser(token ?? '');
+      if (result?.data.isActive) {
+        navigate('/auth/login/learner');
+        return;
+      }
+    };
+    checkIfActiveUser();
+  }, []);
 
   useEffect(() => {
     if (!token) {

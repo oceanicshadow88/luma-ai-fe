@@ -1,5 +1,6 @@
 import { apiClient } from '@services/api/apiClient';
 import { ApiError } from '@custom-types/ApiError';
+import { apiClientNoAuth } from '@services/api/apiClientNoAuth';
 
 interface AuthService {
   authToken(token: string): Promise<ApiError | void>;
@@ -19,8 +20,12 @@ class AuthServiceImpl implements AuthService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async isActiveUser(): Promise<ApiError | any> {
-    const response = await apiClient.get('/auth/verify-user');
+  async isActiveUser(token: string): Promise<ApiError | any> {
+    const response = await apiClientNoAuth.get('/auth/verify-user', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response;
   }
 }

@@ -9,7 +9,6 @@ import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
-import { filterSignupForm } from '@utils/filterSignupForm';
 import { UserRole } from '@features/auth/types';
 import { Checkbox } from '@components/forms/Checkbox';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
@@ -19,7 +18,7 @@ import { decodeJwt } from '@utils/jwtUtils';
 
 interface SignUpFormProps {
   userRole?: UserRole;
-  onSuccess?: () => void;
+  onSuccess?: (data?: any) => void;
   theme?: ThemeType;
   token?: string;
 }
@@ -117,32 +116,7 @@ const SignUpForm = ({
       return;
     }
 
-    if (token) {
-      const timeoutId = setTimeout(() => {
-        navigate('/dashboard');
-      }, 3000);
-
-      showToastWithAction('Successfully signed up! Redirecting...', {
-        actionText: 'Go Now',
-        onAction: () => {
-          clearTimeout(timeoutId);
-          navigate('/dashboard');
-        },
-        duration: 2000,
-      });
-      onSuccess?.();
-      return;
-    }
-    if (userRole === UserRole.LEARNER) {
-      navigate('/dashboard');
-      onSuccess?.();
-      return;
-    }
-    navigate('/auth/signup/institution', {
-      state: { signupForm: filterSignupForm(data) },
-    });
-
-    onSuccess?.();
+    onSuccess?.(data);
     return;
   };
 

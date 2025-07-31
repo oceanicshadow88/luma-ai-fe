@@ -2,10 +2,29 @@ import logo from '@assets/logo.svg';
 import leftLogo from '@assets/decorative_graphic.png';
 import SignUpForm from '@features/auth/components/SignUpForm';
 import { UserRole } from '@features/auth/types';
+import { useNavigate } from 'react-router-dom';
+import { showToastWithAction } from '@components/toast/ToastWithAction';
 
 const LearnerSignUpPage = () => {
+  const navigate = useNavigate();
+
   const getFormTitle = () => {
     return 'Sign up for Luma AI Learner Version';
+  };
+
+  const onSuccess = () => {
+    const timeoutId = setTimeout(() => {
+      navigate('/dashboard');
+    }, 3000);
+
+    showToastWithAction('Successfully signed up! Redirecting...', {
+      actionText: 'Go Now',
+      onAction: () => {
+        clearTimeout(timeoutId);
+        navigate('/dashboard');
+      },
+      duration: 2000,
+    });
   };
 
   return (
@@ -27,7 +46,7 @@ const LearnerSignUpPage = () => {
 
         <section className="w-full max-w-sm sm:max-w-md lg:max-w-md">
           <div className="w-full">
-            <SignUpForm userRole={UserRole.LEARNER} theme="learner" />
+            <SignUpForm userRole={UserRole.LEARNER} theme="learner" onSuccess={onSuccess} />
           </div>
         </section>
       </main>

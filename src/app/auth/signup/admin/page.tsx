@@ -2,14 +2,38 @@ import logo from '@assets/logo.svg';
 import rightLogo from '@assets/decorative_graphic.png';
 import SignUpForm from '@features/auth/components/SignUpForm';
 import { UserRole } from '@features/auth/types';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { filterSignupForm } from '@utils/filterSignupForm';
+import { showToastWithAction } from '@components/toast/ToastWithAction';
 
 const AdminSignUpPage = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const token = searchParams.get('token') ?? '';
 
   const getFormTitle = () => {
     return 'Sign up for Luma AI Enterprise Version';
+  };
+
+  const onSuccess = (data: any) => {
+    if (token) {
+      const timeoutId = setTimeout(() => {
+        navigate('/dashboard');
+      }, 3000);
+
+      showToastWithAction('Successfully signed up! Redirecting...', {
+        actionText: 'Go Now',
+        onAction: () => {
+          clearTimeout(timeoutId);
+          navigate('/dashboard');
+        },
+        duration: 2000,
+      });
+    }
+
+    navigate('/auth/signup/institution', {
+      state: { signupForm: filterSignupForm(data) },
+    });
   };
 
   return (
@@ -27,7 +51,7 @@ const AdminSignUpPage = () => {
 
         <section className="w-full max-w-sm sm:max-w-md lg:max-w-md">
           <div className="w-full">
-            <SignUpForm userRole={UserRole.ADMIN} token={token}/>
+            <SignUpForm userRole={UserRole.ADMIN} token={token} onSuccess={onSuccess} />
           </div>
         </section>
       </main>

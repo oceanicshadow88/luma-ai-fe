@@ -5,11 +5,14 @@ import { UserRole } from '@features/auth/types';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { filterSignupForm } from '@utils/filterSignupForm';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
+import { decodeJwt } from '../../../../utils/jwtUtils';
+import { hasExpiry } from '../../../../utils/dataUtils';
 
 const AdminSignUpPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get('token') ?? '';
+  const decodePayload: any = decodeJwt(token ?? '');
 
   const getFormTitle = () => {
     return 'Sign up for Luma AI Enterprise Version';
@@ -36,6 +39,17 @@ const AdminSignUpPage = () => {
       state: { signupForm: filterSignupForm(data) },
     });
   };
+
+  
+  if (!decodePayload || hasExpiry(decodePayload?.exp)) {
+      return (
+        <div className="text-center py-8">
+          <div className="text-red-600">
+            Invalid or expired invitation link. Please check your email or contact admin.
+          </div>
+        </div>
+      );
+    }
 
   return (
     <div className="flex flex-col lg:flex-row w-full min-h-screen">

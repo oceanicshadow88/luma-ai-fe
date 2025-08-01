@@ -11,13 +11,11 @@ interface LoginResult {
 
 interface LoginService {
   login(data: LoginFormData, userType?: UserType): Promise<ApiError | void>;
-  loginAsLearner(data: LoginFormData): Promise<ApiError | void>;
-  loginAsEnterprise(data: LoginFormData): Promise<ApiError | void>;
 }
 
 class LoginServiceImpl implements LoginService {
-  async login(data: LoginFormData, userType: UserType = UserType.LEARNER): Promise<ApiError | void> {
-    const endpoint = `/auth/login/${userType}`;
+  async login(data: LoginFormData): Promise<ApiError | void> {
+    const endpoint = `/auth/login`;
     const response = await apiClient.post(endpoint, data);
 
     if (response instanceof ApiError) {
@@ -33,14 +31,6 @@ class LoginServiceImpl implements LoginService {
     if (result.accessToken) {
       localStorage.setItem('accessToken', result.accessToken);
     }
-  }
-
-  async loginAsLearner(data: LoginFormData): Promise<ApiError | void> {
-    return this.login(data, UserType.LEARNER);
-  }
-
-  async loginAsEnterprise(data: LoginFormData): Promise<ApiError | void> {
-    return this.login(data, UserType.ENTERPRISE);
   }
 }
 

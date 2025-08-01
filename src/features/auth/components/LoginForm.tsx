@@ -19,11 +19,11 @@ interface LoginFormProps {
 export function LoginForm({
   userType = UserType.LEARNER,
   onSuccess,
-  theme = 'default'
+  theme = 'default',
 }: LoginFormProps) {
   const navigate = useNavigate();
   const themeStyles = useFormTheme(theme);
-  
+
   const {
     register,
     handleSubmit,
@@ -34,8 +34,7 @@ export function LoginForm({
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    
-    const result = await loginService.login(data, userType);
+    const result = await loginService.login(data);
 
     if (result) return;
 
@@ -51,9 +50,9 @@ export function LoginForm({
       },
       duration: 2000,
     });
-    
+
     onSuccess?.();
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-8">
@@ -83,12 +82,11 @@ export function LoginForm({
         variant="primary"
         className={`rounded-3xl ${themeStyles.buttonClass}`}
         fullWidth
-        disabled={isSubmitting }
-        isLoading={isSubmitting }
+        disabled={isSubmitting}
+        isLoading={isSubmitting}
       >
         Log In
       </Button>
     </form>
   );
 }
-

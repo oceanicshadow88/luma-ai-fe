@@ -2,8 +2,9 @@ import { Link } from "react-router-dom";
 import logo from '@assets/logo.svg';
 import background from '@assets/decorative_graphic.png';
 import { LoginForm } from "@features/auth/components/LoginForm";
+import { UserType } from '@features/auth/types'; 
 
-const LoginPage = () => {
+const EnterpriseLoginPage = () => {
     return (
         <div className="flex flex-col lg:flex-row w-full min-h-screen">
             <main className="w-full lg:w-3/5 sm: mt-10 sm:p-6 md:p-8 lg:pl-30 flex flex-col justify-center items-start bg-white">
@@ -19,13 +20,13 @@ const LoginPage = () => {
 
                 <section className="w-full max-w-sm sm:max-w-md lg:max-w-md">
                     <div className="w-full">
-                        <LoginForm />
+                        <LoginForm userType={UserType.ENTERPRISE} />
                     </div>
 
                     <div className="mt-4 sm:mt-6 text-sm text-center">
                         <p className="text-gray-600 inline">Forgot Password?</p>
-                        <Link 
-                            to="/auth/reset-password" 
+                        <Link
+                            to="/auth/reset-password/enterprise"
                             className="ml-1 text-blue-600 font-medium hover:text-blue-900 hover:underline active:text-blue-700 transition-colors"
                         >
                             Reset Your Password
@@ -45,4 +46,4 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default EnterpriseLoginPage;

@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 import { ResetPasswordForm } from '@features/auth/components/ResetPasswordForm';
+import { UserType } from '@features/auth/types';
 import logo from '@assets/logo.svg';
 
-const ResetPasswordFormPage = () => {
+const LearnerResetPasswordPage = () => {
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <img src={logo} alt="Luma AI Logo" className="absolute left-[3.47vw] top-[4.44vh] w-24 sm:w-32" />
@@ -14,10 +15,10 @@ const ResetPasswordFormPage = () => {
       </header>
 
       <main className="w-full max-w-md mt-6">
-        <ResetPasswordForm />
+        <ResetPasswordForm userType={UserType.LEARNER} theme="learner"/>
         <Link
-          to="/auth/login"
-          className="block pt-6 text-center text-blue-600 hover:text-blue-900 hover:underline"
+          to="/auth/login/learner"
+          className="block pt-6 text-center text-yellow-500 hover:text-yellow-600 hover:underline"
           aria-label="Back to login page"
         >
           Back to Login
@@ -27,4 +28,4 @@ const ResetPasswordFormPage = () => {
   );
 };
 
-export default ResetPasswordFormPage;
+export default LearnerResetPasswordPage;

@@ -1,17 +1,28 @@
 import { apiClient } from '@services/api/apiClient';
-import { InstitutionPayload } from '@features/auth/types';
-
+import { InstitutionFormData } from '@features/auth/types';
+import { ApiError } from '@custom-types/ApiError';
 export class InstitutionService {
-  async create(data: InstitutionPayload): Promise<void> {
+  async create(data: InstitutionFormData): Promise<ApiError | void> {
     const formData = new FormData();
-    formData.append('companyName', data.name);
+    
+    formData.append('companyName', data.companyName);
     formData.append('slug', data.slug);
-    formData.append('emailDomain', data.emailDomain);
+    
     if (data.logo) {
       formData.append('logo', data.logo);
     }
-
-    await apiClient.post('/company/register', formData);
+    
+    const response = await apiClient.post(
+      'auth/signup/institution',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    
+    if (response instanceof ApiError) return response;
   }
 }
 

@@ -1,48 +1,59 @@
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema } from '../schemas';
-import { LoginFormData } from '../types';
-import { useLogin } from '../hooks/useLogin';
+import { loginSchema } from '@features/auth/schemas';
+import { LoginFormData, UserType } from '@features/auth/types';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
-import { useNavigate } from 'react-router-dom';
-import { handleAdvancedFormError } from '@utils/errorHandler';
-import { LOGIN_ERROR_MESSAGE_MAP } from '@custom-types/ApiError';
-import { toast } from 'react-hot-toast';
-import { ApiError } from '@custom-types/ApiError';
+import { showToastWithAction } from '@components/toast/ToastWithAction';
+import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
+import { loginService } from '@api/auth/login';
 
-export function LoginForm() {
+interface LoginFormProps {
+  userType?: UserType;
+  onSuccess?: () => void;
+  theme?: ThemeType;
+}
+
+export function LoginForm({
+  userType = UserType.LEARNER,
+  onSuccess,
+  theme = 'default'
+}: LoginFormProps) {
   const navigate = useNavigate();
+  const themeStyles = useFormTheme(theme);
+  
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: 'onBlur',
   });
 
-  const { login, isLoggingIn } = useLogin();
-
   const onSubmit = async (data: LoginFormData) => {
-    try {
-      await login(data);
-      toast.success('Login successful!');
-      setTimeout(() => {
+    
+    const result = await loginService.login(data, userType);
+
+    if (result) return;
+
+    const timeoutId = setTimeout(() => {
+      navigate('/dashboard');
+    }, 3000);
+
+    showToastWithAction('Successfully logged in! Redirecting...', {
+      actionText: 'Go Now',
+      onAction: () => {
+        clearTimeout(timeoutId);
         navigate('/dashboard');
-      }, 3000);
-    } catch (error) {
-      handleAdvancedFormError(
-        error,
-        setError,
-        LOGIN_ERROR_MESSAGE_MAP,
-        'toast',
-        'Login failed. Please check your email and password.'
-      );
-    }
-  };
+      },
+      duration: 2000,
+    });
+    
+    onSuccess?.();
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-8">
@@ -53,6 +64,8 @@ export function LoginForm() {
         placeholder="e.g. your@email.com"
         {...register('email')}
         error={errors.email?.message}
+        inputClassName={themeStyles.inputClassName}
+        labelClassName={themeStyles.labelClassName}
       />
 
       <PasswordInput
@@ -61,18 +74,21 @@ export function LoginForm() {
         placeholder="Your password"
         {...register('password')}
         error={errors.password?.message}
+        inputClassName={themeStyles.passwordInputClassName}
+        labelClassName={themeStyles.labelClassName}
       />
 
       <Button
         type="submit"
         variant="primary"
-        className="rounded-3xl"
+        className={`rounded-3xl ${themeStyles.buttonClass}`}
         fullWidth
-        disabled={isSubmitting || isLoggingIn}
-        isLoading={isSubmitting || isLoggingIn}
+        disabled={isSubmitting }
+        isLoading={isSubmitting }
       >
         Log In
       </Button>
     </form>
   );
 }
+

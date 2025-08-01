@@ -1,16 +1,13 @@
-
 export interface ResetPasswordFormData {
+  email: string;
+  verifyValue: string;  
+  newPassword: string;  
+}
+export interface ResetPasswordInput {
   email: string;
   verificationCode: string;
   password: string;
   confirmPassword: string;
-}
-
-export interface VerificationCodeResponse {
-  success: true;
-  message: string;
-  code?: string;
-  expiresAt: string;
 }
 
 export interface VerificationCodeRateLimitError {
@@ -19,46 +16,52 @@ export interface VerificationCodeRateLimitError {
   cooldownSeconds: number;
 }
 
-export interface ResetPasswordResponse {
-  success: true;
-  message: string;
-}
-
 export interface ApiErrorResponse {
   success: false;
   message: string;
-  code?: string;
+  verificationCode?: string;
 }
 
-export interface LoginFormData  {
+export interface LoginFormData {
   email: string;
   password: string;
-};
+}
 
-export type SignUpInput = {
+export interface SignUpInput {
   firstName: string;
   lastName: string;
   username: string;
   email: string;
-  code: string;
+  verificationCode: string;
   password: string;
   confirmPassword: string;
-  agreeTerms: boolean;
-};
+  termsAccepted: boolean;
+}
 
-export type InstitutionPayload = {
-  name: string;
+export interface InstitutionFormData {
+  companyName: string;
   slug: string;
-  emailDomain: string;
-  logo?: File;
-};
+  logo?: File | null;
+}
 
-export type SignupFormData = {
-  firstname: string;
-  lastname: string;
+export interface SignupFormData {
+  firstName: string;
+  lastName: string;
   username: string;
   email: string;
   password: string;
-  confirmPassword?: string;
-  verifyCode: string;
-};
+  verifyValue: string;
+  termsAccepted: boolean;
+  token?: string; 
+}
+
+export enum UserType {
+  LEARNER = 'learner',
+  ENTERPRISE = 'enterprise',
+}
+
+export enum UserRole {
+  LEARNER = 'learner',
+  ADMIN = 'admin',
+  INSTRUCTOR = 'instructor',
+}

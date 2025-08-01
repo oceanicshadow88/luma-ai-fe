@@ -1,27 +1,47 @@
 import { apiClient } from "@services/api/apiClient";
-import { LoginFormData } from "@features/auth/types";
+import { LoginFormData, UserType } from "@features/auth/types";
 import { ApiError } from "@custom-types/ApiError";
 
 interface LoginResult {
   refreshToken?: string;
   accessToken?: string;
-  membership?: {
-    company: string; 
-    role: string;
-  }[];
+  companySlug?: string;
+  role?: string;
 }
 
-class LoginService {
-  async login(data: LoginFormData): Promise<LoginResult> {
-    const response = await apiClient.post('/auth/login', data);
+interface LoginService {
+  login(data: LoginFormData, userType?: UserType): Promise<ApiError | void>;
+  loginAsLearner(data: LoginFormData): Promise<ApiError | void>;
+  loginAsEnterprise(data: LoginFormData): Promise<ApiError | void>;
+}
 
-    if (!response.data.success) {
-      const { message } = response.data;
-      throw new ApiError(message);
+class LoginServiceImpl implements LoginService {
+  async login(data: LoginFormData, userType: UserType = UserType.LEARNER): Promise<ApiError | void> {
+    const endpoint = `/auth/login/${userType}`;
+    const response = await apiClient.post(endpoint, data);
+
+    if (response instanceof ApiError) {
+      return response;
     }
 
-    return response.data.data;
+    const result: LoginResult = response.data.data;
+
+    if (result.refreshToken) {
+      localStorage.setItem('refreshToken', result.refreshToken);
+    }
+
+    if (result.accessToken) {
+      localStorage.setItem('accessToken', result.accessToken);
+    }
+  }
+
+  async loginAsLearner(data: LoginFormData): Promise<ApiError | void> {
+    return this.login(data, UserType.LEARNER);
+  }
+
+  async loginAsEnterprise(data: LoginFormData): Promise<ApiError | void> {
+    return this.login(data, UserType.ENTERPRISE);
   }
 }
 
-export const loginService = new LoginService();
+export const loginService = new LoginServiceImpl();

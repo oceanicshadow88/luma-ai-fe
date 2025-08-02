@@ -24,6 +24,11 @@ export class InstitutionService {
     
     if (response instanceof ApiError) return response;
   }
+
+  async checkCompanyAvailability(slug: string): Promise<boolean> {
+      const response = await apiClient.get(`auth/institution/${slug}`);
+      return response.data.available;
+  }
 }
 
 export const institutionService = new InstitutionService();

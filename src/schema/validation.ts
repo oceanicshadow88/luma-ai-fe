@@ -65,4 +65,4 @@ export const slugSchema = z
   .string()
   .min(2, 'Slug must be at least 2 characters')
   .max(30, 'Slug must be at most 30 characters')
-  .regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers and hyphens');
+  .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'Slug can only contain lowercase letters, numbers and single hyphens (no consecutive hyphens)');

@@ -12,6 +12,7 @@ import NotFoundPage from '@components/layout/NotFoundPage';
 import LoginPage from '@app/auth/login/page';
 import OrganizationLayout from '@page/layout/OrganizationLayout';
 import ProtectedLayout from '@page/layout/ProtectedLayout';
+import TeacherSignUpPage from '@page/teacherPage/teacherPage';
 
 const AppRoutes = () => (
   <Routes>
@@ -19,11 +20,12 @@ const AppRoutes = () => (
 
     <Route path="/auth/signup" element={<SignupRouter />} />
     <Route path="/auth/signup/admin" element={<AdminSignUpPage />} />
+    <Route path="/auth/signup/institution" element={<InstitutionPage />} />
 
     <Route path="/" element={<OrganizationLayout />}>
       <Route path="login" element={<LoginPage />} />
       <Route path="auth/signup/learner" element={<LearnerSignUpPage />} />
-      <Route path="auth/signup/institution" element={<InstitutionPage />} />
+      <Route path="auth/signup/instructor" element={<TeacherSignUpPage />} />
       <Route path="reset-password" element={<ResetPasswordPage />} />
     </Route>
 

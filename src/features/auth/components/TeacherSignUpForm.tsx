@@ -2,26 +2,21 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { teacherSignupSchema } from '../schemas';
 import { z } from 'zod';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect } from 'react';
 import { authService } from '@api/auth/auth';
 import { signupService } from '@api/auth/signup';
-import { hasExpiry } from '@utils/dataUtils';
-import { decodeJwt } from '@utils/jwtUtils';
 import { Checkbox } from '@components/forms/Checkbox';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
+import { decodeJwt } from '@utils/jwtUtils';
 
-export default function TeacherSignUpForm() {
-  const [searchParams] = useSearchParams();
-  const [isTokenInvalid, setIsTokenInvalid] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const hasVerified = useRef(false);
-  const token = searchParams.get('token') ?? null;
+export default function TeacherSignUpForm(props: { token: string }) {
+  const { token } = props;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const decodePayload: any = decodeJwt(token ?? '');
+  const decodePayload: any = decodeJwt(token);
 
   const navigate = useNavigate();
   const {
@@ -47,35 +42,6 @@ export default function TeacherSignUpForm() {
     };
     checkIfActiveUser();
   }, []);
-
-  useEffect(() => {
-    if (hasVerified.current) return;
-
-    const verifyToken = async () => {
-      hasVerified.current = true;
-
-      if (!decodePayload) {
-        setIsTokenInvalid(true);
-        setIsLoading(false);
-        return;
-      }
-
-      const result = await authService.authToken(token ?? '');
-
-      if (result) {
-        if (result.message.includes('expired')) {
-          setIsTokenInvalid(true);
-          setIsLoading(false);
-          return;
-        }
-        setIsTokenInvalid(true);
-      }
-
-      setIsLoading(false);
-    };
-
-    verifyToken();
-  }, [token]);
 
   const onSubmit = async (data: z.infer<typeof teacherSignupSchema>) => {
     const payload = {
@@ -113,29 +79,6 @@ export default function TeacherSignUpForm() {
       duration: 2000,
     });
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center py-8">
-        <div className="text-gray-600">Loading...</div>
-      </div>
-    );
-  }
-
-  if (!token) {
-    navigate('/login');
-    return;
-  }
-
-  if (isTokenInvalid || hasExpiry(decodePayload?.exp) || decodePayload.role === 'admin') {
-    return (
-      <div className="text-center py-8">
-        <div className="text-red-600">
-          Invalid or expired invitation link. Please check your email or contact admin.
-        </div>
-      </div>
-    );
-  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full mt-8">

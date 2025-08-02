@@ -2,18 +2,19 @@ import logo from '@assets/logo.svg';
 import rightLogo from '@assets/decorative_graphic.png';
 import SignUpForm from '@features/auth/components/SignUpForm';
 import { UserRole } from '@features/auth/types';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { filterSignupForm } from '@utils/filterSignupForm';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
+import { useQueryToken } from '@hooks/useQueryToken';
+import { isMainDomain } from '@utils/domainUtils';
+import RedirectNoticePage from '@components/layout/RedirectNoticePage';
 
 const AdminSignUpPage = () => {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const token = searchParams.get('token') ?? '';
-
-  const getFormTitle = () => {
-    return 'Sign up for Luma AI Enterprise Version';
-  };
+  const { isValidToken, token } = useQueryToken(false);
+  const subDomainNoToken = !isMainDomain() && !token;
+  const hasTokenButInvalid = token && !isValidToken;
+  const mainDomainHasToken = isMainDomain() && token;
 
   const onSuccess = (data: any) => {
     if (token) {
@@ -37,6 +38,20 @@ const AdminSignUpPage = () => {
     });
   };
 
+  if (mainDomainHasToken) {
+    return <RedirectNoticePage />;
+  }
+
+  if (subDomainNoToken || hasTokenButInvalid) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-red-600">
+          Invalid or expired invitation link. Please check your email or contact admin.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col lg:flex-row w-full min-h-screen">
       <main className="w-full lg:w-3/5 sm:mt-10 sm:p-6 md:p-8 lg:pr-30 flex flex-col justify-center items-start bg-white">
@@ -46,7 +61,7 @@ const AdminSignUpPage = () => {
 
         <section className="w-full sm:mb-6 text-left">
           <h1 className="text-lg sm:text-xl md:text-2xl lg:text-xl font-semibold text-gray-800 leading-tight">
-            {getFormTitle()}
+            Sign up for Luma AI Enterprise Version
           </h1>
         </section>
 

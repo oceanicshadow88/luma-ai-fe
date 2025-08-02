@@ -21,7 +21,7 @@ const LoginPage = () => {
 
         <section className="w-full sm:mb-6 text-left">
           <h1 className="text-lg sm:text-xl md:text-2xl lg:text-xl font-semibold text-gray-800 leading-tight">
-            Log in to Luma AI Version
+            Log in to Luma AI
           </h1>
         </section>
 

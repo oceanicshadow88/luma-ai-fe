@@ -16,6 +16,7 @@ import { isMainDomain, getSubdomain } from '@utils/domainUtils';
 import { useEffect, useState } from 'react';
 import UnavailablePage from '@page/unavailablePage/unavailablePage';
 import { institutionService } from '@api/auth/institution';
+import { set } from 'date-fns';
 
 const AppRoutes = () => (
   <Routes>
@@ -44,6 +45,8 @@ const App = () => {
 
   useEffect(() => {
     if (isMainDomain()) {
+      setIsLoading(false);
+      setIsSubDomainAvailable(true);
       return;
     }
 

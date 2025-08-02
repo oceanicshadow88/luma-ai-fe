@@ -56,7 +56,7 @@ const SignUpForm = ({
       }
       const result = await authService.isActiveUser(token ?? '');
       if (result?.data.isActive) {
-        navigate(userRole === UserRole.LEARNER ? '/auth/login/learner' : '/auth/login/enterprise');
+        navigate('/login');
         return;
       }
     };
@@ -68,7 +68,7 @@ const SignUpForm = ({
       return;
     }
     if (!token && userRole === UserRole.LEARNER) {
-      navigate('/auth/login/learner');
+      navigate('/login');
       return;
     }
     const decodePayload: any = decodeJwt(token);

@@ -41,7 +41,7 @@ export default function TeacherSignUpForm() {
     const checkIfActiveUser = async () => {
       const result = await authService.isActiveUser(token ?? '');
       if (result?.data.isActive) {
-        navigate('/auth/login/enterprise');
+        navigate('/login');
         return;
       }
     };
@@ -123,7 +123,7 @@ export default function TeacherSignUpForm() {
   }
 
   if (!token) {
-    navigate('/auth/login/enterprise');
+    navigate('/login');
     return;
   }
 

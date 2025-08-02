@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@features/auth/schemas';
-import { LoginFormData, UserType } from '@features/auth/types';
+import { LoginFormData } from '@features/auth/types';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
@@ -11,16 +11,11 @@ import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 import { loginService } from '@api/auth/login';
 
 interface LoginFormProps {
-  userType?: UserType;
   onSuccess?: () => void;
   theme?: ThemeType;
 }
 
-export function LoginForm({
-  userType = UserType.LEARNER,
-  onSuccess,
-  theme = 'default',
-}: LoginFormProps) {
+export function LoginForm({ onSuccess, theme = 'default' }: LoginFormProps) {
   const navigate = useNavigate();
   const themeStyles = useFormTheme(theme);
 

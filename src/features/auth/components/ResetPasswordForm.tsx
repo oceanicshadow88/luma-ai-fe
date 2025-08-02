@@ -6,7 +6,7 @@ import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
 import { Button } from '@components/buttons/Button';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
-import { ResetPasswordInput, UserType } from '@features/auth/types';
+import { ResetPasswordInput } from '@features/auth/types';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
 import { resetPasswordService } from '@api/auth/resetPassword';
@@ -14,16 +14,11 @@ import { useSendCode } from '@features/auth/hooks/useSendCode';
 import { useEffect } from 'react';
 
 interface ResetPasswordFormProps {
-  userType?: UserType;
   onSuccess?: () => void;
   theme?: ThemeType;
 }
 
-export function ResetPasswordForm({
-  userType = UserType.LEARNER,
-  onSuccess,
-  theme = 'default',
-}: ResetPasswordFormProps) {
+export function ResetPasswordForm({ onSuccess, theme = 'default' }: ResetPasswordFormProps) {
   const navigate = useNavigate();
   const themeStyles = useFormTheme(theme);
 
@@ -49,10 +44,6 @@ export function ResetPasswordForm({
       clearErrors('verificationCode');
     }
   }, [verificationCode, clearErrors]);
-
-  const getLoginPath = () => {
-    return userType === UserType.ENTERPRISE ? '/auth/login/enterprise' : '/auth/login/learner';
-  };
 
   const handleSendCode = async () => {
     if (!email || !canSend) return;
@@ -95,14 +86,14 @@ export function ResetPasswordForm({
     }
 
     const timeoutId = setTimeout(() => {
-      navigate(getLoginPath());
+      navigate('/login');
     }, 3000);
 
     showToastWithAction('Password reset successfully! Redirecting to login...', {
       actionText: 'Go Now',
       onAction: () => {
         clearTimeout(timeoutId);
-        navigate(getLoginPath());
+        navigate('/login');
       },
       duration: 2000,
     });

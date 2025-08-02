@@ -8,6 +8,8 @@ const OrganizationLayout = () => {
     return <RedirectNoticePage />;
   }
 
+  //check is does company exits is not return Page unavailable see: https://oajfojafoff.atlassian.net/
+
   return <Outlet />;
 };
 

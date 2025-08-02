@@ -24,9 +24,9 @@ const AppRoutes = () => (
 
     <Route path="/" element={<OrganizationLayout />}>
       <Route path="login" element={<LoginPage />} />
+      <Route path="reset-password" element={<ResetPasswordPage />} />
       <Route path="auth/signup/learner" element={<LearnerSignUpPage />} />
       <Route path="auth/signup/instructor" element={<TeacherSignUpPage />} />
-      <Route path="reset-password" element={<ResetPasswordPage />} />
     </Route>
 
     <Route path="/" element={<ProtectedLayout />}>

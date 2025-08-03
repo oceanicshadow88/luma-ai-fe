@@ -16,6 +16,7 @@ import { isMainDomain, getSubdomain } from '@utils/domainUtils';
 import { useEffect, useState } from 'react';
 import UnavailablePage from '@page/unavailablePage/unavailablePage';
 import { institutionService } from '@api/auth/institution';
+import LogoutPage from '@page/logoutPage/logoutPage';
 
 const AppRoutes = () => (
   <Routes>
@@ -32,6 +33,7 @@ const AppRoutes = () => (
 
     <Route path="/" element={<ProtectedLayout />}>
       <Route path="dashboard" element={<DashboardPage />} />
+      <Route path="logout" element={<LogoutPage />} />
     </Route>
 
     <Route path="*" element={<NotFoundPage />} />

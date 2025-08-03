@@ -1,14 +1,15 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Map, 
-  FileQuestion, 
-  Bot, 
-  Users, 
-  UserCheck, 
-  GraduationCap, 
+import {
+  LayoutDashboard,
+  Map,
+  FileQuestion,
+  Bot,
+  Users,
+  UserCheck,
+  GraduationCap,
   BarChart3,
-  LucideIcon
+  LucideIcon,
+  LogOut,
 } from 'lucide-react';
 
 interface SidebarItemProps {
@@ -41,10 +42,10 @@ interface AdminSidebarProps {
   className?: string;
 }
 
-const AdminSidebar = ({ 
-  organizationName = "Organisation Name",
-  adminEmail = "Admin@example.com",
-  className = ""
+const AdminSidebar = ({
+  organizationName = 'Organisation Name',
+  adminEmail = 'Admin@example.com',
+  className = '',
 }: AdminSidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,6 +59,7 @@ const AdminSidebar = ({
     { icon: UserCheck, label: 'Admins', path: '/admin/admins' },
     { icon: GraduationCap, label: 'Instructors', path: '/admin/instructors' },
     { icon: BarChart3, label: 'Analytics', path: '/admin/analytics' },
+    { icon: LogOut, label: 'Logout', path: '/logout' },
   ];
 
   const handleNavigation = (path: string) => {
@@ -68,11 +70,13 @@ const AdminSidebar = ({
     <div className={`w-58 bg-white border-r border-gray-200 flex flex-col ${className}`}>
       {/* Top spacing for logo */}
       <div className="h-20"></div>
-      
+
       {/* Header */}
       <div className="mx-4 px-4 py-4 bg-gray-100 rounded-lg text-left">
         <div>
-          <h3 className="text-base font-semibold text-gray-900 truncate mb-1">{organizationName}</h3>
+          <h3 className="text-base font-semibold text-gray-900 truncate mb-1">
+            {organizationName}
+          </h3>
           <p className="text-sm text-gray-500 truncate">{adminEmail}</p>
         </div>
       </div>
@@ -89,10 +93,10 @@ const AdminSidebar = ({
             onClick={handleNavigation}
           />
         ))}
-        
+
         {/* Divider */}
         <div className="border-t border-gray-200 my-4"></div>
-        
+
         {menuItems.slice(4).map((item) => (
           <SidebarItem
             key={item.path}

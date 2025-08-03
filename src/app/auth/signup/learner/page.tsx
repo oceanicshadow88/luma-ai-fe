@@ -8,7 +8,7 @@ import { useQueryToken } from '@hooks/useQueryToken';
 
 const LearnerSignUpPage = () => {
   const navigate = useNavigate();
-  const { isValidToken, token } = useQueryToken();
+  const { isValidToken, token } = useQueryToken(false);
 
   const onSuccess = () => {
     const timeoutId = setTimeout(() => {
@@ -25,7 +25,7 @@ const LearnerSignUpPage = () => {
     });
   };
 
-  if (!isValidToken) {
+  if (!isValidToken && token) {
     return (
       <div className="text-center py-8">
         <div className="text-red-600">

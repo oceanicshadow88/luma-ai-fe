@@ -42,6 +42,7 @@ const SignUpForm = ({
     setError,
     setValue,
     clearErrors,
+    trigger, 
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -87,7 +88,16 @@ const SignUpForm = ({
   }, [verificationCode, clearErrors]);
 
   const handleSendCode = async () => {
-    if (!email || !canSend) return;
+    if (!email) {
+      setError('email', {
+        message: 'Please enter your email address',
+      });
+      return;
+    }
+
+    const isEmailValid = await trigger('email');
+    
+    if (!isEmailValid || !canSend) return;
 
     clearErrors('verificationCode');
 

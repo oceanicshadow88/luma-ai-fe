@@ -53,6 +53,7 @@ export default function TeacherSignUpForm(props: { token: string }) {
       confirmPassword: data.confirmPassword,
       verifyValue: token ?? '',
       termsAccepted: true,
+      token,
     };
 
     const result = await signupService.signupAsInstructor(payload);

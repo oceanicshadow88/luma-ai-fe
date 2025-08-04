@@ -23,7 +23,8 @@ export const newPasswordSchema = z
       /[A-Z]/.test(pwd) &&
       /[a-z]/.test(pwd) &&
       /[0-9]/.test(pwd) &&
-      /[^A-Za-z0-9]/.test(pwd),
+      /[!@#$%^&*]/.test(pwd) &&
+      /^[A-Za-z0-9!@#$%^&*]+$/.test(pwd),
     {
       message:
         'Password must be 8-20 characters and contain at least one uppercase letter, lowercase letter, number and special character from the following !@#$%^&*',

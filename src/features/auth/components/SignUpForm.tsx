@@ -132,17 +132,30 @@ const SignUpForm = ({
     const result = await signupService.signup(payload, userRole);
 
     if (!result) {
-      return;
-    }
-    if (result.meta?.field) {
-      setError(result.meta.field as keyof z.infer<typeof signupSchema>, {
-        message: result.message,
+      onSuccess?.(data);
+
+      const timeoutId = setTimeout(() => {
+        navigate('/dashboard');
+      }, 3000);
+
+      showToastWithAction('Successfully signed up! Redirecting...', {
+        actionText: 'Go Now',
+        onAction: () => {
+          clearTimeout(timeoutId);
+          navigate('/dashboard');
+        },
+        duration: 2000,
       });
-      return;
     }
 
-    onSuccess?.(data);
-    return;
+    if (result) {
+      if (result.meta?.field) {
+        setError(result.meta.field as keyof z.infer<typeof signupSchema>, {
+          message: result.message,
+        });
+      }
+      return;
+    }
   };
 
   return (

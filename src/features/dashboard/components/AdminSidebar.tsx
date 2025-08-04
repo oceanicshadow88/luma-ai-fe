@@ -49,6 +49,7 @@ const AdminSidebar = ({
 }: AdminSidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  
 
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
@@ -63,7 +64,7 @@ const AdminSidebar = ({
   ];
 
   const handleNavigation = (path: string) => {
-    navigate(path);
+      navigate(path);
   };
 
   return (

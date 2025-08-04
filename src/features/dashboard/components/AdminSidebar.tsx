@@ -11,6 +11,7 @@ import {
   LucideIcon,
   LogOut,
 } from 'lucide-react';
+import { useLogout } from '../../auth/hooks/useLogout';
 
 interface SidebarItemProps {
   icon: LucideIcon;
@@ -49,6 +50,7 @@ const AdminSidebar = ({
 }: AdminSidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const logout = useLogout();
 
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
@@ -63,7 +65,11 @@ const AdminSidebar = ({
   ];
 
   const handleNavigation = (path: string) => {
-    navigate(path);
+    if (path === '/logout') {
+      logout(); 
+    } else {
+      navigate(path);
+    }
   };
 
   return (

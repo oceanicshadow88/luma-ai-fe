@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { authService } from '@api/auth/auth';
 import { signupService } from '@api/auth/signup';
 import { Checkbox } from '@components/forms/Checkbox';
+import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { decodeJwt } from '@utils/jwtUtils';
 
 export default function TeacherSignUpForm(props: { token: string }) {
@@ -65,6 +66,19 @@ export default function TeacherSignUpForm(props: { token: string }) {
       }
       return;
     }
+
+    const timeoutId = setTimeout(() => {
+      navigate('/dashboard');
+    }, 3000);
+
+    showToastWithAction('Successfully signed up! Redirecting...', {
+      actionText: 'Go Now',
+      onAction: () => {
+        clearTimeout(timeoutId);
+        navigate('/dashboard');
+      },
+      duration: 2000,
+    });
   };
 
   return (

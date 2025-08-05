@@ -143,19 +143,6 @@ const SignUpForm = ({
 
     onSuccess?.(data);
 
-    const timeoutId = setTimeout(() => {
-      console.log('Navigating to dashboard');
-      navigate('/dashboard');
-    }, 3000);
-
-    showToastWithAction('Successfully signed up! Redirecting...', {
-      actionText: 'Go Now',
-      onAction: () => {
-        clearTimeout(timeoutId);
-        navigate('/dashboard');
-      },
-      duration: 2000,
-    });
   };
 
   return (

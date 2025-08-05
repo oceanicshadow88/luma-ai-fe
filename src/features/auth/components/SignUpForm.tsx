@@ -131,22 +131,6 @@ const SignUpForm = ({
 
     const result = await signupService.signup(payload, userRole);
 
-    if (!result) {
-      onSuccess?.(data);
-
-      const timeoutId = setTimeout(() => {
-        navigate('/dashboard');
-      }, 3000);
-
-      showToastWithAction('Successfully signed up! Redirecting...', {
-        actionText: 'Go Now',
-        onAction: () => {
-          clearTimeout(timeoutId);
-          navigate('/dashboard');
-        },
-        duration: 2000,
-      });
-    }
 
     if (result) {
       if (result.meta?.field) {
@@ -156,6 +140,22 @@ const SignUpForm = ({
       }
       return;
     }
+
+    onSuccess?.(data);
+
+    const timeoutId = setTimeout(() => {
+      console.log('Navigating to dashboard');
+      navigate('/dashboard');
+    }, 3000);
+
+    showToastWithAction('Successfully signed up! Redirecting...', {
+      actionText: 'Go Now',
+      onAction: () => {
+        clearTimeout(timeoutId);
+        navigate('/dashboard');
+      },
+      duration: 2000,
+    });
   };
 
   return (

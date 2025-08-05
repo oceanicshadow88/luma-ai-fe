@@ -131,18 +131,18 @@ const SignUpForm = ({
 
     const result = await signupService.signup(payload, userRole);
 
-    if (!result) {
-      return;
-    }
-    if (result.meta?.field) {
-      setError(result.meta.field as keyof z.infer<typeof signupSchema>, {
-        message: result.message,
-      });
+
+    if (result) {
+      if (result.meta?.field) {
+        setError(result.meta.field as keyof z.infer<typeof signupSchema>, {
+          message: result.message,
+        });
+      }
       return;
     }
 
     onSuccess?.(data);
-    return;
+
   };
 
   return (

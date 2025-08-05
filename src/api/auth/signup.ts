@@ -36,7 +36,6 @@ class SignupServiceImpl implements SignupService {
     if (result.accessToken) {
       localStorage.setItem('accessToken', result.accessToken);
     }
-    return response
   }
 
   async signupAsLearner(data: SignupFormData): Promise<ApiError | void> {

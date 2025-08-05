@@ -65,13 +65,7 @@ export const teacherSignupSchema = z
       .string()
       .min(1, 'Please enter your email address')
       .email('Sorry, please type a valid email'),
-    password: z
-      .string()
-      .min(1, 'Please enter your password')
-      .regex(
-        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/,
-        'Password must be 8–20 characters and contain at least one uppercase letter, lowercase letter, number and special character'
-      ),
+    password: newPasswordSchema,
     confirmPassword: z.string().min(1, 'Please confirm your password'),
     agreeTerms: z.literal(true, {
       errorMap: () => ({ message: 'You must agree to the terms to continue.' }),

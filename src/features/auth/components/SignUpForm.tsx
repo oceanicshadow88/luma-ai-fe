@@ -42,6 +42,7 @@ const SignUpForm = ({
     setError,
     setValue,
     clearErrors,
+    trigger, 
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -56,7 +57,7 @@ const SignUpForm = ({
       }
       const result = await authService.isActiveUser(token ?? '');
       if (result?.data.isActive) {
-        navigate(userRole === UserRole.LEARNER ? '/auth/login/learner' : '/auth/login/enterprise');
+        navigate('/login');
         return;
       }
     };
@@ -68,7 +69,7 @@ const SignUpForm = ({
       return;
     }
     if (!token && userRole === UserRole.LEARNER) {
-      navigate('/auth/login/learner');
+      navigate('/login');
       return;
     }
     const decodePayload: any = decodeJwt(token);
@@ -87,7 +88,16 @@ const SignUpForm = ({
   }, [verificationCode, clearErrors]);
 
   const handleSendCode = async () => {
-    if (!email || !canSend) return;
+    if (!email) {
+      setError('email', {
+        message: 'Please enter your email address',
+      });
+      return;
+    }
+
+    const isEmailValid = await trigger('email');
+    
+    if (!isEmailValid || !canSend) return;
 
     clearErrors('verificationCode');
 
@@ -121,18 +131,18 @@ const SignUpForm = ({
 
     const result = await signupService.signup(payload, userRole);
 
-    if (!result) {
-      return;
-    }
-    if (result.meta?.field) {
-      setError(result.meta.field as keyof z.infer<typeof signupSchema>, {
-        message: result.message,
-      });
+
+    if (result) {
+      if (result.meta?.field) {
+        setError(result.meta.field as keyof z.infer<typeof signupSchema>, {
+          message: result.message,
+        });
+      }
       return;
     }
 
     onSuccess?.(data);
-    return;
+
   };
 
   return (

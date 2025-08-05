@@ -46,7 +46,7 @@ export const ImageUpload = forwardRef<HTMLInputElement, ImageUploadProps>(
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
-      
+
       if (file) {
         if (showPreview) {
           if (preview) {
@@ -69,13 +69,13 @@ export const ImageUpload = forwardRef<HTMLInputElement, ImageUploadProps>(
         URL.revokeObjectURL(preview);
         setPreview(null);
       }
-      
+
       if (ref && 'current' in ref && ref.current) {
         ref.current.value = '';
       }
-      
+
       const event = {
-        target: { files: null }
+        target: { files: null },
       } as React.ChangeEvent<HTMLInputElement>;
       onChange(event);
     };
@@ -88,8 +88,10 @@ export const ImageUpload = forwardRef<HTMLInputElement, ImageUploadProps>(
             {description && <span className="text-gray-400"> {description}</span>}
           </label>
         )}
-        
-        <div className={`${uploadAreaClassName} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${error ? 'border-red-500' : ''}`}>
+
+        <div
+          className={`${uploadAreaClassName} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${error ? 'border-red-500' : ''}`}
+        >
           <input
             id={id}
             name={name}
@@ -100,6 +102,10 @@ export const ImageUpload = forwardRef<HTMLInputElement, ImageUploadProps>(
             onBlur={onBlur}
             disabled={disabled}
             className="absolute inset-0 opacity-0 cursor-pointer"
+            onClick={(e) => {
+              // Clear value before opening dialog to allow same file selection
+              e.currentTarget.value = '';
+            }}
           />
           {showPreview && preview ? (
             <div className="relative w-full h-full">
@@ -118,9 +124,7 @@ export const ImageUpload = forwardRef<HTMLInputElement, ImageUploadProps>(
         </div>
 
         {error && (
-          <p className={`text-left mt-1 text-sm text-red-600 ${errorClassName}`}>
-            {error}
-          </p>
+          <p className={`text-left mt-1 text-sm text-red-600 ${errorClassName}`}>{error}</p>
         )}
       </div>
     );

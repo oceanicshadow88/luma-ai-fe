@@ -23,7 +23,8 @@ export const newPasswordSchema = z
       /[A-Z]/.test(pwd) &&
       /[a-z]/.test(pwd) &&
       /[0-9]/.test(pwd) &&
-      /[^A-Za-z0-9]/.test(pwd),
+      /[!@#$%^&*]/.test(pwd) &&
+      /^[A-Za-z0-9!@#$%^&*]+$/.test(pwd),
     {
       message:
         'Password must be 8-20 characters and contain at least one uppercase letter, lowercase letter, number and special character from the following !@#$%^&*',
@@ -65,4 +66,4 @@ export const slugSchema = z
   .string()
   .min(2, 'Slug must be at least 2 characters')
   .max(30, 'Slug must be at most 30 characters')
-  .regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers and hyphens');
+  .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'Slug can only contain lowercase letters, numbers and single hyphens (no consecutive hyphens)');

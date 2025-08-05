@@ -2,17 +2,13 @@ import logo from '@assets/logo.svg';
 import leftLogo from '@assets/decorative_graphic.png';
 import SignUpForm from '@features/auth/components/SignUpForm';
 import { UserRole } from '@features/auth/types';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
+import { useQueryToken } from '@hooks/useQueryToken';
 
 const LearnerSignUpPage = () => {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const token = searchParams.get('token') ?? '';
-
-  const getFormTitle = () => {
-    return 'Sign up for Luma AI Learner Version';
-  };
+  const { isValidToken, token } = useQueryToken(false);
 
   const onSuccess = () => {
     const timeoutId = setTimeout(() => {
@@ -29,6 +25,16 @@ const LearnerSignUpPage = () => {
     });
   };
 
+  if (!isValidToken && token) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-red-600">
+          Invalid or expired invitation link. Please check your email or contact admin.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col lg:flex-row w-full min-h-screen">
       <aside className="hidden lg:block w-full lg:w-3/5" aria-hidden="true">
@@ -42,7 +48,7 @@ const LearnerSignUpPage = () => {
 
         <section className="w-full sm:mb-6 text-left">
           <h1 className="text-lg sm:text-xl md:text-2xl lg:text-xl font-semibold text-gray-800 leading-tight">
-            {getFormTitle()}
+            Sign up for Luma AI Learner Version
           </h1>
         </section>
 

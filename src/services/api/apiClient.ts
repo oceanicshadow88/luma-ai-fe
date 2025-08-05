@@ -34,6 +34,12 @@ apiClient.interceptors.response.use(
       field: data?.field
     };
 
+    if(error.response?.status === 403) {
+      localStorage.clear()
+      window.location.href = '/login';
+      return Promise.resolve(new ApiError(message, meta)); 
+    }
+
     if (!data?.field) {
       toast.error(message);
     }

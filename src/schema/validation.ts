@@ -7,13 +7,7 @@ export const emailSchema = z
   .min(1, 'Please enter your email address')
   .email('Please type a valid email');
 
-export const verificationCodeSchema = z
-  .string()
-  .optional()
-  .default('')
-  .refine(val => val === '' || (/^\d{6}$/.test(val)), {
-    message: 'Verification code must be 6 digits',
-  });
+export const verificationCodeSchema = z.string().optional().default('')
 
 export const newPasswordSchema = z
   .string()

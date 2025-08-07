@@ -30,6 +30,18 @@ export const signupSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
+  })
+  .superRefine((data, ctx) => {
+    // if no token ，verificationCode mush 6
+    if (!data.token) {
+      if (!data.verificationCode || !/^\d{6}$/.test(data.verificationCode)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Verification code must be 6 digits',
+          path: ['verificationCode'],
+        });
+      }
+    }
   });
 
 export const institutionSchema = z.object({

@@ -3,7 +3,6 @@ import rightLogo from '@assets/decorative_graphic.png';
 import SignUpForm from '@features/auth/components/SignUpForm';
 import { UserRole } from '@features/auth/types';
 import { useNavigate } from 'react-router-dom';
-import { filterSignupForm } from '@utils/filterSignupForm';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useQueryToken } from '@hooks/useQueryToken';
 import { isMainDomain } from '@utils/domainUtils';
@@ -34,7 +33,7 @@ const AdminSignUpPage = () => {
     }
 
     navigate('/auth/signup/institution', {
-      state: { signupForm: filterSignupForm(data) },
+      state: { signupForm: data },
     });
   };
 

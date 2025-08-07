@@ -9,9 +9,11 @@ export const emailSchema = z
 
 export const verificationCodeSchema = z
   .string()
-  .min(1, 'Please enter the verification code')
-  .length(6, 'Verification code must be 6 digits')
-  .regex(/^\d{6}$/, 'Verification code must contain only digits');
+  .optional()
+  .default('')
+  .refine(val => val === '' || (/^\d{6}$/.test(val)), {
+    message: 'Verification code must be 6 digits',
+  });
 
 export const newPasswordSchema = z
   .string()

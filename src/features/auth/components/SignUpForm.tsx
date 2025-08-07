@@ -127,7 +127,7 @@ const SignUpForm = ({
       username: data.username,
       email: data.email,
       password: data.password,
-      verifyValue: data.verificationCode,
+      verifyValue: data.verificationCode?.trim() ? data.verificationCode : (token ?? ''),
       termsAccepted: data.termsAccepted,
       token: data.token,
     };

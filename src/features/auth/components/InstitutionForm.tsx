@@ -15,7 +15,6 @@ const InstitutionForm = () => {
     logoError,
     isLogoInvalid,
     handleLogoChange,
-    handlePrev,
     watch,
     setValue,
     generateSlugFromCompanyName,
@@ -89,10 +88,9 @@ const InstitutionForm = () => {
             labelClassName="text-sm text-gray-600 text-left"
             fieldClassName="flex flex-col space-y-2"
           />
-          
         </div>
 
-          <Input
+        <Input
           id="slug"
           label="Organisation Slug"
           placeholder="e.g. ivy-college"
@@ -105,17 +103,7 @@ const InstitutionForm = () => {
           )}
         />
 
-        <div className="flex gap-2 md:gap-4 mt-8">
-          <Button
-            variant="secondary"
-            type="button"
-            onClick={handlePrev}
-            className="rounded-3xl"
-            fullWidth
-            disabled={isProcessing}
-          >
-            Previous
-          </Button>
+        <div className="mt-8">
           <Button
             type="submit"
             variant="primary"

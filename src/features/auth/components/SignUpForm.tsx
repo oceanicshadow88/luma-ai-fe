@@ -1,27 +1,28 @@
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { signupSchema } from '../schemas';
-import { z } from 'zod';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useSendCode } from '@features/auth/hooks/useSendCode';
+import { authService } from '@api/auth/auth';
+import { signupService } from '@api/auth/signup';
+import { Button } from '@components/buttons/Button';
+import { Checkbox } from '@components/forms/Checkbox';
 import { Input } from '@components/forms/Input';
 import { PasswordInput } from '@components/forms/PasswordInput';
-import { Button } from '@components/buttons/Button';
 import { VerificationCodeInput } from '@components/forms/VerificationCodeInput';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
+import { useSendCode } from '@features/auth/hooks/useSendCode';
 import { UserRole } from '@features/auth/types';
-import { Checkbox } from '@components/forms/Checkbox';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useFormTheme, type ThemeType } from '@styles/formThemeStyles';
-import { signupService } from '@api/auth/signup';
-import { useEffect } from 'react';
 import { decodeJwt } from '@utils/jwtUtils';
-import { authService } from '@api/auth/auth';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { z } from 'zod';
+import { signupSchema } from '../schemas';
 
 interface SignUpFormProps {
   userRole?: UserRole;
   onSuccess?: (data?: any) => void;
   theme?: ThemeType;
   token?: string;
+  hideVerificationCode?: boolean;
 }
 
 const SignUpForm = ({
@@ -29,6 +30,7 @@ const SignUpForm = ({
   onSuccess,
   theme = 'default',
   token,
+  hideVerificationCode = false,
 }: SignUpFormProps) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,6 +55,7 @@ const SignUpForm = ({
   useEffect(() => {
     const checkIfActiveUser = async () => {
       if (!token) {
+
         return;
       }
       const result = await authService.isActiveUser(token ?? '');
@@ -124,7 +127,7 @@ const SignUpForm = ({
       username: data.username,
       email: data.email,
       password: data.password,
-      verifyValue: data.verificationCode,
+      verifyValue: data.verificationCode?.trim() ? data.verificationCode : (token ?? ''),
       termsAccepted: data.termsAccepted,
       token: data.token,
     };
@@ -159,20 +162,22 @@ const SignUpForm = ({
         isDisabled={!!token}
       />
 
-      <VerificationCodeInput
-        id="verificationCode"
-        label="Verification Code"
-        placeholder="Enter the 6-digit code"
-        buttonText={countDown > 0 ? `Resend in ${countDown}s` : 'Send'}
-        onButtonClick={handleSendCode}
-        isButtonDisabled={!canSend}
-        {...register('verificationCode')}
-        error={errors.verificationCode?.message}
-        inputClassName={themeStyles.inputClassName}
-        labelClassName={themeStyles.labelClassName}
-        buttonClassName={themeStyles.verificationButtonClass}
-      />
-
+      {!hideVerificationCode && (
+        <VerificationCodeInput
+          id="verificationCode"
+          label="Verification Code"
+          placeholder="Enter the 6-digit code"
+          buttonText={countDown > 0 ? `Resend in ${countDown}s` : 'Send'}
+          onButtonClick={handleSendCode}
+          isButtonDisabled={!canSend}
+          {...register('verificationCode')}
+          error={errors.verificationCode?.message}
+          inputClassName={themeStyles.inputClassName}
+          labelClassName={themeStyles.labelClassName}
+          buttonClassName={themeStyles.verificationButtonClass}
+          />
+        )}
+        
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
           id="firstName"

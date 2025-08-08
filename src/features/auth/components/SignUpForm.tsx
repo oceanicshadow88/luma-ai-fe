@@ -250,7 +250,7 @@ const SignUpForm = ({
         disabled={isSubmitting}
         isLoading={isSubmitting}
       >
-        Sign Up
+        {token ? 'Sign Up' : 'Continue'}
       </Button>
     </form>
   );

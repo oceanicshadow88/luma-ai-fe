@@ -4,11 +4,8 @@ import RedirectNoticePage from '@components/layout/RedirectNoticePage';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 import SignUpForm from '@features/auth/components/SignUpForm';
 import { UserRole } from '@features/auth/types';
-import { useNavigate } from 'react-router-dom';
-import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useQueryToken } from '@hooks/useQueryToken';
 import { isMainDomain } from '@utils/domainUtils';
-import { filterSignupForm } from '@utils/filterSignupForm';
 import { useNavigate } from 'react-router-dom';
 
 const AdminSignUpPage = () => {
@@ -69,7 +66,12 @@ const AdminSignUpPage = () => {
 
         <section className="w-full max-w-sm sm:max-w-md lg:max-w-md">
           <div className="w-full">
-            <SignUpForm userRole={UserRole.ADMIN} token={token} onSuccess={onSuccess} hideVerificationCode={!!token} />
+            <SignUpForm
+              userRole={UserRole.ADMIN}
+              token={token}
+              onSuccess={onSuccess}
+              hideVerificationCode={!!token}
+            />
           </div>
         </section>
       </main>

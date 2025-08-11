@@ -20,7 +20,7 @@ export const signupSchema = z
     token: z.string().optional(),
     username: usernameSchema,
     email: emailSchema,
-    verificationCode: z.string().optional().default(''),
+    verificationCode: z.string().optional(),
     password: newPasswordSchema,
     confirmPassword: z.string().min(1, 'Please confirm your password'),
     termsAccepted: z

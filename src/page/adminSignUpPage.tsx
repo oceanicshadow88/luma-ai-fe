@@ -5,11 +5,8 @@ import { showToastWithAction } from '@components/toast/ToastWithAction';
 import SignUpForm from '@features/auth/components/SignUpForm';
 import { UserRole } from '@features/auth/types';
 import { useNavigate } from 'react-router-dom';
-import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useQueryToken } from '@hooks/useQueryToken';
 import { isMainDomain } from '@utils/domainUtils';
-import { filterSignupForm } from '@utils/filterSignupForm';
-import { useNavigate } from 'react-router-dom';
 
 const AdminSignUpPage = () => {
   const navigate = useNavigate();

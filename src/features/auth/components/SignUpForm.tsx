@@ -19,7 +19,7 @@ import { signupSchema } from '../schemas';
 
 interface SignUpFormProps {
   userRole?: UserRole;
-  onSuccess?: (data?: any) => void;
+  onSuccess?: (data?: z.infer<typeof signupSchema>) => void;
   theme?: ThemeType;
   token?: string;
   hideVerificationCode?: boolean;
@@ -55,7 +55,6 @@ const SignUpForm = ({
   useEffect(() => {
     const checkIfActiveUser = async () => {
       if (!token) {
-
         return;
       }
       const result = await authService.isActiveUser(token ?? '');
@@ -65,7 +64,7 @@ const SignUpForm = ({
       }
     };
     checkIfActiveUser();
-  }, []);
+  }, [navigate, token]);
 
   useEffect(() => {
     if (!token) {
@@ -75,17 +74,17 @@ const SignUpForm = ({
       navigate('/login');
       return;
     }
-    const decodePayload: any = decodeJwt(token);
+    const decodePayload = decodeJwt(token) as unknown as { email: string };
     setValue('email', decodePayload.email);
     setValue('token', token);
-  }, [token]);
+  }, [token, navigate, setValue, userRole]);
 
   const email = watch('email');
   const verificationCode = watch('verificationCode');
   const { sendCode, countDown, canSend } = useSendCode();
 
   useEffect(() => {
-    if (verificationCode && errors.verificationCode) {
+    if (verificationCode) {
       clearErrors('verificationCode');
     }
   }, [verificationCode, clearErrors]);
@@ -134,7 +133,6 @@ const SignUpForm = ({
 
     const result = await signupService.signup(payload, userRole);
 
-
     if (result) {
       if (result.meta?.field) {
         setError(result.meta.field as keyof z.infer<typeof signupSchema>, {
@@ -145,7 +143,6 @@ const SignUpForm = ({
     }
 
     onSuccess?.(data);
-
   };
 
   return (

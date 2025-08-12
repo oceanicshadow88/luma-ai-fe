@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isMainDomain } from '@utils/domainUtils';
 import RedirectNoticePage from '@components/layout/RedirectNoticePage';
 import { Outlet } from 'react-router-dom';

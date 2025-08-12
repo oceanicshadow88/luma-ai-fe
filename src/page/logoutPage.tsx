@@ -4,9 +4,9 @@ import { useLogout } from "../features/auth/hooks/useLogout";
 export const LogoutPage = () => {
   const logout = useLogout();
   
-  useEffect(()=>{
+  useEffect(() => {
     logout();
-  },[]) 
+  }, [logout]); 
 
   return <>Logout</>;
 };

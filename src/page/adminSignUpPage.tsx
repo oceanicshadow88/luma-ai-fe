@@ -7,6 +7,8 @@ import { UserRole } from '@features/auth/types';
 import { useNavigate } from 'react-router-dom';
 import { useQueryToken } from '@hooks/useQueryToken';
 import { isMainDomain } from '@utils/domainUtils';
+import { signupSchema } from '@features/auth/schemas';
+import { z } from 'zod';
 
 const AdminSignUpPage = () => {
   const navigate = useNavigate();
@@ -15,7 +17,7 @@ const AdminSignUpPage = () => {
   const hasTokenButInvalid = token && !isValidToken;
   const mainDomainHasToken = isMainDomain() && token;
 
-  const onSuccess = (data: any) => {
+  const onSuccess = (data?: z.infer<typeof signupSchema>) => {
     if (token) {
       const timeoutId = setTimeout(() => {
         navigate('/dashboard');

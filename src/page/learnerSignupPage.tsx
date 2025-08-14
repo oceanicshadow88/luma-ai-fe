@@ -1,10 +1,10 @@
-import logo from '@assets/logo.svg';
 import leftLogo from '@assets/decorative_graphic.png';
+import logo from '@assets/logo.svg';
+import { showToastWithAction } from '@components/toast/ToastWithAction';
 import SignUpForm from '@features/auth/components/SignUpForm';
 import { UserRole } from '@features/auth/types';
-import { useNavigate } from 'react-router-dom';
-import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useQueryToken } from '@hooks/useQueryToken';
+import { useNavigate } from 'react-router-dom';
 
 const LearnerSignUpPage = () => {
   const navigate = useNavigate();
@@ -59,6 +59,7 @@ const LearnerSignUpPage = () => {
               token={token}
               theme="learner"
               onSuccess={onSuccess}
+              hideVerificationCode={!!token}
             />
           </div>
         </section>

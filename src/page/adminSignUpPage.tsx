@@ -1,13 +1,14 @@
-import logo from '@assets/logo.svg';
 import rightLogo from '@assets/decorative_graphic.png';
+import logo from '@assets/logo.svg';
+import RedirectNoticePage from '@components/layout/RedirectNoticePage';
+import { showToastWithAction } from '@components/toast/ToastWithAction';
 import SignUpForm from '@features/auth/components/SignUpForm';
 import { UserRole } from '@features/auth/types';
 import { useNavigate } from 'react-router-dom';
-import { filterSignupForm } from '@utils/filterSignupForm';
-import { showToastWithAction } from '@components/toast/ToastWithAction';
 import { useQueryToken } from '@hooks/useQueryToken';
 import { isMainDomain } from '@utils/domainUtils';
-import RedirectNoticePage from '@components/layout/RedirectNoticePage';
+import { signupSchema } from '@features/auth/schemas';
+import { z } from 'zod';
 
 const AdminSignUpPage = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const AdminSignUpPage = () => {
   const hasTokenButInvalid = token && !isValidToken;
   const mainDomainHasToken = isMainDomain() && token;
 
-  const onSuccess = (data: any) => {
+  const onSuccess = (data?: z.infer<typeof signupSchema>) => {
     if (token) {
       const timeoutId = setTimeout(() => {
         navigate('/dashboard');
@@ -34,7 +35,7 @@ const AdminSignUpPage = () => {
     }
 
     navigate('/auth/signup/institution', {
-      state: { signupForm: filterSignupForm(data) },
+      state: { signupForm: data },
     });
   };
 
@@ -67,7 +68,7 @@ const AdminSignUpPage = () => {
 
         <section className="w-full max-w-sm sm:max-w-md lg:max-w-md">
           <div className="w-full">
-            <SignUpForm userRole={UserRole.ADMIN} token={token} onSuccess={onSuccess} />
+            <SignUpForm userRole={UserRole.ADMIN} token={token} onSuccess={onSuccess} hideVerificationCode={!!token} />
           </div>
         </section>
       </main>

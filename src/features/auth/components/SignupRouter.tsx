@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import { decodeJwt } from '@utils/jwtUtils';
-import TeacherSignUpPage from '../../../../src/page/teacherPage/teacherPage';
-import LearnerSignUpPage from '@app/auth/signup/learner/page';
+import TeacherSignUpPage from '../../../page/teacherPage';
+import LearnerSignUpPage from '@page/learnerSignupPage';
 import { UserRole } from '@features/auth/types';
 
 export default function SignupRouter() {

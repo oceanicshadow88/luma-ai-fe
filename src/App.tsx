@@ -1,22 +1,22 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { TOAST_STYLE } from '@styles/toastStyles';
-import InstitutionPage from '@app/auth/institution/page';
+import InstitutionPage from '@page/institutionPage';
 import { Toaster } from 'react-hot-toast';
-import LearnerSignUpPage from '@app/auth/signup/learner/page';
-import AdminSignUpPage from '@app/auth/signup/admin/page';
-import ResetPasswordPage from '@app/auth/reset-password/page';
-import LandingPage from '@app/landing/page';
-import DashboardPage from '@app/dashboard/page';
+import LearnerSignUpPage from '@page/learnerSignupPage';
+import AdminSignUpPage from '@page/adminSignUpPage';
+import ResetPasswordPage from '@page/resetPasswordPage';
+import LandingPage from '@page/landingPage';
+import DashboardPage from '@page/dashboardPage';
 import NotFoundPage from '@components/layout/NotFoundPage';
-import LoginPage from '@app/auth/login/page';
-import OrganizationLayout from '@page/layout/OrganizationLayout';
-import ProtectedLayout from '@page/layout/ProtectedLayout';
-import TeacherSignUpPage from '@page/teacherPage/teacherPage';
+import LoginPage from '@page/loginPage';
+import OrganizationLayout from '@components/layout/OrganizationLayout';
+import ProtectedLayout from '@components/layout/ProtectedLayout';
+import TeacherSignUpPage from '@page/teacherPage';
 import { isMainDomain, getSubdomain } from '@utils/domainUtils';
 import { useEffect, useState } from 'react';
-import UnavailablePage from '@page/unavailablePage/unavailablePage';
+import UnavailablePage from '@page/unavailablePage';
 import { institutionService } from '@api/auth/institution';
-import LogoutPage from '@page/logoutPage/logoutPage';
+import LogoutPage from '@page/logoutPage';
 
 const AppRoutes = () => (
   <Routes>

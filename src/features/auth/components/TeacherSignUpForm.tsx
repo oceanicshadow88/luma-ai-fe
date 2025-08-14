@@ -15,8 +15,7 @@ import { decodeJwt } from '@utils/jwtUtils';
 
 export default function TeacherSignUpForm(props: { token: string }) {
   const { token } = props;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const decodePayload: any = decodeJwt(token);
+  const decodePayload = decodeJwt(token) as unknown as { email: string };
 
   const navigate = useNavigate();
   const {
@@ -41,7 +40,7 @@ export default function TeacherSignUpForm(props: { token: string }) {
       }
     };
     checkIfActiveUser();
-  }, []);
+  }, [navigate, token]);
 
   const onSubmit = async (data: z.infer<typeof teacherSignupSchema>) => {
     const payload = {

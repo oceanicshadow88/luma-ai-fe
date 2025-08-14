@@ -40,7 +40,7 @@ export function ResetPasswordForm({ onSuccess, theme = 'default' }: ResetPasswor
   const verificationCode = watch('verificationCode');
 
   useEffect(() => {
-    if (verificationCode && errors.verificationCode) {
+    if (verificationCode) {
       clearErrors('verificationCode');
     }
   }, [verificationCode, clearErrors]);

@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { InstitutionFormData } from '@features/auth/types';
 import { institutionSchema } from '@features/auth/schemas';
 import { institutionService } from '@api/auth/institution';
-import { filterSignupForm } from '@utils/filterSignupForm';
 import { showToastWithAction } from '@components/toast/ToastWithAction';
 
 function generateSlugFromCompanyName(companyName: string): string {
@@ -18,7 +17,6 @@ function generateSlugFromCompanyName(companyName: string): string {
 }
 
 export const useInstitution = () => {
-    const navigate = useNavigate();
     const location = useLocation();
     const email: string = location.state?.signupForm?.email || '';
     const emailDomain = email.split('@')[1];
@@ -49,12 +47,6 @@ export const useInstitution = () => {
             emailDomain: emailDomain || '',
         },
     });
-
-    const handlePrev = () => {
-        navigate('/auth/signup/admin', {
-            state: { signupForm: filterSignupForm(location.state?.signupForm || {}) }
-        });
-    };
 
     const handleLogoChange = (file: File | null, error?: string) => {
         setLogoFile(file);
@@ -128,7 +120,6 @@ export const useInstitution = () => {
         logoError,
         isLogoInvalid,
         handleLogoChange,
-        handlePrev,
         watch,
         setValue,
         generateSlugFromCompanyName,

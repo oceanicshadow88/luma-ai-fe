@@ -11,7 +11,7 @@ A modern frontend scaffold for the **Luma AI** platform, built with [Vite](https
 - **Vite** – Lightning-fast frontend build tool
 - **ESLint** – Code linting for consistent style and error prevention
 - **Prettier** – Code formatting and style enforcement
-- **Cypress** – End-to-end testing framework
+- **PlayWright** – End-to-end testing framework
 - **.env** – Environment variable management
 - _(SonarQube integration planned)_
 
@@ -87,8 +87,8 @@ App will be served at [http://localhost:5173](http://localhost:5173)
 | `yarn run preview` | Preview production build locally |
 | `yarn run format`  | Format code using Prettier       |
 | `yarn run lint`    | Run ESLint to check code style   |
-| `npx cypress open` | Open Cypress GUI for testing     |
-| `npx cypress run`  | Run Cypress tests in CLI         |
+| `npx playwright test --ui\` | Open playwright GUI for testing     |
+| `npx playwright test`  | Run  playwright in CLI         |
 
 ---
 
@@ -100,15 +100,22 @@ NOTE: UPDATE THE ENV ACCORDING TO YOUR ENVIRONMENT
 
 ---
 
-## 🧪 Cypress E2E Testing
-
-Install and open the Cypress testing GUI:
+## 🧪 PlayWright E2E Test
 
 ```bash
-npx cypress open
-```
+# run test
+npx playwright test
 
-Tests are located in the `cypress/e2e/` folder.
+# Show result
+npx playwright show-report
+
+# debug and gui mode
+npx playwright test --ui\
+
+# GenCode mode. First, make sure your dev server is running manually
+yarn dev & 
+npx playwright codegen http://localhost:5173
+```
 
 ---
 
